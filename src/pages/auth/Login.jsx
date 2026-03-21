@@ -76,6 +76,12 @@ export default function Login() {
           {t('auth.login.register')}
         </Link>
       </p>
+
+      <div className="mt-4 border-t border-bg-dark pt-4 text-center">
+        <Link to="/" className="text-sm text-text-muted transition-colors hover:text-primary">
+          На главную
+        </Link>
+      </div>
     </>
   );
 }
