@@ -323,8 +323,9 @@ export default function Home() {
             </div>
           </SectionReveal>
 
-          {/* Carousel — full viewport width scroll */}
-          <div className="flex gap-5 overflow-x-auto px-6 pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:px-12">
+          {/* Carousel — centered, scrollable on overflow */}
+          <div className="overflow-x-auto pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="mx-auto flex w-fit gap-5 px-6 md:px-12">
             {roomsLoading
               ? Array.from({ length: 3 }, (_, i) => <RoomSkeleton key={i} />)
               : rooms.map((room) => {
@@ -372,8 +373,7 @@ export default function Home() {
                     </motion.div>
                   );
                 })}
-            {/* right edge spacer */}
-            <div className="w-6 shrink-0 md:w-12" aria-hidden="true" />
+          </div>
           </div>
         </section>
       )}
