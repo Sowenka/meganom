@@ -1,0 +1,287 @@
+{
+  "nav": {
+    "rooms": "Rooms",
+    "gallery": "Gallery",
+    "about": "About",
+    "contacts": "Contacts",
+    "booking": "Book Now"
+  },
+  "home": {
+    "title": "Meganom Eco-house",
+    "subtitle": "Cozy eco-houses near Cape Meganom on the southern coast of Crimea",
+    "cta": "View rooms",
+    "features": {
+      "transfer": "Free beach shuttle",
+      "eco": "Eco-houses made of natural wood",
+      "bbq": "BBQ area with tandoor and grill",
+      "banya": "Traditional Russian banya"
+    },
+    "hero": {
+      "tag": "Eco-resort in Crimea",
+      "title": "Rest at Cape\nMeganom",
+      "subtitle": "Cozy eco-houses on the southern coast of Crimea — tranquility, sea and nature",
+      "cta": "View rooms"
+    },
+    "welcome": {
+      "tagline": "Welcome",
+      "title": "Meganom Eco-house",
+      "text": "At Meganom, cozy eco-houses made of natural wood with a pine aroma await you. The complex is located near Cape Meganom — one of the most scenic spots on the southern coast of Crimea.",
+      "cta": "About us"
+    },
+    "activities": {
+      "tagline": "Leisure & Activities",
+      "title": "What we offer",
+      "cta": "All amenities",
+      "items": {
+        "banya": "Wood-fired banya",
+        "fishing": "Fishing",
+        "bbq": "BBQ & Tandoor",
+        "pool": "Swimming pool",
+        "transfer": "Beach shuttle",
+        "wine": "Wine tasting"
+      }
+    },
+    "stats": {
+      "guests": "Happy guests",
+      "rooms": "Houses",
+      "rating": "Rating on Yandex",
+      "years": "Years of work"
+    },
+    "rooms": {
+      "tagline": "Accommodation",
+      "title": "Our rooms",
+      "cta": "All rooms",
+      "details": "Details"
+    },
+    "testimonial": {
+      "tagline": "Guest reviews",
+      "title": "What our guests say"
+    },
+    "booking": {
+      "tagline": "Plan your stay",
+      "title": "Check availability",
+      "checkin": "Check-in",
+      "checkout": "Check-out",
+      "guests": "Guests",
+      "cta": "Check"
+    }
+  },
+  "about": {
+    "title": "About us",
+    "subtitle": "Meganom Eco-house hotel complex",
+    "description": "At Meganom, cozy eco-houses made of natural wood with a pine aroma await you. The complex is located near Cape Meganom in the village of Mindalnoye, Sudak — one of the most scenic spots on the southern coast of Crimea.",
+    "territory": {
+      "title": "Territory",
+      "items": [
+        "Well-maintained grounds with greenery and fish ponds",
+        "Named eco-houses made of natural wood",
+        "Parking with CCTV",
+        "BBQ zone with tandoor and grill",
+        "Traditional Russian banya with relaxation area",
+        "Playground and swimming pool",
+        "Outdoor fitness area with pull-up bars",
+        "Vineyard, terrace, garden and veranda",
+        "Fully equipped kitchens",
+        "Cape Meganom views from second-floor rooms",
+        "Quiet hours: 23:00 — 07:00"
+      ]
+    },
+    "services": {
+      "title": "Services",
+      "items": [
+        "Free shuttle to Meganom and Oyster beaches at 8:00, 12:00, and 17:00",
+        "Wi-Fi throughout the property",
+        "Laundry, iron, hairdryer",
+        "Towels and toiletries",
+        "Air conditioning and fridge in every room",
+        "TV and sofa bed in houses",
+        "Fishing trips available",
+        "Card payment accepted"
+      ]
+    },
+    "nearby": {
+      "title": "Nearby",
+      "items": [
+        "Meganom and Raketa beaches — 5–15 minutes",
+        "Mussel and oyster farm on the beach",
+        "Wood-fired pizzeria — 5 min walk",
+        "Tavrida art cluster",
+        "Solnechnaya Dolina winery — wine museum, tasting room, shop",
+        "Cafes and restaurants: Perchem, Pizza Coffee Sea, Vysota 1234, Slon v Udave"
+      ]
+    },
+    "rooms": {
+      "title": "Accommodation options",
+      "types": [
+        { "name": "Family double room", "area": "17 m²", "capacity": "2 guests" },
+        { "name": "Standard triple room", "area": "17 m²", "capacity": "3 guests" },
+        { "name": "Triple room with balcony", "area": "21 m²", "capacity": "3 guests" },
+        { "name": "Chalet with 2 bedrooms", "area": "24 m²", "capacity": "4 guests" },
+        { "name": "2-bedroom apartment", "area": "37–44 m²", "capacity": "4–6 guests" },
+        { "name": "2-bedroom house", "area": "45 m²", "capacity": "4–6 guests" }
+      ]
+    },
+    "allRoomsInclude": "All rooms include: Wi-Fi, air conditioning, fridge"
+  },
+  "common": {
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "perNight": "per night",
+    "notSpecified": "Not specified"
+  },
+  "contacts": {
+    "title": "Contacts",
+    "subtitle": "Get in touch",
+    "form": {
+      "name": "Your name",
+      "email": "Email",
+      "phone": "Phone (optional)",
+      "subject": "Subject",
+      "message": "Message",
+      "submit": "Send",
+      "sending": "Sending...",
+      "success": "Thank you! We will get back to you shortly.",
+      "error": "Failed to send message. Please try again later."
+    },
+    "info": {
+      "addressLabel": "Address",
+      "address": "28 Baikalskaya St., SNT Solnechnaya Dolina, Mindalnoye, Sudak, Crimea, 298026",
+      "phoneLabel": "Phone",
+      "phone1": "+7 (978) 123-45-67",
+      "phone2": "+7 (365-2) 12-34-56",
+      "emailLabel": "Email",
+      "email": "info@meganom-hotel.ru",
+      "workHoursLabel": "Working hours",
+      "workHours": "Daily, 08:00 — 22:00"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "email": "Email",
+      "emailPlaceholder": "email@example.com",
+      "password": "Password",
+      "passwordPlaceholder": "Enter password",
+      "submit": "Sign in",
+      "submitting": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "register": "Register",
+      "success": "Successfully signed in",
+      "errorInvalidCredentials": "Invalid email or password",
+      "errorGeneral": "Sign in error. Please try again later"
+    },
+    "register": {
+      "title": "Registration",
+      "fullName": "Your name",
+      "fullNamePlaceholder": "John Doe",
+      "email": "Email",
+      "emailPlaceholder": "email@example.com",
+      "password": "Password",
+      "passwordPlaceholder": "At least 6 characters",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Repeat password",
+      "submit": "Register",
+      "submitting": "Registering...",
+      "hasAccount": "Already have an account?",
+      "login": "Sign in",
+      "successConfirm": "Registration successful! Check your email for confirmation",
+      "success": "Registration successful!",
+      "errorAlreadyRegistered": "User with this email is already registered",
+      "errorGeneral": "Registration error. Please try again later"
+    }
+  },
+  "profile": {
+    "title": "My Account",
+    "guest": "Guest",
+    "phone": "Phone",
+    "registrationDate": "Registration date",
+    "editProfile": "Edit profile",
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "phonePlaceholder": "Phone",
+    "updateSuccess": "Profile updated",
+    "updateError": "Failed to update profile",
+    "signOut": "Sign out",
+    "signOutSuccess": "You have signed out",
+    "signOutError": "Sign out error",
+    "bookings": {
+      "title": "My bookings",
+      "empty": "You have no bookings yet",
+      "room": "Room",
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled",
+      "completed": "Completed"
+    }
+  },
+  "gallery": {
+    "title": "Gallery",
+    "subtitle": "Photos of our complex and surroundings",
+    "all": "All",
+    "territory": "Territory",
+    "rooms": "Rooms",
+    "beach": "Beach & Sea",
+    "amenities": "Amenities",
+    "surroundings": "Surroundings",
+    "photoCount": "129 photos",
+    "close": "Close",
+    "prev": "Previous",
+    "next": "Next"
+  },
+  "reviews": {
+    "title": "Guest Reviews",
+    "subtitle": "What our guests say",
+    "rating": "4.7",
+    "ratingMax": "5",
+    "reviewCount": "57 reviews",
+    "source": "Yandex Travel",
+    "items": [
+      {
+        "author": "Alexey G.",
+        "date": "August 2024",
+        "rating": 5,
+        "text": "A wonderful quiet spot by the sea. Crystal clear water, an oyster farm right on the beach. The owners are very hospitable, everything for a comfortable stay."
+      },
+      {
+        "author": "Anastasia B.",
+        "date": "July 2024",
+        "rating": 5,
+        "text": "Beautiful view of Cape Meganom from the second-floor balcony. The houses are cozy, smell of wood. Well-kept grounds with a pool and playground."
+      },
+      {
+        "author": "Dmitry L.",
+        "date": "August 2023",
+        "rating": 5,
+        "text": "The owners Ekaterina and Andrey are incredibly welcoming people. The houses are clean with everything you need. The wood-fired banya is amazing!"
+      },
+      {
+        "author": "Mikhail M.",
+        "date": "September 2023",
+        "rating": 5,
+        "text": "Peace, nature, crystal clear sea. They organized a fishing trip — we caught horse mackerel! Shuttle to the beach three times a day, very convenient."
+      },
+      {
+        "author": "Olga K.",
+        "date": "June 2024",
+        "rating": 5,
+        "text": "Perfect place for a family vacation. Kids loved the pool and fish ponds. Quiet, peaceful, close to nature."
+      },
+      {
+        "author": "Sergey V.",
+        "date": "July 2023",
+        "rating": 4,
+        "text": "Beautiful place, fresh air with pine scent. Great BBQ area — tandoor and grill. There's a dirt road to the beach, better to drive."
+      }
+    ]
+  },
+  "header": {
+    "profile": "My Account",
+    "login": "Sign in",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  }
+}
