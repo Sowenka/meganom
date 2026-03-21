@@ -41,18 +41,18 @@ export function Footer() {
               {subscribed ? (
                 <p className="text-white/70">Спасибо! Мы скоро напишем.</p>
               ) : (
-                <form onSubmit={handleSubscribe} className="flex gap-2">
+                <form onSubmit={handleSubscribe} className="flex w-full gap-2 sm:w-auto">
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Ваш email"
                     required
-                    className="w-52 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-white placeholder-white/40 outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                    className="min-w-0 flex-1 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-white placeholder-white/40 outline-none focus:border-accent focus:ring-1 focus:ring-accent sm:w-52 sm:flex-none"
                   />
                   <button
                     type="submit"
-                    className="rounded-lg bg-accent px-5 py-2.5 font-medium text-white transition-colors hover:bg-accent-warm"
+                    className="shrink-0 rounded-lg bg-accent px-5 py-2.5 font-medium text-white transition-colors hover:bg-accent-warm"
                   >
                     Подписаться
                   </button>

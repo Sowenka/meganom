@@ -89,12 +89,14 @@ export default function About() {
           <p className="text-lg leading-relaxed text-text-muted">
             {t('about.description')}
           </p>
-          <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-accent/30 bg-accent/5 px-5 py-2.5">
-            <FiStar className="h-4 w-4 text-accent" />
-            <span className="font-semibold text-text">
-              {t('reviews.rating')} / {t('reviews.ratingMax')}
-            </span>
-            <span className="text-sm text-text-muted">
+          <div className="mt-8 inline-flex flex-col items-center gap-1 rounded-2xl border border-accent/30 bg-accent/5 px-6 py-3 sm:flex-row sm:gap-3 sm:rounded-full sm:py-2.5">
+            <div className="flex items-center gap-2">
+              <FiStar className="h-4 w-4 shrink-0 text-accent" />
+              <span className="whitespace-nowrap font-semibold text-text">
+                {t('reviews.rating')} / {t('reviews.ratingMax')}
+              </span>
+            </div>
+            <span className="whitespace-nowrap text-sm text-text-muted">
               — {t('reviews.reviewCount')} ({t('reviews.source')})
             </span>
           </div>
