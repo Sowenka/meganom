@@ -34,15 +34,23 @@ const categoryMap = {
     ],
 };
 
-// Build photos array ONLY from entries in categoryMap (no fallback, no broken links)
-export const photos = Object.entries(categoryMap)
-    .flatMap(([cat, indices]) =>
-        indices.map((idx) => ({
-            id: idx,
-            src: `${import.meta.env.BASE_URL}gallery/${String(idx).padStart(3, '0')}.webp`,
-            category: cat,
-        }))
-    )
-    .sort((a, b) => a.id - b.id);
+// Build id → categories[] map
+const idToCategories = {};
+for (const [cat, indices] of Object.entries(categoryMap)) {
+    for (const idx of indices) {
+        if (!idToCategories[idx]) idToCategories[idx] = [];
+        idToCategories[idx].push(cat);
+    }
+}
+
+// Each photo appears exactly ONCE; categories is an array for multi-category filtering
+export const photos = Object.keys(idToCategories)
+    .map(Number)
+    .sort((a, b) => a - b)
+    .map((idx) => ({
+        id: idx,
+        src: `${import.meta.env.BASE_URL}gallery/${String(idx).padStart(3, '0')}.webp`,
+        categories: idToCategories[idx],
+    }));
 
 export const categories = ['all', 'territory', 'rooms', 'beach', 'amenities', 'surroundings'];

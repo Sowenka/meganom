@@ -115,7 +115,7 @@ export default function Gallery() {
 
   const filteredPhotos = activeCategory === 'all'
     ? photos
-    : photos.filter((p) => p.category === activeCategory);
+    : photos.filter((p) => p.categories.includes(activeCategory));
 
   const openLightbox  = useCallback((i) => setLightboxIndex(i), []);
   const closeLightbox = useCallback(() => setLightboxIndex(null), []);
@@ -176,7 +176,7 @@ export default function Gallery() {
               const isActive = activeCategory === cat;
               const count = cat === 'all'
                 ? photos.length
-                : photos.filter((p) => p.category === cat).length;
+                : photos.filter((p) => p.categories.includes(cat)).length;
 
               return (
                 <button
