@@ -117,11 +117,11 @@ export default function Rooms() {
                 const amenities = Array.isArray(room.amenities) ? room.amenities : [];
 
                 return (
-                  <SectionReveal key={room.id} delay={idx * 0.08}>
-                    <div className="group overflow-hidden rounded-2xl border border-bg-dark bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg">
+                  <SectionReveal key={room.id} delay={idx * 0.08} className="h-full">
+                    <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-bg-dark bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg">
 
                       {/* Image */}
-                      <div className="relative h-64 overflow-hidden">
+                      <div className="relative h-64 shrink-0 overflow-hidden">
                         {coverImg ? (
                           <img
                             src={coverImg}
@@ -148,21 +148,21 @@ export default function Rooms() {
                       </div>
 
                       {/* Content */}
-                      <div className="p-6">
+                      <div className="flex flex-1 flex-col p-6">
                         <h2 className="mb-2 font-serif text-2xl font-bold text-primary">
                           {room.title}
                         </h2>
-                        <p className="mb-5 text-sm leading-relaxed text-text-muted">
+                        <p className="mb-5 text-base leading-relaxed text-text-muted">
                           {room.short_description}
                         </p>
 
                         {/* Stats */}
-                        <div className="mb-5 flex items-center gap-5 border-b border-bg-dark pb-5 text-sm text-text-muted">
-                          <span className="flex items-center gap-1.5">
+                        <div className="mb-5 flex items-center gap-6 border-b border-bg-dark pb-5 text-base text-text-muted">
+                          <span className="flex items-center gap-2">
                             <FiUsers className="h-4 w-4 text-accent" />
                             {room.capacity} {room.capacity === 1 ? 'гость' : room.capacity < 5 ? 'гостя' : 'гостей'}
                           </span>
-                          <span className="flex items-center gap-1.5">
+                          <span className="flex items-center gap-2">
                             <FiMaximize className="h-4 w-4 text-accent" />
                             {room.area_sqm} м²
                           </span>
@@ -174,22 +174,22 @@ export default function Rooms() {
                             {amenities.slice(0, 5).map((item) => (
                               <li
                                 key={item}
-                                className="flex items-center gap-1 rounded-full border border-bg-dark px-3 py-1 text-xs text-text-muted"
+                                className="flex items-center gap-1.5 rounded-full border border-bg-dark px-3 py-1.5 text-sm text-text-muted"
                               >
-                                <FiCheck className="h-3 w-3 text-accent" />
+                                <FiCheck className="h-3.5 w-3.5 text-accent" />
                                 {item}
                               </li>
                             ))}
                             {amenities.length > 5 && (
-                              <li className="rounded-full border border-bg-dark px-3 py-1 text-xs text-text-muted">
+                              <li className="rounded-full border border-bg-dark px-3 py-1.5 text-sm text-text-muted">
                                 +{amenities.length - 5}
                               </li>
                             )}
                           </ul>
                         )}
 
-                        {/* Actions */}
-                        <div className="flex items-center gap-3">
+                        {/* Actions — прижаты к низу */}
+                        <div className="mt-auto flex items-center gap-3">
                           <Link
                             to={`/booking?room=${room.slug}`}
                             className="flex flex-1 items-center justify-center gap-2 rounded-full bg-accent py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-warm"
