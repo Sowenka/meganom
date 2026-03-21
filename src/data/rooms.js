@@ -15,8 +15,8 @@ export const STATIC_ROOMS = [
     sort_order: 1,
     amenities: ['Wi-Fi', 'Кондиционер', 'Терраса', 'Холодильник'],
     room_images: [
-      { id: 'i1', url: `${base}gallery/040.webp`, is_cover: true, sort_order: 0 },
-      { id: 'i2', url: `${base}gallery/041.webp`, is_cover: false, sort_order: 1 },
+      { id: 'i1', url: `${base}gallery/010.webp`, is_cover: true, sort_order: 0 },
+      { id: 'i2', url: `${base}gallery/119.webp`, is_cover: false, sort_order: 1 },
     ],
   },
   {
@@ -33,8 +33,8 @@ export const STATIC_ROOMS = [
     sort_order: 2,
     amenities: ['Wi-Fi', 'Кондиционер', 'Терраса', 'Холодильник', 'Мини-кухня'],
     room_images: [
-      { id: 'i3', url: `${base}gallery/050.webp`, is_cover: true, sort_order: 0 },
-      { id: 'i4', url: `${base}gallery/051.webp`, is_cover: false, sort_order: 1 },
+      { id: 'i3', url: `${base}gallery/090.webp`, is_cover: true, sort_order: 0 },
+      { id: 'i4', url: `${base}gallery/011.webp`, is_cover: false, sort_order: 1 },
     ],
   },
   {
@@ -51,8 +51,8 @@ export const STATIC_ROOMS = [
     sort_order: 3,
     amenities: ['Wi-Fi', 'Кондиционер', 'Терраса с видом', 'Кухня', 'Барбекю'],
     room_images: [
-      { id: 'i5', url: `${base}gallery/060.webp`, is_cover: true, sort_order: 0 },
-      { id: 'i6', url: `${base}gallery/061.webp`, is_cover: false, sort_order: 1 },
+      { id: 'i5', url: `${base}gallery/011.webp`, is_cover: true, sort_order: 0 },
+      { id: 'i6', url: `${base}gallery/062.webp`, is_cover: false, sort_order: 1 },
     ],
   },
   {
@@ -69,8 +69,8 @@ export const STATIC_ROOMS = [
     sort_order: 4,
     amenities: ['Wi-Fi', 'Кондиционер', 'Большая терраса', 'Полная кухня', 'Барбекю', 'Детская кровать'],
     room_images: [
-      { id: 'i7', url: `${base}gallery/070.webp`, is_cover: true, sort_order: 0 },
-      { id: 'i8', url: `${base}gallery/071.webp`, is_cover: false, sort_order: 1 },
+      { id: 'i7', url: `${base}gallery/062.webp`, is_cover: true, sort_order: 0 },
+      { id: 'i8', url: `${base}gallery/117.webp`, is_cover: false, sort_order: 1 },
     ],
   },
 ];

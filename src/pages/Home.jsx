@@ -302,9 +302,10 @@ export default function Home() {
 
       {/* ── 5. ROOMS ─────────────────────────────────────────────────────── */}
       {(roomsLoading || (rooms && rooms.length > 0)) && (
-        <section className="py-20">
-          <SectionReveal className="mx-auto max-w-7xl px-6">
-            <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <section className="overflow-hidden py-20">
+          {/* Heading — constrained */}
+          <SectionReveal className="mx-auto mb-10 max-w-7xl px-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <span className="mb-2 block text-xs uppercase tracking-[0.2em] text-accent">
                   {t('home.rooms.tagline')}
@@ -320,57 +321,60 @@ export default function Home() {
                 {t('home.rooms.cta')}
               </Link>
             </div>
-
-            <div className="flex gap-6 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {roomsLoading
-                ? Array.from({ length: 3 }, (_, i) => <RoomSkeleton key={i} />)
-                : rooms.map((room) => {
-                    const coverImg =
-                      room.room_images?.find((img) => img.is_cover)?.url ??
-                      room.room_images?.[0]?.url;
-                    return (
-                      <motion.div
-                        key={room.id}
-                        whileHover={{ y: -4 }}
-                        transition={{ duration: 0.25 }}
-                        className="min-w-[280px] overflow-hidden rounded-xl border border-bg-dark bg-white shadow-sm sm:min-w-[320px]"
-                      >
-                        <div className="h-56 overflow-hidden">
-                          {coverImg ? (
-                            <img
-                              src={coverImg}
-                              alt={room.title}
-                              loading="lazy"
-                              className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                            />
-                          ) : (
-                            <div className="h-full bg-bg-dark" />
-                          )}
-                        </div>
-                        <div className="p-5">
-                          <p className="mb-1 text-xs uppercase tracking-widest text-accent">
-                            {ROOM_TYPES[room.room_type] ?? room.room_type}
-                          </p>
-                          <h3 className="mb-3 font-serif text-xl font-bold text-primary">
-                            {room.title}
-                          </h3>
-                          <p className="mb-4 text-sm font-medium text-text-muted">
-                            {formatPrice(room.price_per_night)}{' '}
-                            <span className="text-xs">{t('common.perNight')}</span>
-                          </p>
-                          <Link
-                            to={`/rooms/${room.slug}`}
-                            className="inline-flex items-center gap-1 text-sm font-medium text-primary underline-offset-4 hover:underline"
-                          >
-                            {t('home.rooms.details')}
-                            <FiChevronRight className="h-4 w-4" />
-                          </Link>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-            </div>
           </SectionReveal>
+
+          {/* Carousel — full viewport width scroll */}
+          <div className="flex gap-5 overflow-x-auto px-6 pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:px-12">
+            {roomsLoading
+              ? Array.from({ length: 3 }, (_, i) => <RoomSkeleton key={i} />)
+              : rooms.map((room) => {
+                  const coverImg =
+                    room.room_images?.find((img) => img.is_cover)?.url ??
+                    room.room_images?.[0]?.url;
+                  return (
+                    <motion.div
+                      key={room.id}
+                      whileHover={{ y: -4 }}
+                      transition={{ duration: 0.25 }}
+                      className="w-[300px] shrink-0 overflow-hidden rounded-xl border border-bg-dark bg-white shadow-sm"
+                    >
+                      <div className="h-52 overflow-hidden">
+                        {coverImg ? (
+                          <img
+                            src={coverImg}
+                            alt={room.title}
+                            loading="lazy"
+                            className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                          />
+                        ) : (
+                          <div className="h-full bg-bg-dark" />
+                        )}
+                      </div>
+                      <div className="p-5">
+                        <p className="mb-1 text-xs uppercase tracking-widest text-accent">
+                          {ROOM_TYPES[room.room_type] ?? room.room_type}
+                        </p>
+                        <h3 className="mb-3 font-serif text-xl font-bold text-primary">
+                          {room.title}
+                        </h3>
+                        <p className="mb-4 text-sm font-medium text-text-muted">
+                          {formatPrice(room.price_per_night)}{' '}
+                          <span className="text-xs">{t('common.perNight')}</span>
+                        </p>
+                        <Link
+                          to={`/rooms/${room.slug}`}
+                          className="inline-flex items-center gap-1 text-sm font-medium text-primary underline-offset-4 hover:underline"
+                        >
+                          {t('home.rooms.details')}
+                          <FiChevronRight className="h-4 w-4" />
+                        </Link>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+            {/* right edge spacer */}
+            <div className="w-6 shrink-0 md:w-12" aria-hidden="true" />
+          </div>
         </section>
       )}
 
