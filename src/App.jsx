@@ -4,8 +4,16 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
+    // Remove overflow lock from mobile menu first (synchronous)
     document.body.style.overflow = '';
-    window.scrollTo(0, 0);
+    document.documentElement.style.overflow = '';
+    // Defer scroll to next tick so iOS Safari processes the overflow change first
+    const id = setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 0);
+    return () => clearTimeout(id);
   }, [pathname]);
   return null;
 }
