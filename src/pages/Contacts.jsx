@@ -153,23 +153,10 @@ export default function Contacts() {
                 <p>{t('contacts.info.workHours')}</p>
               </ContactItem>
             </div>
-
-            {/* Map */}
-            <div className="overflow-hidden rounded-2xl border border-bg-dark">
-              <iframe
-                title={t('contacts.info.addressLabel')}
-                src="https://yandex.ru/map-widget/v1/?pt=35.048184,44.835724&z=17&l=map&size=450,300"
-                width="100%"
-                height="240"
-                className="block"
-                loading="lazy"
-                style={{ border: 0 }}
-              />
-            </div>
           </SectionReveal>
 
-          {/* ── RIGHT: form ──────────────────────────────────────────────── */}
-          <SectionReveal delay={0.15} className="lg:col-span-3">
+          {/* ── RIGHT: form + map ────────────────────────────────────────── */}
+          <SectionReveal delay={0.15} className="flex flex-col gap-6 lg:col-span-3">
             <div className="rounded-2xl border border-bg-dark bg-white p-8 shadow-sm">
               <h3 className="mb-6 font-serif text-2xl font-bold text-primary">
                 Написать нам
@@ -233,6 +220,19 @@ export default function Contacts() {
                   {isSubmitting ? t('contacts.form.sending') : t('contacts.form.submit')}
                 </Button>
               </form>
+            </div>
+
+            {/* Map */}
+            <div className="overflow-hidden rounded-2xl border border-bg-dark">
+              <iframe
+                title={t('contacts.info.addressLabel')}
+                src="https://yandex.ru/map-widget/v1/?pt=35.048184,44.835724&z=17&l=map&size=450,300"
+                width="100%"
+                height="420"
+                className="block"
+                loading="lazy"
+                style={{ border: 0 }}
+              />
             </div>
           </SectionReveal>
         </div>

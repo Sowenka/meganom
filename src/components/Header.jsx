@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { Logo } from '@/components/Logo';
 
 const navKeys = [
+  { to: '/', key: 'nav.home' },
   { to: '/rooms', key: 'nav.rooms' },
   { to: '/gallery', key: 'nav.gallery' },
   { to: '/about', key: 'nav.about' },
