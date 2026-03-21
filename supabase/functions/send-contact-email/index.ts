@@ -1,5 +1,6 @@
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { SmtpClient } from 'https://deno.land/x/smtp@v0.7.0/mod.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -38,52 +39,52 @@ serve(async (req: Request) => {
       );
     }
 
-    // Send email via Resend
-    const resendApiKey = Deno.env.get('RESEND_API_KEY');
-    if (resendApiKey) {
-      const hotelEmail = Deno.env.get('HOTEL_EMAIL') || 'info@meganom-hotel.ru';
+    // Send email via mail.ru SMTP
+    // Credentials stored in Supabase Secrets (never in code):
+    //   supabase secrets set SMTP_USER=mmosow@mail.ru SMTP_PASS=<app_password>
+    const smtpUser = Deno.env.get('SMTP_USER');
+    const smtpPass = Deno.env.get('SMTP_PASS');
+
+    if (smtpUser && smtpPass) {
+      const client = new SmtpClient();
+      await client.connectTLS({
+        hostname: 'smtp.mail.ru',
+        port: 465,
+        username: smtpUser,
+        password: smtpPass,
+      });
 
       // Notification to hotel
-      await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${resendApiKey}`,
-        },
-        body: JSON.stringify({
-          from: 'noreply@meganom-hotel.ru',
-          to: hotelEmail,
-          subject: `[Контакт] ${subject}`,
-          html: `
-            <h2>Новое сообщение с сайта</h2>
-            <p><strong>Имя:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Телефон:</strong> ${phone || '—'}</p>
-            <p><strong>Тема:</strong> ${subject}</p>
-            <p><strong>Сообщение:</strong></p>
-            <p>${message}</p>
-          `,
-        }),
+      await client.send({
+        from: smtpUser,
+        to: smtpUser,
+        subject: `[Меганом] Новое сообщение: ${subject}`,
+        content: 'text/html',
+        html: `
+          <h2>Новое сообщение с сайта Меганом Эко-дом</h2>
+          <p><strong>Имя:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Телефон:</strong> ${phone || '—'}</p>
+          <p><strong>Тема:</strong> ${subject}</p>
+          <p><strong>Сообщение:</strong></p>
+          <p>${message}</p>
+        `,
       });
 
       // Auto-reply to user
-      await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${resendApiKey}`,
-        },
-        body: JSON.stringify({
-          from: 'noreply@meganom-hotel.ru',
-          to: email,
-          subject: 'Мы получили ваше сообщение — Меганом Эко-дом',
-          html: `
-            <h2>Здравствуйте, ${name}!</h2>
-            <p>Благодарим за обращение. Мы получили ваше сообщение и свяжемся с вами в ближайшее время.</p>
-            <p>С уважением,<br/>Команда Меганом Эко-дом</p>
-          `,
-        }),
+      await client.send({
+        from: smtpUser,
+        to: email,
+        subject: 'Мы получили ваше сообщение — Меганом Эко-дом',
+        content: 'text/html',
+        html: `
+          <h2>Здравствуйте, ${name}!</h2>
+          <p>Благодарим за обращение. Мы получили ваше сообщение и свяжемся с вами в ближайшее время.</p>
+          <p>С уважением,<br/>Команда Меганом Эко-дом</p>
+        `,
       });
+
+      await client.close();
     }
 
     return new Response(
