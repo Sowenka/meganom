@@ -51,7 +51,7 @@ export default function About() {
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
       <section className="relative flex h-[55vh] items-center justify-center overflow-hidden">
         <img
-          src={`${import.meta.env.BASE_URL}gallery/001.webp`}
+          src={`${import.meta.env.BASE_URL}gallery/125.webp`}
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
           loading="eager"
