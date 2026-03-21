@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
+import { sendSubscribeEmail } from '@/services/email.service';
 import { Messengers } from '@/components/Messengers';
 import { Logo } from '@/components/Logo';
 
@@ -14,12 +15,20 @@ const navLinks = [
 
 export function Footer() {
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
-    if (email.trim()) {
+    if (!email.trim()) return;
+    setLoading(true);
+    try {
+      await sendSubscribeEmail(email.trim());
       toast.success('Спасибо! Мы скоро напишем.');
       setEmail('');
+    } catch {
+      toast.error('Не удалось отправить. Попробуйте позже.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,9 +58,10 @@ export function Footer() {
                 />
                 <button
                   type="submit"
-                  className="shrink-0 rounded-lg bg-accent px-5 py-2.5 font-medium text-white transition-colors hover:bg-accent-warm"
+                  disabled={loading}
+                  className="shrink-0 rounded-lg bg-accent px-5 py-2.5 font-medium text-white transition-colors hover:bg-accent-warm disabled:opacity-60"
                 >
-                  Подписаться
+                  {loading ? '...' : 'Подписаться'}
                 </button>
               </form>
               <Messengers />
