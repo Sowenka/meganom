@@ -10,18 +10,16 @@
  *   surroundings — beach bar, pizzeria, winery area, decor, scenic views
  */
 
-const TOTAL = 129;
-
 // Photo index → category mapping (1-based index matching file names 001-129)
+// Only list files that physically exist in public/gallery/
+// Photos NOT listed here will NOT appear in the gallery at all
 const categoryMap = {
   territory: [
-    1, 2, 6, 7, 8, 9, 35, 36, 37, 38, 39, 50, 51, 52, 53, 54,
-    79, 80, 81, 82, 98, 99, 100, 101, 102, 103, 108, 109, 110, 111, 112,
-    113, 114, 115, 116, 123, 125, 129,
+    1,
   ],
   rooms: [
-    3, 4, 10, 11, 12, 13, 40, 41, 42, 43, 44, 60, 61, 62, 63, 64, 65, 66, 67,
-    68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 90, 91, 92, 117, 118, 119,
+    3, 4, 10, 11, 12, 13, 40, 41, 42, 43, 44, 60, 61, 62, 63, 64, 66, 67,
+    68, 69, 71, 72, 73, 74, 75, 76, 77, 90, 92, 117, 119,
     120, 121, 122, 126, 127, 128,
   ],
   beach: [
@@ -29,7 +27,7 @@ const categoryMap = {
     32, 33, 34, 78, 104, 105, 106, 107, 124,
   ],
   amenities: [
-    45, 46, 47, 48, 49, 55, 56, 57, 58, 59, 83, 84, 85, 86, 87, 88, 89, 93, 94,
+    45, 46, 48, 49, 55, 56, 57, 58, 59, 84, 85, 86, 87, 88, 89, 93, 94,
     95, 96, 97,
   ],
   surroundings: [
@@ -37,23 +35,15 @@ const categoryMap = {
   ],
 };
 
-// Build reverse lookup: index → category
-const indexToCategory = {};
-for (const [cat, indices] of Object.entries(categoryMap)) {
-  for (const idx of indices) {
-    indexToCategory[idx] = cat;
-  }
-}
-
-// Generate photos array
-export const photos = Array.from({ length: TOTAL }, (_, i) => {
-  const idx = i + 1;
-  const num = String(idx).padStart(3, '0');
-  return {
-    id: idx,
-    src: `${import.meta.env.BASE_URL}gallery/${num}.webp`,
-    category: indexToCategory[idx] || 'territory',
-  };
-});
+// Build photos array ONLY from entries in categoryMap (no fallback, no broken links)
+export const photos = Object.entries(categoryMap)
+  .flatMap(([cat, indices]) =>
+    indices.map((idx) => ({
+      id: idx,
+      src: `${import.meta.env.BASE_URL}gallery/${String(idx).padStart(3, '0')}.webp`,
+      category: cat,
+    }))
+  )
+  .sort((a, b) => a.id - b.id);
 
 export const categories = ['all', 'territory', 'rooms', 'beach', 'amenities', 'surroundings'];
