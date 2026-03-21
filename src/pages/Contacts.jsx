@@ -85,7 +85,7 @@ export default function Contacts() {
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
       <section className="relative flex h-[55vh] items-center justify-center overflow-hidden">
         <img
-          src={`${import.meta.env.BASE_URL}gallery/009.webp`}
+          src={`${import.meta.env.BASE_URL}gallery/076.webp`}
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
           loading="eager"
