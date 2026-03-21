@@ -333,11 +333,9 @@ export default function Home() {
                     room.room_images?.find((img) => img.is_cover)?.url ??
                     room.room_images?.[0]?.url;
                   return (
-                    <motion.div
+                    <div
                       key={room.id}
-                      whileHover={{ y: -4 }}
-                      transition={{ duration: 0.25 }}
-                      className="w-[300px] shrink-0 overflow-hidden rounded-xl border border-bg-dark bg-white shadow-sm"
+                      className="w-[300px] shrink-0 overflow-hidden rounded-xl border border-bg-dark bg-white shadow-sm transition-shadow duration-300 hover:shadow-xl"
                     >
                       <div className="h-52 overflow-hidden">
                         {coverImg ? (
@@ -370,7 +368,7 @@ export default function Home() {
                           <FiChevronRight className="h-4 w-4" />
                         </Link>
                       </div>
-                    </motion.div>
+                    </div>
                   );
                 })}
           </div>
