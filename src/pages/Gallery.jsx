@@ -115,35 +115,65 @@ export default function Gallery() {
   }, [filteredPhotos.length]);
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12">
-      {/* Header */}
-      <div className="mb-8 text-center">
-        <h1 className="font-serif text-4xl font-bold text-primary">
-          {t('gallery.title')}
-        </h1>
-        <p className="mt-2 text-text-muted">{t('gallery.subtitle')}</p>
-        <p className="mt-1 text-sm text-text-muted/60">{t('gallery.photoCount')}</p>
-      </div>
-
-      {/* Category filters */}
-      <div className="mb-8 flex flex-wrap justify-center gap-2">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => {
-              setActiveCategory(cat);
-              setLightboxIndex(null);
-            }}
-            className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
-              activeCategory === cat
-                ? 'bg-primary text-white shadow-md'
-                : 'bg-bg-dark text-text-muted hover:bg-primary/10 hover:text-primary'
-            }`}
+    <>
+      {/* ── HERO ──────────────────────────────────────────────────────────── */}
+      <section className="relative flex h-[55vh] items-center justify-center overflow-hidden">
+        <img
+          src={`${import.meta.env.BASE_URL}gallery/016.webp`}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-primary/65" />
+        <div className="relative z-10 px-6 text-center">
+          <motion.span
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-4 inline-block text-xs font-medium uppercase tracking-[0.2em] text-accent-warm"
           >
-            {t(`gallery.${cat}`)}
-          </button>
-        ))}
-      </div>
+            {t('gallery.subtitle')}
+          </motion.span>
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="font-serif text-5xl font-bold italic text-white md:text-6xl"
+          >
+            {t('gallery.title')}
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mt-3 text-sm text-white/50"
+          >
+            {t('gallery.photoCount')}
+          </motion.p>
+        </div>
+      </section>
+
+      {/* ── GALLERY BODY ──────────────────────────────────────────────────── */}
+      <section className="mx-auto max-w-7xl px-4 py-12">
+        {/* Category filters */}
+        <div className="mb-10 flex flex-wrap justify-center gap-2">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => {
+                setActiveCategory(cat);
+                setLightboxIndex(null);
+              }}
+              className={`rounded-full border px-5 py-2 text-sm font-medium uppercase tracking-wider transition-all duration-200 ${
+                activeCategory === cat
+                  ? 'border-primary bg-primary text-white shadow-md'
+                  : 'border-bg-dark bg-bg-dark text-text-muted hover:border-primary/30 hover:bg-primary/5 hover:text-primary'
+              }`}
+            >
+              {t(`gallery.${cat}`)}
+            </button>
+          ))}
+        </div>
 
       {/* Photo grid — Masonry-style with CSS columns */}
       <div
@@ -187,6 +217,7 @@ export default function Gallery() {
           />
         )}
       </AnimatePresence>
-    </section>
+      </section>
+    </>
   );
 }
