@@ -49,7 +49,7 @@ export default function About() {
   return (
     <>
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
-      <section className="relative flex h-[60vh] items-center justify-center overflow-hidden">
+      <section className="relative flex h-[55vh] items-center justify-center overflow-hidden">
         <img
           src={`${import.meta.env.BASE_URL}gallery/001.webp`}
           alt=""

@@ -83,7 +83,7 @@ export default function Contacts() {
   return (
     <>
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
-      <section className="relative flex h-[50vh] items-center justify-center overflow-hidden">
+      <section className="relative flex h-[55vh] items-center justify-center overflow-hidden">
         <img
           src={`${import.meta.env.BASE_URL}gallery/009.webp`}
           alt=""
