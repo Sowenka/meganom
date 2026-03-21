@@ -1,29 +1,51 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { motion, useInView } from 'framer-motion';
+import { FiMapPin, FiPhone, FiMail, FiClock } from 'react-icons/fi';
 import PropTypes from 'prop-types';
 import { Input, PhoneInput, Textarea, Button } from '@/components/ui';
 import { contactSchema } from '@/lib/validators';
 import { sendContactMessage } from '@/services/contact.service';
 
-function ContactInfo({ icon, label, children }) {
+function SectionReveal({ children, className, delay = 0 }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-80px' });
   return (
-    <div className="flex gap-4">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-        {icon}
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 32 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+SectionReveal.propTypes = { children: PropTypes.node, className: PropTypes.string, delay: PropTypes.number };
+
+function ContactItem({ icon: Icon, label, children }) {
+  return (
+    <div className="flex items-start gap-4">
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
+        <Icon className="h-5 w-5" />
       </div>
       <div>
-        <p className="text-sm font-medium text-text-muted">{label}</p>
-        <div className="mt-0.5 text-text">{children}</div>
+        <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-accent">
+          {label}
+        </p>
+        <div className="text-text-muted">{children}</div>
       </div>
     </div>
   );
 }
 
-ContactInfo.propTypes = {
-  icon: PropTypes.node.isRequired,
+ContactItem.propTypes = {
+  icon: PropTypes.elementType.isRequired,
   label: PropTypes.string.isRequired,
   children: PropTypes.node.isRequired,
 };
@@ -59,149 +81,162 @@ export default function Contacts() {
   }
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12">
-      <div className="mb-10 text-center">
-        <h1 className="font-serif text-4xl font-bold text-primary">
-          {t('contacts.title')}
-        </h1>
-        <p className="mt-2 text-lg text-text-muted">{t('contacts.subtitle')}</p>
-      </div>
-
-      <div className="grid gap-12 lg:grid-cols-5">
-        {/* Contact info */}
-        <div className="flex flex-col gap-8 lg:col-span-2">
-          <ContactInfo
-            label={t('contacts.info.addressLabel')}
-            icon={
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
-                <path fillRule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.274 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clipRule="evenodd" />
-              </svg>
-            }
+    <>
+      {/* ── HERO ──────────────────────────────────────────────────────────── */}
+      <section className="relative flex h-[50vh] items-center justify-center overflow-hidden">
+        <img
+          src={`${import.meta.env.BASE_URL}gallery/009.webp`}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-primary/65" />
+        <div className="relative z-10 px-6 text-center">
+          <motion.span
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-4 inline-block text-xs font-medium uppercase tracking-[0.2em] text-accent-warm"
           >
-            <p>{t('contacts.info.address')}</p>
-          </ContactInfo>
-
-          <ContactInfo
-            label={t('contacts.info.phoneLabel')}
-            icon={
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
-                <path fillRule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 8.326 13.019 13.019 0 012 5V3.5z" clipRule="evenodd" />
-              </svg>
-            }
+            {t('contacts.subtitle')}
+          </motion.span>
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="font-serif text-5xl font-bold italic text-white md:text-6xl"
           >
-            <p>
-              <a href={`tel:${t('contacts.info.phone1').replace(/[^\d+]/g, '')}`} className="hover:text-primary">
-                {t('contacts.info.phone1')}
-              </a>
-            </p>
-            <p>
-              <a href={`tel:${t('contacts.info.phone2').replace(/[^\d+]/g, '')}`} className="hover:text-primary">
-                {t('contacts.info.phone2')}
-              </a>
-            </p>
-          </ContactInfo>
-
-          <ContactInfo
-            label={t('contacts.info.emailLabel')}
-            icon={
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
-                <path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z" />
-                <path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z" />
-              </svg>
-            }
-          >
-            <a href={`mailto:${t('contacts.info.email')}`} className="hover:text-primary">
-              {t('contacts.info.email')}
-            </a>
-          </ContactInfo>
-
-          <ContactInfo
-            label={t('contacts.info.workHoursLabel')}
-            icon={
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clipRule="evenodd" />
-              </svg>
-            }
-          >
-            <p>{t('contacts.info.workHours')}</p>
-          </ContactInfo>
-
-          {/* Yandex Map */}
-          <div className="mt-2 overflow-hidden rounded-xl border border-bg-dark">
-            <iframe
-              title={t('contacts.info.addressLabel')}
-              src="https://yandex.ru/map-widget/v1/?pt=35.048184,44.835724&z=17&l=map&size=450,300"
-              width="100%"
-              height="224"
-              className="block lg:h-56"
-              loading="lazy"
-              style={{ border: 0 }}
-            />
-          </div>
+            {t('contacts.title')}
+          </motion.h1>
         </div>
+      </section>
 
-        {/* Contact form */}
-        <div className="lg:col-span-3">
-          <form
-            onSubmit={handleSubmit(onSubmit, onInvalid)}
-            className="flex flex-col gap-5 rounded-2xl border border-bg-dark bg-white p-6 shadow-sm sm:p-8"
-            noValidate
-          >
-            {/* Honeypot field — hidden from humans, traps bots */}
-            <input
-              type="text"
-              autoComplete="off"
-              tabIndex={-1}
-              aria-hidden="true"
-              className="absolute h-0 w-0 overflow-hidden opacity-0"
-              {...register('website')}
-            />
+      {/* ── MAIN CONTENT ──────────────────────────────────────────────────── */}
+      <section className="bg-bg py-20">
+        <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-5 lg:items-start">
 
-            <div className="grid gap-5 sm:grid-cols-2">
-              <Input
-                label={t('contacts.form.name')}
-                placeholder={t('contacts.form.name')}
-                error={errors.name?.message}
-                {...register('name')}
-              />
-              <Input
-                label={t('contacts.form.email')}
-                type="email"
-                placeholder="email@example.com"
-                error={errors.email?.message}
-                {...register('email')}
-              />
+          {/* ── LEFT: contact info + map ─────────────────────────────────── */}
+          <SectionReveal className="flex flex-col gap-8 lg:col-span-2">
+            <div>
+              <span className="mb-2 block text-xs font-medium uppercase tracking-[0.2em] text-accent">
+                {t('contacts.subtitle')}
+              </span>
+              <h2 className="font-serif text-3xl font-bold text-primary">
+                {t('contacts.title')}
+              </h2>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2">
-              <PhoneInput
-                label={t('contacts.form.phone')}
-                name="phone"
-                control={control}
-                error={errors.phone?.message}
-              />
-              <Input
-                label={t('contacts.form.subject')}
-                placeholder={t('contacts.form.subject')}
-                error={errors.subject?.message}
-                {...register('subject')}
-              />
+            <div className="flex flex-col gap-6">
+              <ContactItem icon={FiMapPin} label={t('contacts.info.addressLabel')}>
+                <p className="leading-relaxed">{t('contacts.info.address')}</p>
+              </ContactItem>
+
+              <ContactItem icon={FiPhone} label={t('contacts.info.phoneLabel')}>
+                <a href={`tel:${t('contacts.info.phone1').replace(/[^\d+]/g, '')}`}
+                  className="block transition-colors hover:text-primary">
+                  {t('contacts.info.phone1')}
+                </a>
+                <a href={`tel:${t('contacts.info.phone2').replace(/[^\d+]/g, '')}`}
+                  className="block transition-colors hover:text-primary">
+                  {t('contacts.info.phone2')}
+                </a>
+              </ContactItem>
+
+              <ContactItem icon={FiMail} label={t('contacts.info.emailLabel')}>
+                <a href={`mailto:${t('contacts.info.email')}`}
+                  className="transition-colors hover:text-primary">
+                  {t('contacts.info.email')}
+                </a>
+              </ContactItem>
+
+              <ContactItem icon={FiClock} label={t('contacts.info.workHoursLabel')}>
+                <p>{t('contacts.info.workHours')}</p>
+              </ContactItem>
             </div>
 
-            <Textarea
-              label={t('contacts.form.message')}
-              placeholder={t('contacts.form.message')}
-              rows={5}
-              error={errors.message?.message}
-              {...register('message')}
-            />
+            {/* Map */}
+            <div className="overflow-hidden rounded-2xl border border-bg-dark">
+              <iframe
+                title={t('contacts.info.addressLabel')}
+                src="https://yandex.ru/map-widget/v1/?pt=35.048184,44.835724&z=17&l=map&size=450,300"
+                width="100%"
+                height="240"
+                className="block"
+                loading="lazy"
+                style={{ border: 0 }}
+              />
+            </div>
+          </SectionReveal>
 
-            <Button type="submit" loading={isSubmitting} className="self-start">
-              {isSubmitting ? t('contacts.form.sending') : t('contacts.form.submit')}
-            </Button>
-          </form>
+          {/* ── RIGHT: form ──────────────────────────────────────────────── */}
+          <SectionReveal delay={0.15} className="lg:col-span-3">
+            <div className="rounded-2xl border border-bg-dark bg-white p-8 shadow-sm">
+              <h3 className="mb-6 font-serif text-2xl font-bold text-primary">
+                Написать нам
+              </h3>
+
+              <form
+                onSubmit={handleSubmit(onSubmit, onInvalid)}
+                className="flex flex-col gap-5"
+                noValidate
+              >
+                {/* Honeypot */}
+                <input
+                  type="text"
+                  autoComplete="off"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  className="absolute h-0 w-0 overflow-hidden opacity-0"
+                  {...register('website')}
+                />
+
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <Input
+                    label={t('contacts.form.name')}
+                    placeholder={t('contacts.form.name')}
+                    error={errors.name?.message}
+                    {...register('name')}
+                  />
+                  <Input
+                    label={t('contacts.form.email')}
+                    type="email"
+                    placeholder="email@example.com"
+                    error={errors.email?.message}
+                    {...register('email')}
+                  />
+                </div>
+
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <PhoneInput
+                    label={t('contacts.form.phone')}
+                    name="phone"
+                    control={control}
+                    error={errors.phone?.message}
+                  />
+                  <Input
+                    label={t('contacts.form.subject')}
+                    placeholder={t('contacts.form.subject')}
+                    error={errors.subject?.message}
+                    {...register('subject')}
+                  />
+                </div>
+
+                <Textarea
+                  label={t('contacts.form.message')}
+                  placeholder={t('contacts.form.message')}
+                  rows={5}
+                  error={errors.message?.message}
+                  {...register('message')}
+                />
+
+                <Button type="submit" loading={isSubmitting} className="self-start">
+                  {isSubmitting ? t('contacts.form.sending') : t('contacts.form.submit')}
+                </Button>
+              </form>
+            </div>
+          </SectionReveal>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
