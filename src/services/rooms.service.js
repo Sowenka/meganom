@@ -1,7 +1,12 @@
 import { supabase } from '@/lib/supabase';
+import { STATIC_ROOMS } from '@/data/rooms';
 
 export async function getRooms({ type, isActive = true } = {}) {
-  if (!supabase) return [];
+  if (!supabase) {
+    return STATIC_ROOMS.filter(
+      (r) => r.is_active === isActive && (!type || r.room_type === type),
+    );
+  }
   let query = supabase
     .from('rooms')
     .select('*, room_images(*)')
