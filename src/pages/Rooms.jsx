@@ -92,7 +92,7 @@ export default function Rooms() {
             {t('home.welcome.tagline')}
           </span>
           <h2 className="mb-4 font-serif text-3xl font-bold text-primary">
-            Уютно как дома, красиво как в природе
+            Уютно как дома, красиво как в Крыму
           </h2>
           <p className="text-base leading-relaxed text-text-muted">
             Каждый домик построен из натурального дерева и вписан в ландшафт у мыса Меганом.
@@ -189,17 +189,17 @@ export default function Rooms() {
                         )}
 
                         {/* Actions — прижаты к низу */}
-                        <div className="mt-auto flex items-center gap-3">
+                        <div className="mt-auto flex flex-col gap-3 sm:flex-row">
                           <Link
                             to={`/booking?room=${room.slug}`}
-                            className="flex flex-1 items-center justify-center gap-2 rounded-full bg-accent py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-warm"
+                            className="flex items-center justify-center gap-2 rounded-full bg-accent py-3 text-sm font-medium text-white transition-colors hover:bg-accent-warm sm:flex-1"
                           >
-                            <FiCalendar className="h-4 w-4" />
+                            <FiCalendar className="h-4 w-4 shrink-0" />
                             Забронировать
                           </Link>
                           <Link
                             to={`/rooms/${room.slug}`}
-                            className="flex-1 rounded-full border border-primary py-2.5 text-center text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white"
+                            className="rounded-full border border-primary py-3 text-center text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white sm:flex-1"
                           >
                             Подробнее
                           </Link>

@@ -109,7 +109,7 @@ export function Header() {
             <Link
               to="/booking"
               className={cn(
-                'rounded-lg px-4 py-2 font-medium transition-all duration-300',
+                'whitespace-nowrap rounded-lg px-5 py-2 font-medium transition-all duration-300',
                 isTransparent
                   ? 'border border-white/60 text-white hover:bg-white/10'
                   : 'bg-accent text-white hover:bg-accent-warm',
