@@ -137,7 +137,7 @@ export default function Terms() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="font-serif text-4xl font-bold italic text-white md:text-5xl"
+            className="font-serif text-2xl font-bold italic text-white sm:text-3xl md:text-5xl"
           >
             Пользовательское соглашение
           </motion.h1>
