@@ -131,30 +131,29 @@ export default function Gallery() {
   return (
     <>
       {/* ── HERO ────────────────────────────────────────────────────────── */}
-      <section className="relative flex h-[55vh] items-end overflow-hidden pb-16">
+      <section className="relative flex h-[55vh] items-center justify-center overflow-hidden">
         <img
           src={`${import.meta.env.BASE_URL}gallery/016.webp`}
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
           loading="eager"
         />
-        {/* Gradient: transparent top → dark bottom */}
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/40 to-transparent" />
+        <div className="absolute inset-0 bg-primary/65" />
 
-        <div className="relative z-10 w-full px-6 md:px-12">
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
+        <div className="relative z-10 px-6 text-center">
+          <motion.span
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="mb-2 text-xs font-medium uppercase tracking-[0.25em] text-accent-warm"
+            className="mb-4 inline-block text-xs font-medium uppercase tracking-[0.2em] text-accent-warm"
           >
             {t('gallery.subtitle')}
-          </motion.p>
+          </motion.span>
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="font-serif text-5xl font-bold italic text-white md:text-7xl"
+            className="font-serif text-5xl font-bold italic text-white md:text-6xl"
           >
             {t('gallery.title')}
           </motion.h1>

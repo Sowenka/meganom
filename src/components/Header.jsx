@@ -57,7 +57,10 @@ export function Header() {
   }, []);
 
   useEffect(() => {
-    if (isMobileMenuOpen) toggleMobileMenu();
+    if (isMobileMenuOpen) {
+      toggleMobileMenu();
+      document.body.style.overflow = '';
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
