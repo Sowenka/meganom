@@ -31,20 +31,26 @@ if (configured) {
 export async function sendContactEmail({ name, email, phone, subject, message }) {
   if (!configured) throw new Error('EmailJS not configured');
   return emailjs.send(SERVICE_ID, TPL_CONTACT, {
+    // Variables used in HTML template body
     from_name: name,
     from_email: email,
     from_phone: phone || '—',
-    subject,
     message,
+    // Variables used in EmailJS sidebar fields (Subject, From Name, Reply To)
+    title: subject,   // Subject field uses {{title}} by default
+    name,             // From Name field uses {{name}} by default
+    email,            // Reply To field uses {{email}} by default
+    subject,          // also send as {{subject}} for our custom subject line
     reply_to: email,
   });
 }
 
 /** Send subscriber notification to hotel */
-export async function sendSubscribeEmail(email) {
+export async function sendSubscribeEmail(subscriberEmail) {
   if (!configured) throw new Error('EmailJS not configured');
   return emailjs.send(SERVICE_ID, TPL_SUBSCRIBE, {
-    subscriber_email: email,
-    reply_to: email,
+    subscriber_email: subscriberEmail,
+    email: subscriberEmail,  // Reply To field uses {{email}} by default
+    reply_to: subscriberEmail,
   });
 }
