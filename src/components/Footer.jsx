@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 import { Messengers } from '@/components/Messengers';
 import { Logo } from '@/components/Logo';
 
@@ -13,12 +14,11 @@ const navLinks = [
 
 export function Footer() {
   const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
 
   const handleSubscribe = (e) => {
     e.preventDefault();
     if (email.trim()) {
-      setSubscribed(true);
+      toast.success('Спасибо! Мы скоро напишем.');
       setEmail('');
     }
   };
@@ -38,26 +38,22 @@ export function Footer() {
               </p>
             </div>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              {subscribed ? (
-                <p className="text-white/70">Спасибо! Мы скоро напишем.</p>
-              ) : (
-                <form onSubmit={handleSubscribe} className="flex w-full gap-2 sm:w-auto">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Ваш email"
-                    required
-                    className="min-w-0 flex-1 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-white placeholder-white/40 outline-none focus:border-accent focus:ring-1 focus:ring-accent sm:w-52 sm:flex-none"
-                  />
-                  <button
-                    type="submit"
-                    className="shrink-0 rounded-lg bg-accent px-5 py-2.5 font-medium text-white transition-colors hover:bg-accent-warm"
-                  >
-                    Подписаться
-                  </button>
-                </form>
-              )}
+              <form onSubmit={handleSubscribe} className="flex w-full gap-2 sm:w-auto">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Ваш email"
+                  required
+                  className="min-w-0 flex-1 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-white placeholder-white/40 outline-none focus:border-accent focus:ring-1 focus:ring-accent sm:w-52 sm:flex-none"
+                />
+                <button
+                  type="submit"
+                  className="shrink-0 rounded-lg bg-accent px-5 py-2.5 font-medium text-white transition-colors hover:bg-accent-warm"
+                >
+                  Подписаться
+                </button>
+              </form>
               <Messengers />
             </div>
           </div>
