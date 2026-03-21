@@ -22,7 +22,7 @@ function SectionReveal({ children, className, delay = 0 }) {
 
 const sectionPhotos = {
   territory: '008.webp',
-  services:  '083.webp',
+  services:  '075.webp',
   nearby:    '015.webp',
 };
 
