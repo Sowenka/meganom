@@ -1,0 +1,6 @@
+# Сайт в разработке — индексация временно закрыта
+User-agent: *
+Disallow: /
+
+# Sitemap будет открыт после завершения разработки
+# Sitemap: https://meganom-hotel.ru/sitemap.xml
