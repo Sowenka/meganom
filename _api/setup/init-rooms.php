@@ -6,7 +6,9 @@
  */
 require_once dirname(__DIR__) . '/config.php';
 
-// Simple protection — must pass the JWT_SECRET as key
+// Double protection: IP whitelist + secret key
+require_ip();
+
 $key = $_GET['key'] ?? '';
 if (!hash_equals(JWT_SECRET, $key)) {
     http_response_code(403);
