@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 import { Logo } from '@/components/Logo';
 import { StableText } from '@/components/ui';
+import { WeatherWidget } from '@/components/WeatherWidget';
 
 function LanguageSwitcher() {
   const { i18n } = useTranslation();
@@ -108,7 +109,10 @@ export function Header() {
       )}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
-        <Logo />
+        <div className="flex items-center gap-3">
+          <WeatherWidget className="hidden md:flex" />
+          <Logo />
+        </div>
 
         {/* Desktop nav */}
         <ul className="hidden items-center gap-6 md:flex">

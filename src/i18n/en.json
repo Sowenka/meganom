@@ -133,7 +133,11 @@
     "loading": "Loading...",
     "error": "An error occurred",
     "perNight": "per night",
-    "notSpecified": "Not specified"
+    "notSpecified": "Not specified",
+    "checkinTime": "14:00",
+    "checkoutTime": "12:00",
+    "checkinLabel": "Check-in from",
+    "checkoutLabel": "check-out by"
   },
   "contacts": {
     "title": "Contacts",

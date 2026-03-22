@@ -133,7 +133,11 @@
     "loading": "Загрузка...",
     "error": "Произошла ошибка",
     "perNight": "за ночь",
-    "notSpecified": "Не указан"
+    "notSpecified": "Не указан",
+    "checkinTime": "14:00",
+    "checkoutTime": "12:00",
+    "checkinLabel": "Заезд с",
+    "checkoutLabel": "выезд до"
   },
   "contacts": {
     "title": "Контакты",

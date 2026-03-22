@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiArrowLeft, FiArrowRight, FiCheck, FiMaximize, FiUsers, FiCalendar, FiX } from 'react-icons/fi';
+import { FiArrowLeft, FiArrowRight, FiCheck, FiMaximize, FiUsers, FiCalendar, FiClock, FiX } from 'react-icons/fi';
 import PropTypes from 'prop-types';
 import { useRoom } from '@/hooks/useRooms';
 import { formatPrice } from '@/lib/utils';
@@ -243,7 +243,7 @@ export default function RoomDetail() {
                   {room.title}
                 </motion.h1>
               </div>
-              <div className="shrink-0 rounded-2xl bg-white/10 px-6 py-3 text-right backdrop-blur-sm">
+              <div className="ml-auto shrink-0 rounded-2xl bg-white/10 px-6 py-3 text-right backdrop-blur-sm">
                 <p className="text-xs text-white/60">{t('roomDetail.bookingCard.priceFrom')}</p>
                 <p className="font-serif text-2xl font-bold text-white">
                   {formatPrice(room.price_per_night)}
@@ -341,6 +341,15 @@ export default function RoomDetail() {
                       {t('roomDetail.area')}
                     </span>
                     <span className="font-medium text-text">{room.area_sqm} м²</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                      <FiClock className="h-4 w-4 text-accent" />
+                      {t('common.checkinLabel')} / {t('common.checkoutLabel')}
+                    </span>
+                    <span className="font-medium text-text">
+                      {t('common.checkinTime')} / {t('common.checkoutTime')}
+                    </span>
                   </div>
                 </div>
 

@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import {
   FiCalendar, FiUsers, FiMaximize, FiCheckCircle,
-  FiMinus, FiPlus, FiPhone,
+  FiMinus, FiPlus, FiPhone, FiClock,
 } from 'react-icons/fi';
 import PropTypes from 'prop-types';
 import { differenceInCalendarDays, format, addDays, parseISO, isValid } from 'date-fns';
@@ -358,6 +358,16 @@ export default function Booking() {
                     min={minCheckout}
                     {...register('checkOut')}
                   />
+                </div>
+
+                {/* Check-in / check-out times */}
+                <div className="mb-6 flex items-center gap-2 rounded-lg bg-bg px-4 py-2.5 text-sm text-text-muted">
+                  <FiClock className="h-4 w-4 shrink-0 text-accent" />
+                  <span>
+                    {t('common.checkinLabel')} <strong className="text-text">{t('common.checkinTime')}</strong>
+                    {' · '}
+                    {t('common.checkoutLabel')} <strong className="text-text">{t('common.checkoutTime')}</strong>
+                  </span>
                 </div>
 
                 {/* Guests */}
