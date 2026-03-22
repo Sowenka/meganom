@@ -1,4 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="6" fill="#1B3A4B"/>
-  <text x="16" y="22" text-anchor="middle" fill="#C9A96E" font-size="18" font-family="Georgia">C</text>
+  <!-- Background -->
+  <rect width="32" height="32" rx="3" fill="#1B3A4B"/>
+  <!-- Border (like Logo component: border-white/70) -->
+  <rect x="2.5" y="2.5" width="27" height="27" rx="1.5" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1"/>
+  <!-- Letter M — white, bold, matching header logo -->
+  <text x="16" y="22.5" text-anchor="middle" fill="white"
+        font-size="17" font-family="Georgia, 'Times New Roman', serif" font-weight="bold">M</text>
 </svg>
