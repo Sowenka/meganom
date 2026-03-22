@@ -1,24 +1,27 @@
 import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { Input, Button } from '@/components/ui';
+import { Input, PhoneInput, Button } from '@/components/ui';
 import { registerSchema } from '@/lib/validators';
 import { signUp } from '@/services/auth.service';
 
 export default function Register() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get('redirect') || '';
 
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(registerSchema),
-    defaultValues: { fullName: '', email: '', password: '', confirmPassword: '' },
+    defaultValues: { fullName: '', email: '', phone: '', password: '', confirmPassword: '' },
   });
 
   const onInvalid = useCallback((fieldErrors) => {
@@ -28,9 +31,12 @@ export default function Register() {
 
   async function onSubmit(data) {
     try {
-      await signUp(data);
-      toast.success(t('auth.register.success'));
-      navigate('/profile');
+      const result = await signUp(data);
+      if (result.pending) {
+        toast.success(t('auth.register.checkEmail'));
+        const verifyUrl = `/auth/verify?email=${encodeURIComponent(data.email)}${redirect ? `&redirect=${encodeURIComponent(redirect)}` : ''}`;
+        navigate(verifyUrl);
+      }
     } catch (err) {
       toast.error(err.message || t('auth.register.errorGeneral'));
     }
@@ -51,6 +57,7 @@ export default function Register() {
           label={t('auth.register.fullName')}
           placeholder={t('auth.register.fullNamePlaceholder')}
           error={errors.fullName?.message}
+          required
           {...register('fullName')}
         />
         <Input
@@ -58,13 +65,22 @@ export default function Register() {
           type="email"
           placeholder={t('auth.register.emailPlaceholder')}
           error={errors.email?.message}
+          required
           {...register('email')}
+        />
+        <PhoneInput
+          label={t('auth.register.phone')}
+          name="phone"
+          control={control}
+          error={errors.phone?.message}
+          required
         />
         <Input
           label={t('auth.register.password')}
           type="password"
           placeholder={t('auth.register.passwordPlaceholder')}
           error={errors.password?.message}
+          required
           {...register('password')}
         />
         <Input
@@ -72,6 +88,7 @@ export default function Register() {
           type="password"
           placeholder={t('auth.register.confirmPasswordPlaceholder')}
           error={errors.confirmPassword?.message}
+          required
           {...register('confirmPassword')}
         />
 

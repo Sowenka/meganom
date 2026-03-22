@@ -1,5 +1,5 @@
 import { forwardRef, useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 import { differenceInCalendarDays, format, addDays, parseISO, isValid } from 'date-fns';
 import { ru as ruLocale, enUS } from 'date-fns/locale';
 import { useRooms } from '@/hooks/useRooms';
+import { useAuth } from '@/hooks/useAuth';
 import { createBooking } from '@/services/booking.service';
 import { bookingSchema } from '@/lib/validators';
 import { formatPrice, cn } from '@/lib/utils';
@@ -95,8 +96,19 @@ SectionDivider.propTypes = { children: PropTypes.node.isRequired };
 export default function Booking() {
   const { t, i18n } = useTranslation();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
   const [bookingResult, setBookingResult] = useState(null);
+
+  const { user, isLoading: authLoading } = useAuth();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      const redirect = '/booking' + (searchParams.toString() ? '?' + searchParams.toString() : '');
+      navigate(`/auth/login?redirect=${encodeURIComponent(redirect)}`);
+    }
+  }, [user, authLoading, navigate, searchParams]);
 
   const { data: rooms, isLoading: roomsLoading } = useRooms({ isActive: true });
 
@@ -139,6 +151,24 @@ export default function Booking() {
     if (room) setValue('roomId', room.id);
   }, [rooms, searchParams, setValue]);
 
+  // Pre-fill dates and guests from URL params
+  useEffect(() => {
+    const checkIn  = searchParams.get('checkIn');
+    const checkOut = searchParams.get('checkOut');
+    const guests   = searchParams.get('guests');
+    if (checkIn)  setValue('checkIn',  checkIn);
+    if (checkOut) setValue('checkOut', checkOut);
+    if (guests)   setValue('guestsCount', parseInt(guests, 10));
+  }, [searchParams, setValue]);
+
+  // Pre-fill guest data from user profile
+  useEffect(() => {
+    if (!user) return;
+    if (user.name)  setValue('guestName',  user.name);
+    if (user.email) setValue('guestEmail', user.email);
+    if (user.phone) setValue('guestPhone', user.phone);
+  }, [user, setValue]);
+
   const selectedRoom = rooms?.find((r) => r.id === watchRoomId);
   const coverImg =
     selectedRoom?.room_images?.find((img) => img.is_cover)?.url ??
@@ -164,7 +194,7 @@ export default function Booking() {
 
   const onSubmit = async (data) => {
     try {
-      await createBooking({ ...data, nights, total });
+      await createBooking({ ...data, nights, total, roomTitle: selectedRoom?.title ?? '' });
       setBookingResult({ ...data, nights, total, selectedRoom });
       setSubmitted(true);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -174,7 +204,7 @@ export default function Booking() {
   };
 
   const onError = (errs) => {
-    const order = ['roomId', 'checkIn', 'checkOut', 'guestsCount', 'guestName', 'guestEmail', 'specialRequests'];
+    const order = ['roomId', 'checkIn', 'checkOut', 'guestsCount', 'guestName', 'guestEmail', 'guestPhone', 'specialRequests'];
     const first = order.find((f) => errs[f]);
     if (first) toast.error(errs[first].message);
   };
@@ -231,18 +261,17 @@ export default function Booking() {
 
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Link
+              to="/profile"
+              className="rounded-full bg-primary px-8 py-3 text-sm font-medium text-white transition-colors hover:opacity-90"
+            >
+              Мои бронирования
+            </Link>
+            <Link
               to="/rooms"
               className="rounded-full border border-primary px-8 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white"
             >
               {t('bookingPage.backToRooms')}
             </Link>
-            <button
-              type="button"
-              onClick={() => { setSubmitted(false); setBookingResult(null); }}
-              className="rounded-full bg-accent px-8 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-warm"
-            >
-              {t('bookingPage.newBooking')}
-            </button>
           </div>
         </motion.div>
       </section>
@@ -261,7 +290,7 @@ export default function Booking() {
           loading="eager"
         />
         <div className="absolute inset-0 bg-primary/70" />
-        <div className="relative z-10 px-6 text-center">
+        <div className="relative z-10 w-full px-6 text-center">
           <motion.span
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -274,7 +303,7 @@ export default function Booking() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="font-serif text-5xl font-bold italic text-white md:text-6xl"
+            className="font-serif text-3xl font-bold italic text-white sm:text-5xl md:text-6xl"
           >
             {t('bookingPage.heroTitle')}
           </motion.h1>
@@ -390,6 +419,7 @@ export default function Booking() {
                     label={t('bookingPage.guestName')}
                     placeholder={t('bookingPage.guestNamePlaceholder')}
                     error={errors.guestName?.message}
+                    required
                     {...register('guestName')}
                   />
                   <Input
@@ -397,6 +427,7 @@ export default function Booking() {
                     type="email"
                     placeholder={t('bookingPage.guestEmailPlaceholder')}
                     error={errors.guestEmail?.message}
+                    required
                     {...register('guestEmail')}
                   />
                 </div>
@@ -407,6 +438,8 @@ export default function Booking() {
                     label={t('bookingPage.guestPhone')}
                     name="guestPhone"
                     control={control}
+                    error={errors.guestPhone?.message}
+                    required
                   />
                 </div>
 

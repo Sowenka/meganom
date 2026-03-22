@@ -105,11 +105,6 @@ export default function Home() {
   const [guests, setGuests] = useState(2);
 
   const handleCheckAvailability = () => {
-    if (!isAuthenticated) {
-      navigate('/auth/register');
-      return;
-    }
-
     if (!checkIn) {
       toast.error('Укажите дату заезда');
       return;
@@ -140,7 +135,14 @@ export default function Home() {
     params.set('checkIn', checkIn);
     params.set('checkOut', checkOut);
     params.set('guests', guests);
-    navigate(`/rooms?${params.toString()}`);
+    const roomsUrl = `/rooms?${params.toString()}`;
+
+    if (!isAuthenticated) {
+      navigate(`/auth/register?redirect=${encodeURIComponent(roomsUrl)}`);
+      return;
+    }
+
+    navigate(roomsUrl);
   };
 
   // Rooms from Supabase
