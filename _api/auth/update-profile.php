@@ -23,7 +23,7 @@ try {
     $stmt = $pdo->prepare("
         UPDATE users SET name = :name, phone = :phone
         WHERE id = :id
-        RETURNING id, email, name, role, phone, created_at
+        RETURNING id, email, name, role, phone, avatar_url, created_at
     ");
     $stmt->execute([':name' => $name, ':phone' => $phone ?: null, ':id' => $payload['sub']]);
     $user = $stmt->fetch();
@@ -37,6 +37,7 @@ try {
         'full_name'  => $user['name'],
         'role'       => $user['role'],
         'phone'      => $user['phone'],
+        'avatar_url' => $user['avatar_url'],
         'created_at' => $user['created_at'],
     ]]);
 

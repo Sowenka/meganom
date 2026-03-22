@@ -49,6 +49,21 @@ export async function signOut() {
   localStorage.removeItem(USER_KEY);
 }
 
+export async function uploadAvatar(file) {
+  const token = getToken();
+  const formData = new FormData();
+  formData.append('avatar', file);
+  // Note: do NOT set Content-Type manually — browser sets multipart boundary automatically
+  const res = await fetch(`${API_BASE}/auth/upload-avatar.php`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: formData,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Ошибка загрузки фото');
+  return data;
+}
+
 export async function getProfile() {
   const token = getToken();
   if (!token) return null;

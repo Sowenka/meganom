@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,12 +7,12 @@ import { toast } from 'sonner';
 import PropTypes from 'prop-types';
 import {
   FiLogOut, FiEdit2, FiCalendar, FiUsers,
-  FiHome, FiPhone, FiMail, FiMoon,
+  FiHome, FiPhone, FiMail, FiMoon, FiCamera,
 } from 'react-icons/fi';
 import { Input, PhoneInput, Button } from '@/components/ui';
 import { profileSchema } from '@/lib/validators';
 import { useAuth } from '@/hooks/useAuth';
-import { getProfile, updateProfile, signOut } from '@/services/auth.service';
+import { getProfile, updateProfile, signOut, uploadAvatar } from '@/services/auth.service';
 import { getUserBookings } from '@/services/booking.service';
 import { formatPrice, formatDate, cn } from '@/lib/utils';
 
@@ -76,6 +76,10 @@ export default function Profile() {
   const [bookings, setBookings] = useState([]);
   const [bookingsLoading, setBookingsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarVersion, setAvatarVersion] = useState(1);
+  const fileInputRef = useRef(null);
 
   const {
     register,
@@ -123,6 +127,31 @@ export default function Profile() {
       toast.success(t('profile.updateSuccess'));
     } catch {
       toast.error(t('profile.updateError'));
+    }
+  }
+
+  async function handleAvatarChange(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Instant local preview
+    const reader = new FileReader();
+    reader.onload = (ev) => setAvatarPreview(ev.target.result);
+    reader.readAsDataURL(file);
+
+    setAvatarUploading(true);
+    try {
+      const result = await uploadAvatar(file);
+      setProfile((prev) => ({ ...prev, avatar_url: result.avatar_url }));
+      setAvatarPreview(null);
+      setAvatarVersion((v) => v + 1);
+      toast.success('Фото профиля обновлено');
+    } catch (err) {
+      setAvatarPreview(null);
+      toast.error(err.message || 'Не удалось загрузить фото');
+    } finally {
+      setAvatarUploading(false);
+      e.target.value = '';
     }
   }
 
@@ -177,10 +206,40 @@ export default function Profile() {
 
             {/* Avatar strip */}
             <div className="bg-primary px-6 py-8 text-center">
-              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-white/15 text-3xl font-bold text-white ring-4 ring-white/20">
-                {initial}
-              </div>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="group relative mx-auto block h-20 w-20 cursor-pointer"
+                title="Изменить фото"
+              >
+                {(avatarPreview || profile?.avatar_url) ? (
+                  <img
+                    src={avatarPreview || `${profile.avatar_url}?v=${avatarVersion}`}
+                    alt={displayName}
+                    className="h-20 w-20 rounded-full object-cover ring-4 ring-white/20"
+                  />
+                ) : (
+                  <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/15 text-3xl font-bold text-white ring-4 ring-white/20">
+                    {initial}
+                  </div>
+                )}
+                {/* Hover overlay */}
+                <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+                  {avatarUploading
+                    ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    : <FiCamera className="h-5 w-5 text-white" />
+                  }
+                </div>
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={handleAvatarChange}
+              />
               <h2 className="mt-3 text-lg font-semibold text-white">{displayName}</h2>
+              <p className="mt-0.5 text-xs text-white/50">Нажмите на фото чтобы изменить</p>
               {user.role === 'admin' && (
                 <span className="mt-1.5 inline-block rounded-full bg-accent/90 px-3 py-0.5 text-xs font-medium text-white">
                   Администратор

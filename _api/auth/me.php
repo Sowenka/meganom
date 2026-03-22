@@ -11,7 +11,7 @@ try {
     // Ensure phone column exists (idempotent)
     $pdo->exec('ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR(20) NULL');
 
-    $stmt = $pdo->prepare('SELECT id, email, name, role, phone, created_at FROM users WHERE id = :id');
+    $stmt = $pdo->prepare('SELECT id, email, name, role, phone, avatar_url, created_at FROM users WHERE id = :id');
     $stmt->execute([':id' => $payload['sub']]);
     $user = $stmt->fetch();
 
@@ -24,6 +24,7 @@ try {
         'full_name'  => $user['name'],
         'role'       => $user['role'],
         'phone'      => $user['phone'],
+        'avatar_url' => $user['avatar_url'],
         'created_at' => $user['created_at'],
     ]]);
 
