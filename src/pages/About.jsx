@@ -58,7 +58,7 @@ export default function About() {
           loading="eager"
         />
         <div className="absolute inset-0 bg-primary/65" />
-        <div className="relative z-10 px-6 text-center">
+        <div className="relative z-10 w-full px-6 text-center">
           <motion.span
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -71,7 +71,7 @@ export default function About() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="font-serif text-5xl font-bold italic text-white md:text-6xl"
+            className="font-serif text-3xl font-bold italic text-white sm:text-5xl md:text-6xl"
           >
             {t('about.title')}
           </motion.h1>

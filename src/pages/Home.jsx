@@ -6,7 +6,9 @@ import {
   FiFeather, FiAnchor, FiSun, FiDroplet, FiTruck, FiGlobe,
   FiChevronLeft, FiChevronRight,
 } from 'react-icons/fi';
+import { toast } from 'sonner';
 import { useRooms } from '@/hooks/useRooms';
+import { useAuth } from '@/hooks/useAuth';
 import { formatPrice } from '@/lib/utils';
 import { StableText } from '@/components/ui';
 
@@ -84,6 +86,7 @@ function RoomSkeleton() {
 export default function Home() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const reviews = t('reviews.items', { returnObjects: true });
 
   // Testimonial slider
@@ -102,11 +105,42 @@ export default function Home() {
   const [guests, setGuests] = useState(2);
 
   const handleCheckAvailability = () => {
+    if (!isAuthenticated) {
+      navigate('/auth/register');
+      return;
+    }
+
+    if (!checkIn) {
+      toast.error('Укажите дату заезда');
+      return;
+    }
+    if (!checkOut) {
+      toast.error('Укажите дату выезда');
+      return;
+    }
+    if (checkIn < today) {
+      toast.error('Дата заезда не может быть в прошлом');
+      return;
+    }
+    if (checkOut <= checkIn) {
+      toast.error('Дата выезда должна быть позже даты заезда');
+      return;
+    }
+    const nights = Math.round((new Date(checkOut) - new Date(checkIn)) / 86_400_000);
+    if (nights > 90) {
+      toast.error('Максимальный срок бронирования — 90 ночей');
+      return;
+    }
+    if (guests < 1 || guests > 15) {
+      toast.error('Количество гостей: от 1 до 15');
+      return;
+    }
+
     const params = new URLSearchParams();
-    if (checkIn) params.set('checkIn', checkIn);
-    if (checkOut) params.set('checkOut', checkOut);
+    params.set('checkIn', checkIn);
+    params.set('checkOut', checkOut);
     params.set('guests', guests);
-    navigate(`/booking?${params.toString()}`);
+    navigate(`/rooms?${params.toString()}`);
   };
 
   // Rooms from Supabase
@@ -162,7 +196,7 @@ export default function Home() {
             <motion.h1
               variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="mb-6 whitespace-pre-line font-serif text-5xl font-bold italic leading-tight text-white md:text-6xl lg:text-7xl"
+              className="mb-6 whitespace-pre-line font-serif text-3xl font-bold italic leading-tight text-white sm:text-5xl md:text-6xl lg:text-7xl"
             >
               {t('home.hero.title')}
             </motion.h1>
@@ -505,11 +539,14 @@ export default function Home() {
                 <input
                   type="number"
                   min={1}
-                  max={10}
+                  max={15}
                   value={guests}
-                  onChange={(e) =>
-                    setGuests(Math.max(1, Math.min(10, Number(e.target.value))))
-                  }
+                  onFocus={(e) => e.target.select()}
+                  onChange={(e) => {
+                    const val = Number(e.target.value);
+                    if (val > 15) { toast.error('Максимальное количество гостей — 15'); return; }
+                    setGuests(Math.max(1, Math.min(15, val)));
+                  }}
                   className="border-b border-white/30 bg-transparent pb-2 font-serif text-2xl text-white outline-none transition-colors focus:border-accent [color-scheme:dark]"
                 />
               </div>

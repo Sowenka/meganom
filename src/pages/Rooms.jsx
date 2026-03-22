@@ -1,11 +1,11 @@
-import { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useRef, useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { StableText } from '@/components/ui';
 import { motion, useInView } from 'framer-motion';
-import { FiUsers, FiMaximize, FiCheck, FiCalendar } from 'react-icons/fi';
+import { FiUsers, FiMaximize, FiCheck, FiCalendar, FiX } from 'react-icons/fi';
 import { useRooms } from '@/hooks/useRooms';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, formatDate } from '@/lib/utils';
 
 function SectionReveal({ children, className, delay = 0 }) {
   const ref = useRef(null);
@@ -44,7 +44,30 @@ function RoomCardSkeleton() {
 
 export default function Rooms() {
   const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { data: rooms, isLoading } = useRooms({ isActive: true });
+
+  const checkIn  = searchParams.get('checkIn')  || '';
+  const checkOut = searchParams.get('checkOut') || '';
+  const guests   = parseInt(searchParams.get('guests') || '1', 10);
+  const hasFilter = !!(checkIn && checkOut);
+
+  const [availability, setAvailability] = useState({});
+  const [availLoading, setAvailLoading]  = useState(false);
+
+  useEffect(() => {
+    if (!hasFilter) { setAvailability({}); return; }
+    setAvailLoading(true);
+    fetch(`/api/rooms/availability.php?check_in=${checkIn}&check_out=${checkOut}&guests=${guests}`)
+      .then((r) => r.json())
+      .then((d) => setAvailability(d.availability ?? {}))
+      .catch(() => {})
+      .finally(() => setAvailLoading(false));
+  }, [checkIn, checkOut, guests, hasFilter]);
+
+  function clearFilter() {
+    setSearchParams({});
+  }
 
   return (
     <>
@@ -57,7 +80,7 @@ export default function Rooms() {
           loading="eager"
         />
         <div className="absolute inset-0 bg-primary/65" />
-        <div className="relative z-10 px-6 text-center">
+        <div className="relative z-10 w-full px-6 text-center">
           <motion.span
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -70,7 +93,7 @@ export default function Rooms() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="font-serif text-5xl font-bold italic text-white md:text-6xl"
+            className="font-serif text-3xl font-bold italic text-white sm:text-5xl md:text-6xl"
           >
             {t('home.rooms.title')}
           </motion.h1>
@@ -85,7 +108,41 @@ export default function Rooms() {
         </div>
       </section>
 
+      {/* ── FILTER BAR (показывается только если есть даты) ──────────────── */}
+      {hasFilter && (
+        <section className="border-b border-bg-dark bg-white px-6 py-4">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-3 text-sm">
+              <span className="font-medium text-primary">Поиск:</span>
+              <span className="flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-primary">
+                <FiCalendar className="h-3.5 w-3.5" />
+                {formatDate(checkIn)} — {formatDate(checkOut)}
+              </span>
+              <span className="flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-primary">
+                <FiUsers className="h-3.5 w-3.5" />
+                {guests} {guests === 1 ? 'гость' : guests < 5 ? 'гостя' : 'гостей'}
+              </span>
+              {availLoading && (
+                <span className="flex items-center gap-1.5 text-text-muted">
+                  <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-accent border-t-transparent inline-block" />
+                  Проверяем доступность...
+                </span>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={clearFilter}
+              className="flex items-center gap-1.5 rounded-full border border-bg-dark px-3 py-1 text-xs text-text-muted transition-colors hover:border-error/40 hover:text-error"
+            >
+              <FiX className="h-3.5 w-3.5" />
+              Сбросить фильтр
+            </button>
+          </div>
+        </section>
+      )}
+
       {/* ── INTRO ─────────────────────────────────────────────────────────── */}
+      {!hasFilter && (
       <section className="bg-white py-16">
         <SectionReveal className="mx-auto max-w-2xl px-6 text-center">
           <span className="mb-3 block text-xs font-medium uppercase tracking-[0.2em] text-accent">
@@ -99,6 +156,7 @@ export default function Rooms() {
           </p>
         </SectionReveal>
       </section>
+      )}
 
       {/* ── ROOM CARDS ────────────────────────────────────────────────────── */}
       <section className="bg-bg pb-24 pt-4">
@@ -115,9 +173,20 @@ export default function Rooms() {
                   room.room_images?.[0]?.url;
                 const amenities = Array.isArray(room.amenities) ? room.amenities : [];
 
+                const avail = availability[room.id];
+                const isAvailable      = !hasFilter || (avail?.available && avail?.enough_capacity);
+                const isBooked         = hasFilter && avail && !avail.available;
+                const notEnoughGuests  = hasFilter && avail && avail.available && !avail.enough_capacity;
+
+                const bookingParams = new URLSearchParams();
+                bookingParams.set('room', room.slug);
+                if (checkIn)  bookingParams.set('checkIn', checkIn);
+                if (checkOut) bookingParams.set('checkOut', checkOut);
+                if (guests)   bookingParams.set('guests', String(guests));
+
                 return (
                   <SectionReveal key={room.id} delay={idx * 0.08} className="h-full">
-                    <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-bg-dark bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg">
+                    <div className={`group flex h-full flex-col overflow-hidden rounded-2xl border bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg ${isBooked || notEnoughGuests ? 'border-bg-dark opacity-70' : 'border-bg-dark'}`}>
 
                       {/* Image */}
                       <div className="relative h-64 shrink-0 overflow-hidden">
@@ -132,10 +201,25 @@ export default function Rooms() {
                           <div className="h-full bg-bg-dark" />
                         )}
                         {/* Type badge */}
-                        <div className="absolute left-4 top-4">
+                        <div className="absolute left-4 top-4 flex flex-col gap-1.5">
                           <span className="rounded-full bg-primary/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-accent-warm backdrop-blur-sm">
                             {t(`rooms.types.${room.room_type}`, { defaultValue: room.room_type })}
                           </span>
+                          {hasFilter && !availLoading && (
+                            isBooked ? (
+                              <span className="rounded-full bg-error/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white backdrop-blur-sm">
+                                Занято
+                              </span>
+                            ) : notEnoughGuests ? (
+                              <span className="rounded-full bg-warning/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white backdrop-blur-sm">
+                                Мало мест
+                              </span>
+                            ) : avail ? (
+                              <span className="rounded-full bg-success/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white backdrop-blur-sm">
+                                Свободно
+                              </span>
+                            ) : null
+                          )}
                         </div>
                         {/* Price badge */}
                         <div className="absolute bottom-4 right-4">
@@ -189,13 +273,19 @@ export default function Rooms() {
 
                         {/* Actions — прижаты к низу */}
                         <div className="mt-auto flex flex-col gap-3 sm:flex-row">
-                          <Link
-                            to={`/booking?room=${room.slug}`}
-                            className="flex items-center justify-center gap-2 rounded-full bg-accent py-3 text-sm font-medium text-white transition-colors hover:bg-accent-warm sm:flex-1"
-                          >
-                            <FiCalendar className="h-4 w-4 shrink-0" />
-                            <StableText tKey="nav.booking" />
-                          </Link>
+                          {isBooked || notEnoughGuests ? (
+                            <span className="flex flex-1 items-center justify-center gap-2 rounded-full bg-bg-dark py-3 text-sm font-medium text-text-muted cursor-not-allowed">
+                              {isBooked ? 'Занято на эти даты' : 'Недостаточно мест'}
+                            </span>
+                          ) : (
+                            <Link
+                              to={`/booking?${bookingParams.toString()}`}
+                              className="flex items-center justify-center gap-2 rounded-full bg-accent py-3 text-sm font-medium text-white transition-colors hover:bg-accent-warm sm:flex-1"
+                            >
+                              <FiCalendar className="h-4 w-4 shrink-0" />
+                              <StableText tKey="nav.booking" />
+                            </Link>
+                          )}
                           <Link
                             to={`/rooms/${room.slug}`}
                             className="rounded-full border border-primary py-3 text-center text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white sm:flex-1"
