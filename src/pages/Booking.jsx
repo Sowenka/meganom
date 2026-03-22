@@ -311,7 +311,7 @@ export default function Booking() {
       </section>
 
       {/* ── CONTENT ───────────────────────────────────────────────────────── */}
-      <section className="bg-bg py-16">
+      <section className="overflow-x-hidden bg-bg py-16">
         <div className="mx-auto max-w-7xl px-6">
           <form onSubmit={handleSubmit(onSubmit, onError)} noValidate>
             <div className="grid gap-12 lg:grid-cols-[1fr_360px] lg:items-start">
@@ -331,7 +331,7 @@ export default function Booking() {
                     id="roomId"
                     {...register('roomId')}
                     className={cn(
-                      'rounded-lg border border-bg-dark bg-white px-4 py-2.5 text-text transition-colors',
+                      'w-full rounded-lg border border-bg-dark bg-white px-4 py-2.5 text-text transition-colors',
                       'focus:border-accent focus:outline-none',
                       errors.roomId && 'border-error',
                     )}

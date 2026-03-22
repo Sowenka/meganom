@@ -216,7 +216,7 @@ export default function Contacts() {
                   {...register('message')}
                 />
 
-                <Button type="submit" loading={isSubmitting} className="self-start">
+                <Button type="submit" loading={isSubmitting} className="self-center">
                   {isSubmitting ? t('contacts.form.sending') : t('contacts.form.submit')}
                 </Button>
               </form>

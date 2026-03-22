@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { StableText } from '@/components/ui';
 import { motion, useInView } from 'framer-motion';
 import { FiMapPin, FiStar, FiGrid, FiHome, FiUsers, FiMaximize } from 'react-icons/fi';
+import { useRooms } from '@/hooks/useRooms';
+import { formatPrice } from '@/lib/utils';
 
 function SectionReveal({ children, className, delay = 0 }) {
   const ref = useRef(null);
@@ -39,7 +41,8 @@ export default function About() {
   const territory = t('about.territory.items', { returnObjects: true });
   const services  = t('about.services.items',  { returnObjects: true });
   const nearby    = t('about.nearby.items',     { returnObjects: true });
-  const roomTypes = t('about.rooms.types',      { returnObjects: true });
+
+  const { data: rooms, isLoading: roomsLoading } = useRooms({ isActive: true });
 
   const sections = [
     { key: 'territory', items: territory },
@@ -98,7 +101,7 @@ export default function About() {
               </span>
             </div>
             <span className="whitespace-nowrap text-sm text-text-muted">
-              — {t('reviews.reviewCount')} ({t('reviews.source')})
+              {t('reviews.reviewCount')} ({t('reviews.source')})
             </span>
           </div>
         </SectionReveal>
@@ -173,22 +176,34 @@ export default function About() {
           </SectionReveal>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.isArray(roomTypes) && roomTypes.map((room, i) => (
-              <SectionReveal key={i} delay={i * 0.07}>
-                <div className="rounded-xl border border-white/10 bg-white/5 p-6 transition-colors hover:bg-white/10">
-                  <FiHome className="mb-4 h-5 w-5 text-accent" />
-                  <p className="mb-3 font-semibold text-white">{room.name}</p>
-                  <div className="flex gap-5 text-sm text-white/60">
-                    <span className="flex items-center gap-1.5">
-                      <FiMaximize className="h-3.5 w-3.5" /> {room.area}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <FiUsers className="h-3.5 w-3.5" /> {room.capacity}
-                    </span>
-                  </div>
-                </div>
-              </SectionReveal>
-            ))}
+            {roomsLoading
+              ? Array.from({ length: 3 }, (_, i) => (
+                  <div key={i} className="h-32 animate-pulse rounded-xl bg-white/10" />
+                ))
+              : rooms?.map((room, i) => (
+                  <SectionReveal key={room.id} delay={i * 0.07}>
+                    <Link
+                      to={`/rooms/${room.slug}`}
+                      className="block rounded-xl border border-white/10 bg-white/5 p-6 transition-colors hover:bg-white/10"
+                    >
+                      <FiHome className="mb-4 h-5 w-5 text-accent" />
+                      <p className="mb-1 font-semibold text-white">{room.title}</p>
+                      <p className="mb-3 text-sm font-medium text-accent">
+                        {t('rooms.from')} {formatPrice(room.price_per_night)} / {t('common.perNight')}
+                      </p>
+                      <div className="flex gap-5 text-sm text-white/60">
+                        <span className="flex items-center gap-1.5">
+                          <FiMaximize className="h-3.5 w-3.5" /> {room.area_sqm} м²
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <FiUsers className="h-3.5 w-3.5" />
+                          {t('rooms.guests', { count: room.capacity })}
+                        </span>
+                      </div>
+                    </Link>
+                  </SectionReveal>
+                ))
+            }
           </div>
 
           <p className="mt-10 text-center text-sm text-white/40">
