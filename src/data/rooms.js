@@ -2,7 +2,7 @@ const base = import.meta.env.BASE_URL;
 
 export const STATIC_ROOMS = [
   {
-    id: 'static-1',
+    id: 'c29cbb5b-894f-4858-92fb-2049cacfde04',
     slug: 'eco-standart',
     title: 'Эко-домик «Стандарт»',
     short_description: 'Уютный деревянный домик для двоих с видом на сад',
@@ -23,7 +23,7 @@ export const STATIC_ROOMS = [
     ],
   },
   {
-    id: 'static-2',
+    id: '2f3dade2-6a70-41d2-9ace-4f4fff593e7d',
     slug: 'eco-comfort',
     title: 'Эко-домик «Комфорт»',
     short_description: 'Просторный домик с отдельной спальней и верандой',
@@ -44,7 +44,7 @@ export const STATIC_ROOMS = [
     ],
   },
   {
-    id: 'static-3',
+    id: '717e3558-30e4-4bd6-bbf8-fd194ee10070',
     slug: 'eco-suite',
     title: 'Люкс «Панорама»',
     short_description: 'Двухуровневый домик с панорамным видом на море',
@@ -65,7 +65,7 @@ export const STATIC_ROOMS = [
     ],
   },
   {
-    id: 'static-4',
+    id: '27ef296b-8ede-4819-a262-a7d77d379353',
     slug: 'eco-family',
     title: 'Семейный домик «Делюкс»',
     short_description: 'Большой домик для семьи с детской зоной и садом',
