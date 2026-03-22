@@ -1,23 +1,26 @@
-import { supabase } from '@/lib/supabase';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export async function createBooking(data) {
-  if (!supabase) throw new Error('Supabase not configured');
-  const { data: booking, error } = await supabase
-    .from('bookings')
-    .insert(data)
-    .select()
-    .single();
-  if (error) throw error;
-  return booking;
+  if (!API_URL) {
+    // Dev / GitHub Pages — simulate success
+    await new Promise((r) => setTimeout(r, 800));
+    return { id: `booking-${Date.now()}`, ...data, status: 'pending' };
+  }
+  const res = await fetch(`${API_URL}/bookings.php`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Ошибка при создании бронирования');
+  }
+  return res.json();
 }
 
 export async function getUserBookings(userId) {
-  if (!supabase) return [];
-  const { data, error } = await supabase
-    .from('bookings')
-    .select('*, rooms(title, slug, room_images(url, is_cover))')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false });
-  if (error) throw error;
-  return data;
+  if (!API_URL) return [];
+  const res = await fetch(`${API_URL}/bookings.php?user_id=${encodeURIComponent(userId)}`);
+  if (!res.ok) return [];
+  return res.json();
 }

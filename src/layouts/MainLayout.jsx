@@ -2,6 +2,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { CookieBanner } from '@/components/CookieBanner';
+import { ScrollToTopButton } from '@/components/ui';
 
 export function MainLayout() {
   const location = useLocation();
@@ -15,6 +16,7 @@ export function MainLayout() {
       </main>
       <Footer />
       <CookieBanner />
+      <ScrollToTopButton />
     </div>
   );
 }

@@ -5,7 +5,8 @@
     "gallery": "Gallery",
     "about": "About",
     "contacts": "Contacts",
-    "booking": "Book Now"
+    "booking": "Book Now",
+    "faq": "FAQ"
   },
   "home": {
     "title": "Meganom Eco-house",
@@ -138,6 +139,7 @@
     "title": "Contacts",
     "subtitle": "Get in touch",
     "form": {
+      "title": "Write to us",
       "name": "Your name",
       "email": "Email",
       "phone": "Phone (optional)",
@@ -284,5 +286,270 @@
     "login": "Sign in",
     "openMenu": "Open menu",
     "closeMenu": "Close menu"
+  },
+  "legal": {
+    "heroTagline": "Legal documents",
+    "lastUpdated": "Last updated:",
+    "lastUpdatedDate": "March 21, 2026"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "linkToTerms": "Terms of Use →",
+    "sections": [
+      { "num": "01", "title": "General Provisions", "content": "This Privacy Policy defines the procedure for processing and protecting the personal data of users of the Meganom Eco-house website. The Policy is developed in accordance with Federal Law No. 152-FZ of 27.07.2006 «On Personal Data».\n\nBy using the website and providing your personal data, the User agrees to the terms of this Policy." },
+      { "num": "02", "title": "Data Controller", "content": "The data controller is Meganom Eco-house, located at: 28 Baikalskaya St., Mindalnoye, Sudak, Crimea. Contact email: info@meganom-hotel.ru." },
+      { "num": "03", "title": "Purposes of Data Processing", "items": ["Room booking and provision of hotel services", "Communication with the user to confirm bookings", "Processing payments and refunds", "Improving service quality and website performance", "Sending informational messages (with user consent)", "Compliance with applicable legislation"] },
+      { "num": "04", "title": "Categories of Data Processed", "items": ["Full name", "Contact phone number", "Email address", "Booking data (check-in/check-out dates, number of guests)", "Website usage data (cookies, IP address, browser data)"] },
+      { "num": "05", "title": "Rights of Data Subjects", "content": "To exercise your rights, please send a request to info@meganom-hotel.ru.", "items": ["Obtain information about the processing of your personal data", "Request correction, blocking or deletion of data", "Withdraw consent to personal data processing", "Lodge a complaint with the relevant supervisory authority"] },
+      { "num": "06", "title": "Use of Cookies", "content": "The website uses cookies to ensure correct operation, analytics and content personalisation. The User may disable cookies in their browser settings, but this may affect website functionality.", "items": ["Necessary — ensure basic website functionality", "Analytical — help understand how users interact with the website", "Marketing — used to show relevant advertising"] },
+      { "num": "07", "title": "Data Protection", "content": "The data controller takes necessary organisational and technical measures to protect personal data from unauthorised access, destruction, modification, blocking, copying and dissemination." },
+      { "num": "08", "title": "Policy Changes", "content": "The data controller reserves the right to make changes to this Policy. The current version is always available on this page." },
+      { "num": "09", "title": "Contact Information", "content": "For questions regarding personal data processing, please contact:", "items": ["Email: info@meganom-hotel.ru", "Phone: +7 (978) 123-45-67", "Address: 28 Baikalskaya St., Mindalnoye, Sudak, Crimea"] }
+    ]
+  },
+  "terms": {
+    "title": "Terms of Use",
+    "linkToPrivacy": "Privacy Policy →",
+    "sections": [
+      { "num": "01", "title": "General Provisions", "content": "These Terms of Use govern the relationship between Meganom Eco-house (hereinafter — the Administration) and the website user (hereinafter — the User).\n\nUse of the website constitutes the User's unconditional acceptance of these Terms. If the User disagrees, they must stop using the website." },
+      { "num": "02", "title": "Subject of the Agreement", "content": "The Administration provides the User with access to information about hotel services, the ability to book rooms online, and other services available on the website." },
+      { "num": "03", "title": "User Rights and Obligations", "content": "The User agrees to provide accurate data when booking and not to use the website for unlawful purposes.", "items": ["Access information about rooms and services", "Book rooms through the website", "Leave reviews about services received", "Contact customer support", "Not use the website for unlawful purposes", "Not take actions that disrupt the normal operation of the website"] },
+      { "num": "04", "title": "Administration Rights and Obligations", "items": ["Modify website content without prior notice", "Restrict access in case of violation of the Terms", "Ensure website operability", "Process personal data in accordance with the Privacy Policy", "Review User requests within a reasonable time"] },
+      { "num": "05", "title": "Booking and Payment", "content": "A booking is considered confirmed once the User receives a notification to the specified email address. The cost of accommodation is determined by the current rates published on the website.\n\nCancellation and refund conditions are governed by the rules in effect at the time the booking is made." },
+      { "num": "06", "title": "Intellectual Property", "content": "All website materials (texts, photographs, design, logos) are intellectual property of the Administration and are protected by applicable law. Use of materials without the Administration's written consent is prohibited." },
+      { "num": "07", "title": "Limitation of Liability", "content": "The Administration is not liable for temporary unavailability of the website due to technical reasons and does not guarantee uninterrupted operation of the website." },
+      { "num": "08", "title": "Dispute Resolution", "content": "All disputes and disagreements shall be resolved through negotiations. If no agreement can be reached, the dispute shall be referred to a court at the Administration's location in accordance with applicable law." },
+      { "num": "09", "title": "Contact Information", "content": "For questions related to these Terms, please contact:", "items": ["Email: info@meganom-hotel.ru", "Phone: +7 (978) 123-45-67", "Address: 28 Baikalskaya St., Mindalnoye, Sudak, Crimea"] }
+    ]
+  },
+  "logo": {
+    "letter": "M",
+    "tagline": "Eco house",
+    "name": "Meganom"
+  },
+  "footer": {
+    "tagline": "Stay updated",
+    "newsletter": "Special offers and news",
+    "emailPlaceholder": "Your email",
+    "subscribe": "Subscribe",
+    "subscribeSuccess": "Thank you! We'll be in touch soon.",
+    "subscribeError": "Failed to send. Please try again later.",
+    "brand": "Eco-houses near Cape Meganom. Tranquility, nature and the clean sea of southern Crimea.",
+    "navigation": "Navigation",
+    "contacts": "Contacts",
+    "workHours": "Daily, 08:00 — 22:00",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
+    "copyright": "Meganom Eco-house. All rights reserved."
+  },
+  "staticRooms": {
+    "eco-standart": {
+      "title": "Eco-house «Standard»",
+      "description": "Cozy wooden house for two with garden view",
+      "fullDescription": "A cozy eco-house made of natural wood for two guests. The light interior with wooden accents creates a genuine country retreat atmosphere. A spacious terrace with garden furniture is the perfect spot for morning coffee overlooking a beautiful garden. The house has everything you need for a comfortable stay: air conditioning, fridge, and high-speed Wi-Fi.",
+      "amenities": ["Wi-Fi", "Air conditioning", "Terrace", "Fridge"]
+    },
+    "eco-comfort": {
+      "title": "Eco-house «Comfort»",
+      "description": "Spacious house with separate bedroom and veranda",
+      "fullDescription": "A spacious house with a separate bedroom and large veranda — the ideal choice for couples and small groups. The mini-kitchen lets you cook your own meals on your own schedule. The open veranda with comfortable garden furniture is the best place for quiet evening gatherings surrounded by Crimean nature.",
+      "amenities": ["Wi-Fi", "Air conditioning", "Terrace", "Fridge", "Mini-kitchen"]
+    },
+    "eco-suite": {
+      "title": "Suite «Panorama»",
+      "description": "Two-level house with panoramic sea view",
+      "fullDescription": "A two-level house with breathtaking panoramic views of the sea and Cape Meganom. A full spacious kitchen, wide terrace with sun loungers, and a BBQ area create everything you need for an unforgettable stay. Accommodates up to 4 guests, each of whom will appreciate the magnificent Black Sea horizon right outside the window.",
+      "amenities": ["Wi-Fi", "Air conditioning", "View terrace", "Kitchen", "BBQ"]
+    },
+    "eco-family": {
+      "title": "Family «Deluxe»",
+      "description": "Large family house with children's area and garden",
+      "fullDescription": "A large family house with two sleeping areas, a children's bed, and a spacious full kitchen. A huge terrace with a BBQ area opens onto a cozy private garden — children will find their favourite play space here. The perfect solution for families with children who want space, privacy, and everything they need close at hand.",
+      "amenities": ["Wi-Fi", "Air conditioning", "Large terrace", "Full kitchen", "BBQ", "Children's bed"]
+    }
+  },
+  "roomDetail": {
+    "backToRooms": "All rooms",
+    "area": "Area",
+    "capacity": "Capacity",
+    "amenities": "Amenities",
+    "gallery": "Photos",
+    "bookingCard": {
+      "title": "Book this room",
+      "priceFrom": "from",
+      "cta": "Book now"
+    },
+    "notFound": "Room not found",
+    "notFoundText": "The requested room does not exist or has been removed."
+  },
+  "rooms": {
+    "heroSubtitle": "{{count}} accommodation types · natural wood eco-houses",
+    "introTagline": "Feel at home, enjoy Crimea",
+    "introText": "Each house is built from natural wood and set into the landscape near Cape Meganom. Choose the accommodation that suits your space and budget.",
+    "ctaTitle": "Didn't find the right option?",
+    "ctaText": "Contact us — we'll help you find accommodation that fits your preferences and budget.",
+    "ctaButton": "Contact us",
+    "types": {
+      "standard": "Standard",
+      "comfort": "Comfort",
+      "suite": "Suite",
+      "deluxe": "Deluxe",
+      "presidential": "Presidential"
+    },
+    "guests_one": "{{count}} guest",
+    "guests_other": "{{count}} guests"
+  },
+  "bookingPage": {
+    "heroTagline": "Online Booking",
+    "heroTitle": "Book a Room",
+    "formTitle": "Booking Details",
+    "guestDataTitle": "Your Details",
+    "selectRoom": "Choose a room",
+    "selectRoomPlaceholder": "— Select a room —",
+    "checkin": "Check-in date",
+    "checkout": "Check-out date",
+    "guests": "Number of guests",
+    "guestName": "Your name",
+    "guestNamePlaceholder": "John Smith",
+    "guestEmail": "Email",
+    "guestEmailPlaceholder": "john@mail.com",
+    "guestPhone": "Phone (optional)",
+    "specialRequests": "Special requests",
+    "specialRequestsPlaceholder": "Early / late check-in, dietary requirements…",
+    "summaryTitle": "Your order",
+    "nights_one": "{{count}} night",
+    "nights_other": "{{count}} nights",
+    "pricePerNight": "Price per night",
+    "total": "Total",
+    "submit": "Send request",
+    "submitting": "Sending…",
+    "successTitle": "Request received!",
+    "successText": "We will contact you shortly to confirm your booking.",
+    "successPhone": "Phone:",
+    "backToRooms": "Browse rooms",
+    "newBooking": "Make another request",
+    "helpText": "Need help? Call us:",
+    "noRoomSelected": "Select a room from the list",
+    "selectDateFirst": "Select check-in and check-out dates",
+    "capacity": "up to {{count}} guests"
+  },
+  "faq": {
+    "heroTagline": "Frequently Asked Questions",
+    "heroTitle": "FAQ",
+    "intro": "We've gathered answers to the most common questions from our guests. Didn't find what you need? Call us — we're always happy to help.",
+    "ctaTitle": "Still have questions?",
+    "ctaText": "Contact us and we'll get back to you within a few hours.",
+    "ctaButton": "Contact us",
+    "categories": [
+      {
+        "title": "Booking",
+        "items": [
+          {
+            "q": "How do I book a room?",
+            "a": "Choose a room and dates on the booking page, fill in your contact details and submit the request. Our manager will contact you within 2 hours to confirm. You can also call us directly: +7 (978) 123-45-67.",
+            "links": [{"word": "booking page", "to": "/booking"}, {"word": "+7 (978) 123-45-67", "to": "tel:+79781234567"}]
+          },
+          {
+            "q": "Is a deposit required?",
+            "a": "A deposit of 30% of the total stay is required after booking confirmation. The remaining amount is paid upon arrival by cash or card."
+          },
+          {
+            "q": "Can I cancel my booking?",
+            "a": "Cancellations more than 7 days before check-in are free of charge and the deposit is fully refunded. Cancellations within 7 days are non-refundable. Cancellations within 48 hours incur a charge of the first night's rate."
+          },
+          {
+            "q": "What payment methods do you accept?",
+            "a": "We accept cash and bank cards (Mir, Visa, Mastercard) upon arrival. The deposit can be paid by bank transfer — we'll send the details after booking confirmation."
+          }
+        ]
+      },
+      {
+        "title": "Check-in & Stay",
+        "items": [
+          {
+            "q": "What are the check-in and check-out times?",
+            "a": "Standard check-in is from 14:00, check-out by 12:00. Early check-in or late check-out can be arranged in advance subject to availability — please let us know when booking."
+          },
+          {
+            "q": "Is there parking on site?",
+            "a": "Yes, there is a secure, monitored car park with CCTV on the grounds. Parking is free for all guests."
+          },
+          {
+            "q": "Is airport or station transfer available?",
+            "a": "We offer free shuttle transfers to the Meganom beaches on a daily schedule. Transfers from Simferopol Airport or Feodosia railway station can be arranged for an additional fee — enquire when booking.",
+            "links": [{"word": "when booking", "to": "/booking"}]
+          },
+          {
+            "q": "What is the minimum stay?",
+            "a": "The minimum stay is 2 nights. During peak season (July–August) the minimum stay is 3 nights."
+          }
+        ]
+      },
+      {
+        "title": "Amenities & Dining",
+        "items": [
+          {
+            "q": "Do the cabins have a kitchen?",
+            "a": "Comfort, Suite and Deluxe cabins have a kitchenette with fridge, electric hob, kettle and cookware. Standard cabins have a fridge. All guests have access to the shared BBQ kitchen area on the grounds."
+          },
+          {
+            "q": "Is Wi-Fi available?",
+            "a": "Yes, free high-speed Wi-Fi is available in all cabins and throughout the grounds — fast enough for remote work and video calls."
+          },
+          {
+            "q": "Is there air conditioning?",
+            "a": "All cabins have air conditioning. This is especially important during the hot Crimean summer."
+          },
+          {
+            "q": "Is there a sauna or banya?",
+            "a": "Yes! Our traditional Russian wood-fired banya is one of the highlights of the complex. It's available by reservation; birch and oak whisks are provided. Ask for pricing when booking."
+          },
+          {
+            "q": "Is there a swimming pool?",
+            "a": "There is an outdoor pool open during the summer season from May to October. Access is free for all guests."
+          }
+        ]
+      },
+      {
+        "title": "Location & Getting Here",
+        "items": [
+          {
+            "q": "How far is it to the sea?",
+            "a": "The complex is about 5–7 minutes by car from the beach at Cape Meganom. Our free shuttle to the beach runs several times a day."
+          },
+          {
+            "q": "How do I get here from Simferopol?",
+            "a": "By car: 1 hour 40 minutes via Belogorsk to Sudak, then 10 minutes to Mindalnoye village. By bus: take the Simferopol–Sudak route, then a taxi (10–15 min). We'll send the exact address and GPS coordinates after booking confirmation.",
+            "links": [{"word": "booking confirmation", "to": "/booking"}]
+          },
+          {
+            "q": "Are there shops and cafes nearby?",
+            "a": "Bogatovka village, 2 km away, has grocery shops. Sudak (15 minutes by car) offers full city amenities: markets, restaurants, pharmacies and ATMs."
+          }
+        ]
+      },
+      {
+        "title": "Children, Pets & House Rules",
+        "items": [
+          {
+            "q": "Can we bring children?",
+            "a": "Absolutely! We welcome families with children of all ages. A baby cot is available on request at no extra charge. There's a play area on the grounds, and our shuttle runs to family-friendly beaches in Sudak."
+          },
+          {
+            "q": "Do you accept pets?",
+            "a": "Yes, we welcome guests with pets up to 10 kg. Please let us know when booking. A refundable cleaning deposit of 500 roubles applies.",
+            "links": [{"word": "when booking", "to": "/booking"}]
+          },
+          {
+            "q": "Is smoking allowed?",
+            "a": "Smoking is permitted only in designated outdoor areas. Smoking inside cabins and enclosed spaces is strictly prohibited."
+          },
+          {
+            "q": "Are you open in winter?",
+            "a": "The main season runs from April to October. From November to March some cabins operate in 'quiet season' mode — banya, nature and peaceful relaxation away from the summer crowds. Please check availability when booking off-season."
+          }
+        ]
+      }
+    ]
   }
 }

@@ -31,6 +31,7 @@ const Contacts = lazy(() => import('@/pages/Contacts'));
 const Gallery = lazy(() => import('@/pages/Gallery'));
 const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy'));
 const Terms = lazy(() => import('@/pages/Terms'));
+const FAQ = lazy(() => import('@/pages/FAQ'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 const Profile = lazy(() => import('@/pages/Profile'));
 
@@ -73,6 +74,7 @@ export default function App() {
           <Route path="about" element={<About />} />
           <Route path="contacts" element={<Contacts />} />
           <Route path="gallery" element={<Gallery />} />
+          <Route path="faq" element={<FAQ />} />
           <Route path="privacy" element={<PrivacyPolicy />} />
           <Route path="terms" element={<Terms />} />
           <Route path="profile" element={<Profile />} />

@@ -1,85 +1,16 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion, useInView } from 'framer-motion';
+import PropTypes from 'prop-types';
 
-const sections = [
-  {
-    num: '01',
-    title: 'Общие положения',
-    content: `Настоящая Политика конфиденциальности определяет порядок обработки и защиты персональных данных пользователей сайта Меганом Эко-дом. Политика разработана в соответствии с Федеральным законом от 27.07.2006 № 152-ФЗ «О персональных данных».
-
-Используя сайт и предоставляя свои персональные данные, Пользователь выражает согласие с условиями настоящей Политики.`,
-  },
-  {
-    num: '02',
-    title: 'Оператор персональных данных',
-    content: `Оператором персональных данных является Меганом Эко-дом, расположенный по адресу: Байкальская ул., 28, с. Миндальное, Судакский г.о., Крым. Контактный e-mail: info@meganom-hotel.ru.`,
-  },
-  {
-    num: '03',
-    title: 'Цели обработки персональных данных',
-    items: [
-      'Бронирование номеров и оказание гостиничных услуг',
-      'Связь с пользователем для подтверждения бронирования',
-      'Обработка платежей и возвратов',
-      'Улучшение качества обслуживания и работы сайта',
-      'Направление информационных сообщений (с согласия пользователя)',
-      'Исполнение требований законодательства РФ',
-    ],
-  },
-  {
-    num: '04',
-    title: 'Состав обрабатываемых данных',
-    items: [
-      'Фамилия, имя, отчество',
-      'Контактный телефон',
-      'Адрес электронной почты',
-      'Данные бронирования (даты заезда/выезда, количество гостей)',
-      'Данные об использовании сайта (cookies, IP-адрес, данные браузера)',
-    ],
-  },
-  {
-    num: '05',
-    title: 'Права субъекта персональных данных',
-    content: `Для реализации своих прав Пользователь может направить запрос на адрес info@meganom-hotel.ru.`,
-    items: [
-      'Получить информацию об обработке своих персональных данных',
-      'Требовать уточнения, блокирования или уничтожения данных',
-      'Отозвать согласие на обработку персональных данных',
-      'Обжаловать действия Оператора в Роскомнадзор',
-    ],
-  },
-  {
-    num: '06',
-    title: 'Использование файлов cookie',
-    content: `Сайт использует файлы cookie для обеспечения корректной работы, аналитики и персонализации контента. Пользователь может отключить cookie в настройках браузера, однако это может повлиять на функциональность сайта.`,
-    items: [
-      'Необходимые — обеспечивают базовую функциональность сайта',
-      'Аналитические — помогают понять, как пользователи взаимодействуют с сайтом',
-      'Маркетинговые — используются для показа релевантной рекламы',
-    ],
-  },
-  {
-    num: '07',
-    title: 'Защита персональных данных',
-    content: `Оператор принимает необходимые организационные и технические меры для защиты персональных данных от неправомерного доступа, уничтожения, изменения, блокирования, копирования и распространения.`,
-  },
-  {
-    num: '08',
-    title: 'Изменение Политики',
-    content: `Оператор оставляет за собой право вносить изменения в настоящую Политику. Актуальная версия всегда доступна на данной странице.`,
-  },
-  {
-    num: '09',
-    title: 'Контактная информация',
-    content: `По вопросам обработки персональных данных обращайтесь:`,
-    items: [
-      'E-mail: info@meganom-hotel.ru',
-      'Телефон: +7 (978) 123-45-67',
-      'Адрес: Байкальская ул., 28, с. Миндальное, Судакский г.о., Крым',
-    ],
-  },
-];
+PolicySection.propTypes = {
+  num: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  content: PropTypes.string,
+  items: PropTypes.arrayOf(PropTypes.string),
+  index: PropTypes.number.isRequired,
+};
 
 function PolicySection({ num, title, content, items, index }) {
   const ref = useRef(null);
@@ -117,16 +48,20 @@ function PolicySection({ num, title, content, items, index }) {
 }
 
 export default function PrivacyPolicy() {
+  const { t } = useTranslation();
+
   useEffect(() => {
-    document.title = 'Политика конфиденциальности — Меганом Эко-дом';
-  }, []);
+    document.title = `${t('privacy.title')} — Меганом Эко-дом`;
+  }, [t]);
+
+  const sections = t('privacy.sections', { returnObjects: true });
 
   return (
     <>
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
       <section className="relative flex h-[40vh] items-center justify-center overflow-hidden">
         <img
-          src={`${import.meta.env.BASE_URL}gallery/075.webp`}
+          src={`${import.meta.env.BASE_URL}gallery/024.webp`}
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
           loading="eager"
@@ -139,7 +74,7 @@ export default function PrivacyPolicy() {
             transition={{ duration: 0.5 }}
             className="mb-4 inline-block text-xs font-medium uppercase tracking-[0.2em] text-accent-warm"
           >
-            Правовые документы
+            {t('legal.heroTagline')}
           </motion.span>
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
@@ -147,7 +82,7 @@ export default function PrivacyPolicy() {
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="font-serif text-2xl font-bold italic text-white sm:text-3xl md:text-5xl"
           >
-            Политика конфиденциальности
+            {t('privacy.title')}
           </motion.h1>
         </div>
       </section>
@@ -159,13 +94,13 @@ export default function PrivacyPolicy() {
           {/* Meta */}
           <div className="mb-12 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-text-muted">
-              Дата последнего обновления: <span className="text-text">21 марта 2026 г.</span>
+              {t('legal.lastUpdated')} <span className="text-text">{t('legal.lastUpdatedDate')}</span>
             </p>
             <Link
               to="/terms"
               className="text-sm text-accent underline-offset-4 hover:underline"
             >
-              Пользовательское соглашение →
+              {t('privacy.linkToTerms')}
             </Link>
           </div>
 

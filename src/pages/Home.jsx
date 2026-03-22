@@ -8,7 +8,7 @@ import {
 } from 'react-icons/fi';
 import { useRooms } from '@/hooks/useRooms';
 import { formatPrice } from '@/lib/utils';
-import { ROOM_TYPES } from '@/lib/constants';
+import { StableText } from '@/components/ui';
 
 // ─── useCountUp ──────────────────────────────────────────────────────────────
 function useCountUp(target, duration = 1400, shouldStart = false) {
@@ -183,7 +183,7 @@ export default function Home() {
                 to="/rooms"
                 className="inline-flex items-center gap-2 rounded-full border border-white px-8 py-3 text-sm font-medium uppercase tracking-widest text-white transition-all duration-300 hover:bg-white hover:text-primary"
               >
-                {t('home.hero.cta')}
+                <StableText tKey="home.hero.cta" />
               </Link>
             </motion.div>
           </motion.div>
@@ -268,7 +268,7 @@ export default function Home() {
                     <Icon className="h-4 w-4 text-accent" />
                   </div>
                   <span className="text-sm font-medium text-text">
-                    {t(`home.activities.items.${key}`)}
+                    <StableText tKey={`home.activities.items.${key}`} />
                   </span>
                 </motion.div>
               ))}
@@ -278,7 +278,7 @@ export default function Home() {
               to="/about"
               className="mt-2 inline-flex w-fit items-center gap-2 rounded-full border border-primary px-8 py-3 text-sm font-medium uppercase tracking-widest text-primary transition-all duration-300 hover:bg-primary hover:text-white"
             >
-              {t('home.activities.cta')}
+              <StableText tKey="home.activities.cta" />
             </Link>
           </SectionReveal>
         </div>
@@ -351,9 +351,9 @@ export default function Home() {
                       </div>
                       <div className="p-5">
                         <p className="mb-1 text-xs uppercase tracking-widest text-accent">
-                          {ROOM_TYPES[room.room_type] ?? room.room_type}
+                          {t(`rooms.types.${room.room_type}`, { defaultValue: room.room_type })}
                         </p>
-                        <h3 className="mb-3 font-serif text-xl font-bold text-primary">
+                        <h3 className="mb-3 min-h-[3.5rem] font-serif text-xl font-bold text-primary">
                           {room.title}
                         </h3>
                         <p className="mb-4 text-sm font-medium text-text-muted">
@@ -393,6 +393,12 @@ export default function Home() {
             >
               &ldquo;
             </span>
+            <span
+              aria-hidden="true"
+              className="absolute -bottom-8 right-0 select-none font-serif text-9xl leading-none text-accent/20"
+            >
+              &rdquo;
+            </span>
             <AnimatePresence mode="wait">
               {Array.isArray(reviews) && reviews[activeReview] && (
                 <motion.div
@@ -406,7 +412,7 @@ export default function Home() {
                     {reviews[activeReview].text}
                   </p>
                   <p className="mt-6 text-xs uppercase tracking-[0.2em] text-text-muted">
-                    — {reviews[activeReview].author}, {reviews[activeReview].date}
+                    {reviews[activeReview].author}, {reviews[activeReview].date}
                   </p>
                 </motion.div>
               )}
@@ -512,7 +518,7 @@ export default function Home() {
                 onClick={handleCheckAvailability}
                 className="shrink-0 rounded-full bg-accent px-8 py-3.5 text-sm font-medium uppercase tracking-widest text-white transition-colors hover:bg-accent-warm"
               >
-                {t('home.booking.cta')}
+                <StableText tKey="home.booking.cta" />
               </button>
             </div>
           </SectionReveal>

@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { StableText } from '@/components/ui';
 import { motion, useInView } from 'framer-motion';
 import { FiMapPin, FiStar, FiGrid, FiHome, FiUsers, FiMaximize } from 'react-icons/fi';
 
@@ -212,7 +213,7 @@ export default function About() {
             to="/booking"
             className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-3 font-medium text-white transition-colors hover:bg-accent-warm"
           >
-            {t('nav.booking')}
+            <StableText tKey="nav.booking" />
           </Link>
         </SectionReveal>
       </section>

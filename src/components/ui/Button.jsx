@@ -1,5 +1,23 @@
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
+
+/**
+ * StableText — keeps button width equal to RU text length regardless of active language.
+ * Uses CSS grid stacking: invisible RU spacer + visible current-language text in same cell.
+ */
+export function StableText({ tKey }) {
+  const { t, i18n } = useTranslation();
+  const ruText = i18n.getFixedT('ru')(tKey);
+  return (
+    <span className="inline-grid justify-items-center">
+      <span className="invisible col-start-1 row-start-1 select-none" aria-hidden>{ruText}</span>
+      <span className="col-start-1 row-start-1">{t(tKey)}</span>
+    </span>
+  );
+}
+
+StableText.propTypes = { tKey: PropTypes.string.isRequired };
 
 const variants = {
   primary:

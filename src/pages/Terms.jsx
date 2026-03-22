@@ -1,77 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion, useInView } from 'framer-motion';
-
-const sections = [
-  {
-    num: '01',
-    title: 'Общие положения',
-    content: `Настоящее Пользовательское соглашение регулирует отношения между Меганом Эко-дом (далее — Администрация) и пользователем сайта (далее — Пользователь).
-
-Использование сайта означает безоговорочное принятие Пользователем условий настоящего Соглашения. В случае несогласия Пользователь должен прекратить использование сайта.`,
-  },
-  {
-    num: '02',
-    title: 'Предмет Соглашения',
-    content: `Администрация предоставляет Пользователю доступ к информации о гостиничных услугах, возможность онлайн-бронирования номеров и иным сервисам, доступным на сайте.`,
-  },
-  {
-    num: '03',
-    title: 'Права и обязанности Пользователя',
-    content: `Пользователь обязуется предоставлять достоверные данные при бронировании и не использовать сайт в противоправных целях.`,
-    items: [
-      'Получать информацию о номерах и услугах',
-      'Осуществлять бронирование номеров через сайт',
-      'Оставлять отзывы о предоставленных услугах',
-      'Обращаться в службу поддержки',
-      'Не использовать сайт в противоправных целях',
-      'Не предпринимать действий, нарушающих нормальную работу сайта',
-    ],
-  },
-  {
-    num: '04',
-    title: 'Права и обязанности Администрации',
-    items: [
-      'Изменять содержание сайта без предварительного уведомления',
-      'Ограничивать доступ в случае нарушения условий Соглашения',
-      'Обеспечивать работоспособность сайта',
-      'Обрабатывать персональные данные в соответствии с Политикой конфиденциальности',
-      'Рассматривать обращения Пользователей в разумные сроки',
-    ],
-  },
-  {
-    num: '05',
-    title: 'Бронирование и оплата',
-    content: `Бронирование считается подтверждённым после получения Пользователем уведомления на указанный адрес электронной почты. Стоимость проживания определяется действующими тарифами, опубликованными на сайте.
-
-Условия отмены бронирования и возврата средств определяются правилами, действующими на момент совершения бронирования.`,
-  },
-  {
-    num: '06',
-    title: 'Интеллектуальная собственность',
-    content: `Все материалы сайта (тексты, фотографии, дизайн, логотипы) являются объектами интеллектуальной собственности Администрации и защищены законодательством РФ. Использование материалов без письменного согласия Администрации запрещено.`,
-  },
-  {
-    num: '07',
-    title: 'Ограничение ответственности',
-    content: `Администрация не несёт ответственности за временную недоступность сайта, вызванную техническими причинами, и не гарантирует бесперебойную работу сайта.`,
-  },
-  {
-    num: '08',
-    title: 'Разрешение споров',
-    content: `Все споры и разногласия разрешаются путём переговоров. В случае невозможности достижения согласия спор передаётся на рассмотрение в суд по месту нахождения Администрации в соответствии с законодательством Российской Федерации.`,
-  },
-  {
-    num: '09',
-    title: 'Контактная информация',
-    content: `По вопросам, связанным с настоящим Соглашением, обращайтесь:`,
-    items: [
-      'E-mail: info@meganom-hotel.ru',
-      'Телефон: +7 (978) 123-45-67',
-      'Адрес: Байкальская ул., 28, с. Миндальное, Судакский г.о., Крым',
-    ],
-  },
-];
+import PropTypes from 'prop-types';
 
 function PolicySection({ num, title, content, items, index }) {
   const ref = useRef(null);
@@ -108,17 +39,29 @@ function PolicySection({ num, title, content, items, index }) {
   );
 }
 
+PolicySection.propTypes = {
+  num: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  content: PropTypes.string,
+  items: PropTypes.arrayOf(PropTypes.string),
+  index: PropTypes.number.isRequired,
+};
+
 export default function Terms() {
+  const { t } = useTranslation();
+
   useEffect(() => {
-    document.title = 'Пользовательское соглашение — Меганом Эко-дом';
-  }, []);
+    document.title = `${t('terms.title')} — Меганом Эко-дом`;
+  }, [t]);
+
+  const sections = t('terms.sections', { returnObjects: true });
 
   return (
     <>
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
       <section className="relative flex h-[40vh] items-center justify-center overflow-hidden">
         <img
-          src={`${import.meta.env.BASE_URL}gallery/001.webp`}
+          src={`${import.meta.env.BASE_URL}gallery/026.webp`}
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
           loading="eager"
@@ -131,7 +74,7 @@ export default function Terms() {
             transition={{ duration: 0.5 }}
             className="mb-4 inline-block text-xs font-medium uppercase tracking-[0.2em] text-accent-warm"
           >
-            Правовые документы
+            {t('legal.heroTagline')}
           </motion.span>
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
@@ -139,7 +82,7 @@ export default function Terms() {
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="font-serif text-2xl font-bold italic text-white sm:text-3xl md:text-5xl"
           >
-            Пользовательское соглашение
+            {t('terms.title')}
           </motion.h1>
         </div>
       </section>
@@ -151,13 +94,13 @@ export default function Terms() {
           {/* Meta */}
           <div className="mb-12 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-text-muted">
-              Дата последнего обновления: <span className="text-text">21 марта 2026 г.</span>
+              {t('legal.lastUpdated')} <span className="text-text">{t('legal.lastUpdatedDate')}</span>
             </p>
             <Link
               to="/privacy"
               className="text-sm text-accent underline-offset-4 hover:underline"
             >
-              Политика конфиденциальности →
+              {t('terms.linkToPrivacy')}
             </Link>
           </div>
 

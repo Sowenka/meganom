@@ -159,7 +159,7 @@ export default function Contacts() {
           <SectionReveal delay={0.15} className="flex flex-col gap-6 lg:col-span-3">
             <div className="rounded-2xl border border-bg-dark bg-white p-8 shadow-sm">
               <h3 className="mb-6 font-serif text-2xl font-bold text-primary">
-                Написать нам
+                {t('contacts.form.title')}
               </h3>
 
               <form

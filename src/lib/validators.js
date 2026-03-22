@@ -1,24 +1,29 @@
 import { z } from 'zod';
 
-export const bookingSchema = z.object({
-  roomId: z.string({ required_error: 'Выберите номер' }).uuid('Некорректный номер'),
-  checkIn: z.string({ required_error: 'Выберите дату заезда' }).date('Некорректная дата'),
-  checkOut: z.string({ required_error: 'Выберите дату выезда' }).date('Некорректная дата'),
-  guestsCount: z
-    .number({ required_error: 'Укажите количество гостей' })
-    .int()
-    .min(1, 'Минимум 1 гость')
-    .max(10, 'Максимум 10 гостей'),
-  guestName: z
-    .string({ required_error: 'Введите ваше имя' })
-    .min(2, 'Имя должно содержать минимум 2 символа')
-    .max(100, 'Имя слишком длинное'),
-  guestEmail: z
-    .string({ required_error: 'Введите email' })
-    .email('Введите корректный email'),
-  guestPhone: z.string().optional(),
-  specialRequests: z.string().max(500, 'Максимум 500 символов').optional(),
-});
+export const bookingSchema = z
+  .object({
+    roomId: z.string({ required_error: 'Выберите номер' }).min(1, 'Выберите номер'),
+    checkIn: z.string({ required_error: 'Выберите дату заезда' }).date('Некорректная дата'),
+    checkOut: z.string({ required_error: 'Выберите дату выезда' }).date('Некорректная дата'),
+    guestsCount: z
+      .number({ required_error: 'Укажите количество гостей' })
+      .int()
+      .min(1, 'Минимум 1 гость')
+      .max(10, 'Максимум 10 гостей'),
+    guestName: z
+      .string({ required_error: 'Введите ваше имя' })
+      .min(2, 'Имя должно содержать минимум 2 символа')
+      .max(100, 'Имя слишком длинное'),
+    guestEmail: z
+      .string({ required_error: 'Введите email' })
+      .email('Введите корректный email'),
+    guestPhone: z.string().optional(),
+    specialRequests: z.string().max(500, 'Максимум 500 символов').optional(),
+  })
+  .refine(
+    (data) => !data.checkIn || !data.checkOut || data.checkOut > data.checkIn,
+    { message: 'Дата выезда должна быть позже даты заезда', path: ['checkOut'] },
+  );
 
 export const reviewSchema = z.object({
   rating: z

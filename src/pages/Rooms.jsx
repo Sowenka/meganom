@@ -1,11 +1,11 @@
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { StableText } from '@/components/ui';
 import { motion, useInView } from 'framer-motion';
 import { FiUsers, FiMaximize, FiCheck, FiCalendar } from 'react-icons/fi';
 import { useRooms } from '@/hooks/useRooms';
 import { formatPrice } from '@/lib/utils';
-import { ROOM_TYPES } from '@/lib/constants';
 
 function SectionReveal({ children, className, delay = 0 }) {
   const ref = useRef(null);
@@ -64,7 +64,7 @@ export default function Rooms() {
             transition={{ duration: 0.5 }}
             className="mb-4 inline-block text-xs font-medium uppercase tracking-[0.2em] text-accent-warm"
           >
-            Варианты размещения
+            {t('home.rooms.tagline')}
           </motion.span>
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
@@ -72,7 +72,7 @@ export default function Rooms() {
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="font-serif text-5xl font-bold italic text-white md:text-6xl"
           >
-            Наши номера
+            {t('home.rooms.title')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
@@ -80,7 +80,7 @@ export default function Rooms() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="mt-3 text-sm text-white/60"
           >
-            {rooms?.length ?? 4} вида размещения · эко-домики из натурального дерева
+            {t('rooms.heroSubtitle', { count: rooms?.length ?? 4 })}
           </motion.p>
         </div>
       </section>
@@ -92,11 +92,10 @@ export default function Rooms() {
             {t('home.welcome.tagline')}
           </span>
           <h2 className="mb-4 font-serif text-3xl font-bold text-primary">
-            Уютно как дома, красиво как в Крыму
+            {t('rooms.introTagline')}
           </h2>
           <p className="text-base leading-relaxed text-text-muted">
-            Каждый домик построен из натурального дерева и вписан в ландшафт у мыса Меганом.
-            Выберите размещение, которое подходит вам по площади и бюджету.
+            {t('rooms.introText')}
           </p>
         </SectionReveal>
       </section>
@@ -135,21 +134,21 @@ export default function Rooms() {
                         {/* Type badge */}
                         <div className="absolute left-4 top-4">
                           <span className="rounded-full bg-primary/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-accent-warm backdrop-blur-sm">
-                            {ROOM_TYPES[room.room_type] ?? room.room_type}
+                            {t(`rooms.types.${room.room_type}`, { defaultValue: room.room_type })}
                           </span>
                         </div>
                         {/* Price badge */}
                         <div className="absolute bottom-4 right-4">
                           <span className="rounded-full bg-white/95 px-4 py-1.5 text-sm font-bold text-primary shadow-md backdrop-blur-sm">
                             {formatPrice(room.price_per_night)}
-                            <span className="ml-1 text-xs font-normal text-text-muted">/ ночь</span>
+                            <span className="ml-1 text-xs font-normal text-text-muted">/ {t('common.perNight')}</span>
                           </span>
                         </div>
                       </div>
 
                       {/* Content */}
                       <div className="flex flex-1 flex-col p-6">
-                        <h2 className="mb-2 font-serif text-2xl font-bold text-primary">
+                        <h2 className="mb-2 min-h-[4rem] font-serif text-2xl font-bold text-primary">
                           {room.title}
                         </h2>
                         <p className="mb-5 text-base leading-relaxed text-text-muted">
@@ -160,7 +159,7 @@ export default function Rooms() {
                         <div className="mb-5 flex items-center gap-6 border-b border-bg-dark pb-5 text-base text-text-muted">
                           <span className="flex items-center gap-2">
                             <FiUsers className="h-4 w-4 text-accent" />
-                            {room.capacity} {room.capacity === 1 ? 'гость' : room.capacity < 5 ? 'гостя' : 'гостей'}
+                            {t('rooms.guests', { count: room.capacity })}
                           </span>
                           <span className="flex items-center gap-2">
                             <FiMaximize className="h-4 w-4 text-accent" />
@@ -195,13 +194,13 @@ export default function Rooms() {
                             className="flex items-center justify-center gap-2 rounded-full bg-accent py-3 text-sm font-medium text-white transition-colors hover:bg-accent-warm sm:flex-1"
                           >
                             <FiCalendar className="h-4 w-4 shrink-0" />
-                            Забронировать
+                            <StableText tKey="nav.booking" />
                           </Link>
                           <Link
                             to={`/rooms/${room.slug}`}
                             className="rounded-full border border-primary py-3 text-center text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white sm:flex-1"
                           >
-                            Подробнее
+                            <StableText tKey="home.rooms.details" />
                           </Link>
                         </div>
                       </div>
@@ -221,16 +220,16 @@ export default function Rooms() {
             {t('home.booking.tagline')}
           </span>
           <h2 className="mb-4 font-serif text-4xl font-bold text-white">
-            Не нашли подходящий вариант?
+            {t('rooms.ctaTitle')}
           </h2>
           <p className="mb-8 text-lg text-white/60">
-            Свяжитесь с нами — поможем подобрать размещение под ваши пожелания и бюджет.
+            {t('rooms.ctaText')}
           </p>
           <Link
             to="/contacts"
             className="inline-flex items-center gap-2 rounded-full border border-white/60 px-8 py-3 font-medium text-white transition-colors hover:bg-white hover:text-primary"
           >
-            Связаться с нами
+            <StableText tKey="rooms.ctaButton" />
           </Link>
         </SectionReveal>
       </section>

@@ -20,7 +20,7 @@ export async function getRooms({ type, isActive = true } = {}) {
 }
 
 export async function getRoomBySlug(slug) {
-  if (!supabase) return null;
+  if (!supabase) return STATIC_ROOMS.find((r) => r.slug === slug) ?? null;
   const { data, error } = await supabase
     .from('rooms')
     .select('*, room_images(*)')

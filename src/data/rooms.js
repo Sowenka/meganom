@@ -15,8 +15,11 @@ export const STATIC_ROOMS = [
     sort_order: 1,
     amenities: ['Wi-Fi', 'Кондиционер', 'Терраса', 'Холодильник'],
     room_images: [
-      { id: 'i1', url: `${base}gallery/010.webp`, is_cover: true, sort_order: 0 },
+      { id: 'i1', url: `${base}gallery/010.webp`, is_cover: true,  sort_order: 0 },
       { id: 'i2', url: `${base}gallery/119.webp`, is_cover: false, sort_order: 1 },
+      { id: 'i3', url: `${base}gallery/008.webp`, is_cover: false, sort_order: 2 },
+      { id: 'i4', url: `${base}gallery/090.webp`, is_cover: false, sort_order: 3 },
+      { id: 'i5', url: `${base}gallery/062.webp`, is_cover: false, sort_order: 4 },
     ],
   },
   {
@@ -33,8 +36,11 @@ export const STATIC_ROOMS = [
     sort_order: 2,
     amenities: ['Wi-Fi', 'Кондиционер', 'Терраса', 'Холодильник', 'Мини-кухня'],
     room_images: [
-      { id: 'i3', url: `${base}gallery/090.webp`, is_cover: true, sort_order: 0 },
-      { id: 'i4', url: `${base}gallery/011.webp`, is_cover: false, sort_order: 1 },
+      { id: 'i6',  url: `${base}gallery/090.webp`, is_cover: true,  sort_order: 0 },
+      { id: 'i7',  url: `${base}gallery/011.webp`, is_cover: false, sort_order: 1 },
+      { id: 'i8',  url: `${base}gallery/119.webp`, is_cover: false, sort_order: 2 },
+      { id: 'i9',  url: `${base}gallery/010.webp`, is_cover: false, sort_order: 3 },
+      { id: 'i10', url: `${base}gallery/117.webp`, is_cover: false, sort_order: 4 },
     ],
   },
   {
@@ -51,8 +57,11 @@ export const STATIC_ROOMS = [
     sort_order: 3,
     amenities: ['Wi-Fi', 'Кондиционер', 'Терраса с видом', 'Кухня', 'Барбекю'],
     room_images: [
-      { id: 'i5', url: `${base}gallery/011.webp`, is_cover: true, sort_order: 0 },
-      { id: 'i6', url: `${base}gallery/062.webp`, is_cover: false, sort_order: 1 },
+      { id: 'i11', url: `${base}gallery/011.webp`, is_cover: true,  sort_order: 0 },
+      { id: 'i12', url: `${base}gallery/062.webp`, is_cover: false, sort_order: 1 },
+      { id: 'i13', url: `${base}gallery/076.webp`, is_cover: false, sort_order: 2 },
+      { id: 'i14', url: `${base}gallery/090.webp`, is_cover: false, sort_order: 3 },
+      { id: 'i15', url: `${base}gallery/008.webp`, is_cover: false, sort_order: 4 },
     ],
   },
   {
@@ -69,8 +78,11 @@ export const STATIC_ROOMS = [
     sort_order: 4,
     amenities: ['Wi-Fi', 'Кондиционер', 'Большая терраса', 'Полная кухня', 'Барбекю', 'Детская кровать'],
     room_images: [
-      { id: 'i7', url: `${base}gallery/062.webp`, is_cover: true, sort_order: 0 },
-      { id: 'i8', url: `${base}gallery/117.webp`, is_cover: false, sort_order: 1 },
+      { id: 'i16', url: `${base}gallery/062.webp`, is_cover: true,  sort_order: 0 },
+      { id: 'i17', url: `${base}gallery/117.webp`, is_cover: false, sort_order: 1 },
+      { id: 'i18', url: `${base}gallery/010.webp`, is_cover: false, sort_order: 2 },
+      { id: 'i19', url: `${base}gallery/011.webp`, is_cover: false, sort_order: 3 },
+      { id: 'i20', url: `${base}gallery/075.webp`, is_cover: false, sort_order: 4 },
     ],
   },
 ];
