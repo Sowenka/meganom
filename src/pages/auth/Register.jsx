@@ -28,19 +28,11 @@ export default function Register() {
 
   async function onSubmit(data) {
     try {
-      const result = await signUp(data);
-      if (result.user && !result.session) {
-        toast.success(t('auth.register.successConfirm'));
-        navigate('/auth/login');
-      } else {
-        toast.success(t('auth.register.success'));
-        navigate('/profile');
-      }
+      await signUp(data);
+      toast.success(t('auth.register.success'));
+      navigate('/profile');
     } catch (err) {
-      const msg = err?.message === 'User already registered'
-        ? t('auth.register.errorAlreadyRegistered')
-        : t('auth.register.errorGeneral');
-      toast.error(msg);
+      toast.error(err.message || t('auth.register.errorGeneral'));
     }
   }
 

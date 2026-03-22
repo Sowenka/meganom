@@ -39,7 +39,7 @@ export default function Profile() {
 
   useEffect(() => {
     if (!user) return;
-    getProfile(user.id)
+    getProfile()
       .then((p) => {
         if (p) {
           setProfile(p);
@@ -59,9 +59,9 @@ export default function Profile() {
 
   async function onSubmit(data) {
     try {
-      const updated = await updateProfile(user.id, {
-        full_name: data.fullName,
-        phone: data.phone || null,
+      const updated = await updateProfile({
+        name: data.fullName,
+        phone: data.phone || '',
       });
       setProfile(updated);
       setIsEditing(false);
