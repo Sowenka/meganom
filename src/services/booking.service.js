@@ -1,26 +1,58 @@
-const API_URL = import.meta.env.VITE_API_URL;
+import { getToken } from './auth.service';
 
-export async function createBooking(data) {
-  if (!API_URL) {
-    // Dev / GitHub Pages — simulate success
-    await new Promise((r) => setTimeout(r, 800));
-    return { id: `booking-${Date.now()}`, ...data, status: 'pending' };
-  }
-  const res = await fetch(`${API_URL}/bookings.php`, {
+const API_BASE = '/api';
+
+/**
+ * Create a booking.
+ * Accepts camelCase from the form + roomTitle for the email notification.
+ */
+export async function createBooking({
+  roomId,
+  checkIn,
+  checkOut,
+  guestsCount,
+  guestName,
+  guestEmail,
+  guestPhone,
+  specialRequests,
+  nights,
+  total,
+  roomTitle = '',
+}) {
+  const res = await fetch(`${API_BASE}/bookings/create.php`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+    body: JSON.stringify({
+      room_id:          roomId,
+      check_in:         checkIn,
+      check_out:        checkOut,
+      guests_count:     guestsCount,
+      guest_name:       guestName,
+      guest_email:      guestEmail,
+      guest_phone:      guestPhone || '',
+      special_requests: specialRequests || '',
+      total_price:      total,
+      nights,
+      room_title:       roomTitle,
+    }),
   });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || 'Ошибка при создании бронирования');
-  }
-  return res.json();
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Ошибка при создании бронирования');
+  return data;
 }
 
-export async function getUserBookings(userId) {
-  if (!API_URL) return [];
-  const res = await fetch(`${API_URL}/bookings.php?user_id=${encodeURIComponent(userId)}`);
-  if (!res.ok) return [];
-  return res.json();
+export async function getUserBookings() {
+  const token = getToken();
+  if (!token) return [];
+  try {
+    const res = await fetch(`${API_BASE}/bookings/list.php`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.bookings ?? [];
+  } catch {
+    return [];
+  }
 }
