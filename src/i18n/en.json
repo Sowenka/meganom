@@ -161,7 +161,7 @@
       "phone1": "+7 (978) 123-45-67",
       "phone2": "+7 (365-2) 12-34-56",
       "emailLabel": "Email",
-      "email": "info@meganom-hotel.ru",
+      "email": "info@meganom-eco.ru",
       "workHoursLabel": "Working hours",
       "workHours": "Daily, 08:00 — 22:00"
     }
@@ -301,14 +301,14 @@
     "linkToTerms": "Terms of Use →",
     "sections": [
       { "num": "01", "title": "General Provisions", "content": "This Privacy Policy defines the procedure for processing and protecting the personal data of users of the Meganom Eco-house website. The Policy is developed in accordance with Federal Law No. 152-FZ of 27.07.2006 «On Personal Data».\n\nBy using the website and providing your personal data, the User agrees to the terms of this Policy." },
-      { "num": "02", "title": "Data Controller", "content": "The data controller is Meganom Eco-house, located at: 28 Baikalskaya St., Mindalnoye, Sudak, Crimea. Contact email: info@meganom-hotel.ru." },
+      { "num": "02", "title": "Data Controller", "content": "The data controller is Meganom Eco-house, located at: 28 Baikalskaya St., Mindalnoye, Sudak, Crimea. Contact email: info@meganom-eco.ru." },
       { "num": "03", "title": "Purposes of Data Processing", "items": ["Room booking and provision of hotel services", "Communication with the user to confirm bookings", "Processing payments and refunds", "Improving service quality and website performance", "Sending informational messages (with user consent)", "Compliance with applicable legislation"] },
       { "num": "04", "title": "Categories of Data Processed", "items": ["Full name", "Contact phone number", "Email address", "Booking data (check-in/check-out dates, number of guests)", "Website usage data (cookies, IP address, browser data)"] },
-      { "num": "05", "title": "Rights of Data Subjects", "content": "To exercise your rights, please send a request to info@meganom-hotel.ru.", "items": ["Obtain information about the processing of your personal data", "Request correction, blocking or deletion of data", "Withdraw consent to personal data processing", "Lodge a complaint with the relevant supervisory authority"] },
+      { "num": "05", "title": "Rights of Data Subjects", "content": "To exercise your rights, please send a request to info@meganom-eco.ru.", "items": ["Obtain information about the processing of your personal data", "Request correction, blocking or deletion of data", "Withdraw consent to personal data processing", "Lodge a complaint with the relevant supervisory authority"] },
       { "num": "06", "title": "Use of Cookies", "content": "The website uses cookies to ensure correct operation, analytics and content personalisation. The User may disable cookies in their browser settings, but this may affect website functionality.", "items": ["Necessary — ensure basic website functionality", "Analytical — help understand how users interact with the website", "Marketing — used to show relevant advertising"] },
       { "num": "07", "title": "Data Protection", "content": "The data controller takes necessary organisational and technical measures to protect personal data from unauthorised access, destruction, modification, blocking, copying and dissemination." },
       { "num": "08", "title": "Policy Changes", "content": "The data controller reserves the right to make changes to this Policy. The current version is always available on this page." },
-      { "num": "09", "title": "Contact Information", "content": "For questions regarding personal data processing, please contact:", "items": ["Email: info@meganom-hotel.ru", "Phone: +7 (978) 123-45-67", "Address: 28 Baikalskaya St., Mindalnoye, Sudak, Crimea"] }
+      { "num": "09", "title": "Contact Information", "content": "For questions regarding personal data processing, please contact:", "items": ["Email: info@meganom-eco.ru", "Phone: +7 (978) 123-45-67", "Address: 28 Baikalskaya St., Mindalnoye, Sudak, Crimea"] }
     ]
   },
   "terms": {
@@ -323,7 +323,7 @@
       { "num": "06", "title": "Intellectual Property", "content": "All website materials (texts, photographs, design, logos) are intellectual property of the Administration and are protected by applicable law. Use of materials without the Administration's written consent is prohibited." },
       { "num": "07", "title": "Limitation of Liability", "content": "The Administration is not liable for temporary unavailability of the website due to technical reasons and does not guarantee uninterrupted operation of the website." },
       { "num": "08", "title": "Dispute Resolution", "content": "All disputes and disagreements shall be resolved through negotiations. If no agreement can be reached, the dispute shall be referred to a court at the Administration's location in accordance with applicable law." },
-      { "num": "09", "title": "Contact Information", "content": "For questions related to these Terms, please contact:", "items": ["Email: info@meganom-hotel.ru", "Phone: +7 (978) 123-45-67", "Address: 28 Baikalskaya St., Mindalnoye, Sudak, Crimea"] }
+      { "num": "09", "title": "Contact Information", "content": "For questions related to these Terms, please contact:", "items": ["Email: info@meganom-eco.ru", "Phone: +7 (978) 123-45-67", "Address: 28 Baikalskaya St., Mindalnoye, Sudak, Crimea"] }
     ]
   },
   "logo": {

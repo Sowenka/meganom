@@ -9,7 +9,7 @@ function sitemapPlugin() {
   return {
     name: 'generate-sitemap',
     closeBundle() {
-      const siteUrl = (process.env.VITE_SITE_URL || 'https://sowenka.github.io/meganom').replace(/\/$/, '');
+      const siteUrl = (process.env.VITE_SITE_URL || 'https://meganom-eco.ru').replace(/\/$/, '');
       const today = new Date().toISOString().split('T')[0];
 
       const routes = [

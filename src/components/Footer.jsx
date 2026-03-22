@@ -118,8 +118,8 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="mailto:info@meganom-hotel.ru" className="transition-colors hover:text-primary">
-                  info@meganom-hotel.ru
+                <a href="mailto:info@meganom-eco.ru" className="transition-colors hover:text-primary">
+                  info@meganom-eco.ru
                 </a>
               </li>
               <li className="pt-1 text-xs text-text-muted/70">

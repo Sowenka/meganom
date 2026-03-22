@@ -3,4 +3,4 @@ User-agent: *
 Disallow: /
 
 # Sitemap будет открыт после завершения разработки
-# Sitemap: https://meganom-hotel.ru/sitemap.xml
+# Sitemap: https://meganom-eco.ru/sitemap.xml

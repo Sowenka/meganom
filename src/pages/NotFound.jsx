@@ -154,11 +154,11 @@ export default function NotFound() {
             +7 (978) 123-45-67
           </a>
           <a
-            href="mailto:info@meganom-hotel.ru"
+            href="mailto:info@meganom-eco.ru"
             className="flex items-center gap-2 text-sm text-text-muted transition-colors hover:text-primary"
           >
             <FiMail className="h-3.5 w-3.5 text-accent" />
-            info@meganom-hotel.ru
+            info@meganom-eco.ru
           </a>
         </div>
       </motion.div>
