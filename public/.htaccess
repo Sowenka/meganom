@@ -1,0 +1,12 @@
+Options -MultiViews
+RewriteEngine On
+RewriteBase /
+
+# HTTPS redirect is handled by nginx (Spaceweb proxy).
+# Do NOT add RewriteCond %{HTTPS} off here — nginx terminates SSL
+# before Apache, so %{HTTPS} is always "off" → infinite redirect loop.
+
+# SPA routing — all non-file/non-dir requests go to index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]
