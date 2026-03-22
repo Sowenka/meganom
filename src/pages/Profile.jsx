@@ -5,13 +5,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import PropTypes from 'prop-types';
+import Cropper from 'react-easy-crop';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   FiLogOut, FiEdit2, FiCalendar, FiUsers,
-  FiHome, FiPhone, FiMail, FiMoon, FiCamera,
+  FiHome, FiPhone, FiMail, FiMoon, FiCamera, FiCheck, FiX,
 } from 'react-icons/fi';
 import { Input, PhoneInput, Button } from '@/components/ui';
 import { profileSchema } from '@/lib/validators';
 import { useAuth } from '@/hooks/useAuth';
+import { useAuthStore } from '@/store/useAuthStore';
 import { getProfile, updateProfile, signOut, uploadAvatar } from '@/services/auth.service';
 import { getUserBookings } from '@/services/booking.service';
 import { formatPrice, formatDate, cn } from '@/lib/utils';
@@ -65,11 +68,121 @@ const PAYMENT_CONFIG = {
   refunded: { label: 'Возврат',     cls: 'text-text-muted' },
 };
 
+// ── Crop helpers ───────────────────────────────────────────────────────────────
+
+async function getCroppedBlob(imageSrc, croppedAreaPixels) {
+  const image = await new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = imageSrc;
+  });
+
+  const canvas = document.createElement('canvas');
+  const size = 400; // output size 400×400
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+
+  ctx.drawImage(
+    image,
+    croppedAreaPixels.x,
+    croppedAreaPixels.y,
+    croppedAreaPixels.width,
+    croppedAreaPixels.height,
+    0, 0, size, size,
+  );
+
+  return new Promise((resolve) =>
+    canvas.toBlob(resolve, 'image/jpeg', 0.92),
+  );
+}
+
+// ── CropModal ──────────────────────────────────────────────────────────────────
+
+function CropModal({ src, onConfirm, onCancel }) {
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 backdrop-blur-sm"
+    >
+      {/* Header */}
+      <div className="relative mb-4 w-full max-w-sm px-4 text-center">
+        <p className="text-sm font-medium text-white/70">Переместите и масштабируйте фото</p>
+      </div>
+
+      {/* Crop area */}
+      <div className="relative h-72 w-72 overflow-hidden rounded-full shadow-2xl sm:h-80 sm:w-80">
+        <Cropper
+          image={src}
+          crop={crop}
+          zoom={zoom}
+          aspect={1}
+          cropShape="round"
+          showGrid={false}
+          onCropChange={setCrop}
+          onZoomChange={setZoom}
+          onCropComplete={(_, pixels) => setCroppedAreaPixels(pixels)}
+          style={{
+            containerStyle: { borderRadius: '9999px' },
+            mediaStyle: {},
+          }}
+        />
+      </div>
+
+      {/* Zoom slider */}
+      <div className="mt-6 w-64">
+        <input
+          type="range"
+          min={1}
+          max={3}
+          step={0.01}
+          value={zoom}
+          onChange={(e) => setZoom(Number(e.target.value))}
+          className="w-full cursor-pointer accent-accent"
+        />
+      </div>
+
+      {/* Buttons */}
+      <div className="mt-6 flex gap-3">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-white/20 text-white/70 transition-colors hover:border-white/40 hover:text-white"
+        >
+          <FiX className="h-5 w-5" />
+        </button>
+        <button
+          type="button"
+          onClick={() => onConfirm(croppedAreaPixels)}
+          className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-white transition-colors hover:bg-accent-warm"
+        >
+          <FiCheck className="h-5 w-5" />
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+CropModal.propTypes = {
+  src: PropTypes.string.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+};
+
 // ── Main component ─────────────────────────────────────────────────────────────
 
 export default function Profile() {
   const { t } = useTranslation();
   const { user, isLoading: authLoading } = useAuth();
+  const clearUser = useAuthStore((s) => s.clearUser);
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState(null);
@@ -79,6 +192,7 @@ export default function Profile() {
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarVersion, setAvatarVersion] = useState(1);
+  const [cropSrc, setCropSrc] = useState(null);
   const fileInputRef = useRef(null);
 
   const {
@@ -130,33 +244,55 @@ export default function Profile() {
     }
   }
 
-  async function handleAvatarChange(e) {
+  function handleAvatarChange(e) {
     const file = e.target.files?.[0];
     if (!file) return;
+    e.target.value = '';
 
-    // Instant local preview
     const reader = new FileReader();
-    reader.onload = (ev) => setAvatarPreview(ev.target.result);
+    reader.onload = (ev) => setCropSrc(ev.target.result);
     reader.readAsDataURL(file);
+  }
 
-    setAvatarUploading(true);
+  async function handleCropConfirm(croppedAreaPixels) {
+    if (!cropSrc || !croppedAreaPixels) return;
+    const src = cropSrc;
+    setCropSrc(null);
+
+    let blob;
     try {
+      blob = await getCroppedBlob(src, croppedAreaPixels);
+    } catch {
+      toast.error('Не удалось обработать фото');
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(blob);
+    setAvatarPreview(previewUrl);
+    setAvatarUploading(true);
+
+    try {
+      const file = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
       const result = await uploadAvatar(file);
       setProfile((prev) => ({ ...prev, avatar_url: result.avatar_url }));
-      setAvatarPreview(null);
       setAvatarVersion((v) => v + 1);
       toast.success('Фото профиля обновлено');
     } catch (err) {
-      setAvatarPreview(null);
       toast.error(err.message || 'Не удалось загрузить фото');
     } finally {
+      setAvatarPreview(null);
       setAvatarUploading(false);
-      e.target.value = '';
+      URL.revokeObjectURL(previewUrl);
     }
+  }
+
+  function handleCropCancel() {
+    setCropSrc(null);
   }
 
   async function handleSignOut() {
     await signOut();
+    clearUser();
     toast.success(t('profile.signOutSuccess'));
     navigate('/');
   }
@@ -240,11 +376,12 @@ export default function Profile() {
               />
               <h2 className="mt-3 text-lg font-semibold text-white">{displayName}</h2>
               <p className="mt-0.5 text-xs text-white/50">Нажмите на фото чтобы изменить</p>
-              {user.role === 'admin' && (
-                <span className="mt-1.5 inline-block rounded-full bg-accent/90 px-3 py-0.5 text-xs font-medium text-white">
-                  Администратор
-                </span>
-              )}
+              <span className={cn(
+                'mt-1.5 inline-block rounded-full px-3 py-0.5 text-xs font-medium text-white',
+                user.role === 'admin' ? 'bg-accent/90' : 'bg-white/20',
+              )}>
+                {user.role === 'admin' ? 'Администратор' : 'Гость'}
+              </span>
             </div>
 
             {/* Info / edit */}
@@ -369,7 +506,9 @@ export default function Profile() {
                   cls: 'bg-bg-dark text-text-muted border-bg-dark',
                 };
                 const payment = PAYMENT_CONFIG[booking.payment_status];
-                const bookingIdShort = '#' + booking.id.substring(0, 8).toUpperCase();
+                const bookingNum = booking.booking_number
+                  ? `№${String(booking.booking_number).padStart(4, '0')}`
+                  : `#${booking.id.substring(0, 8).toUpperCase()}`;
                 const nights = booking.nights
                   || Math.round(
                     (new Date(booking.check_out) - new Date(booking.check_in)) / 86_400_000,
@@ -389,7 +528,7 @@ export default function Profile() {
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-text-muted">{bookingIdShort}</span>
+                        <span className="text-xs text-text-muted">Заказ {bookingNum}</span>
                         <span className={cn(
                           'rounded-full border px-2.5 py-0.5 text-xs font-medium',
                           status.cls,
@@ -450,6 +589,16 @@ export default function Profile() {
           )}
         </div>
       </div>
+
+      <AnimatePresence>
+        {cropSrc && (
+          <CropModal
+            src={cropSrc}
+            onConfirm={handleCropConfirm}
+            onCancel={handleCropCancel}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 }
