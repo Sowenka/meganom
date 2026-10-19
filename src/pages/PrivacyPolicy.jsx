@@ -1,18 +1,22 @@
-import { useEffect, useRef } from 'react';
+﻿import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, useInView } from 'framer-motion';
 import PropTypes from 'prop-types';
+import { MetaTags } from '@/components/seo/MetaTags';
+import { OperatorDetails } from '@/components/OperatorDetails';
+import { LEGAL_VERSION } from '@/data/legal';
 
 PolicySection.propTypes = {
   num: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   content: PropTypes.string,
   items: PropTypes.arrayOf(PropTypes.string),
+  operator: PropTypes.bool,
   index: PropTypes.number.isRequired,
 };
 
-function PolicySection({ num, title, content, items, index }) {
+function PolicySection({ num, title, content, items, operator, index }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-60px' });
 
@@ -32,6 +36,7 @@ function PolicySection({ num, title, content, items, index }) {
         {content && (
           <p className="mb-4 leading-relaxed text-text-muted whitespace-pre-line">{content}</p>
         )}
+        {operator && <OperatorDetails className="mb-4 text-text-muted" />}
         {items && (
           <ul className="flex flex-col gap-2">
             {items.map((item, i) => (
@@ -50,14 +55,11 @@ function PolicySection({ num, title, content, items, index }) {
 export default function PrivacyPolicy() {
   const { t } = useTranslation();
 
-  useEffect(() => {
-    document.title = `${t('privacy.title')} — Меганом Эко-дом`;
-  }, [t]);
-
   const sections = t('privacy.sections', { returnObjects: true });
 
   return (
     <>
+      <MetaTags title={t('privacy.title')} path="/privacy" noindex />
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
       <section className="relative flex h-[40vh] items-center justify-center overflow-hidden">
         <img
@@ -94,11 +96,11 @@ export default function PrivacyPolicy() {
           {/* Meta */}
           <div className="mb-12 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-text-muted">
-              {t('legal.lastUpdated')} <span className="text-text">{t('legal.lastUpdatedDate')}</span>
+              {t('legal.lastUpdated')} <span className="text-text">{LEGAL_VERSION}</span>
             </p>
             <Link
               to="/terms"
-              className="text-sm text-accent underline-offset-4 hover:underline"
+              className="text-sm text-accent transition-colors duration-200 hover:text-primary"
             >
               {t('privacy.linkToTerms')}
             </Link>

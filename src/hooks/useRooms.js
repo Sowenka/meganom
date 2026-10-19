@@ -1,10 +1,21 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { getRooms, getRoomBySlug } from '@/services/rooms.service';
+import { getRooms, getRoomBySlug, findRooms, findRoomBySlug } from '@/services/rooms.service';
+
+const STATIC_ROOM_SLUGS = new Set([
+  'veter-peremen-myata',
+  'veter-peremen-med',
+  'shale',
+  'kvartet-grand',
+  'standart-kuhnya',
+  'standart-balkon',
+  'semeynyy-balkon',
+  'semeynyy-topcan',
+]);
 
 function applyRoomTranslation(room, t) {
-  if (!String(room.id).startsWith('static-')) return room;
+  if (!STATIC_ROOM_SLUGS.has(room.slug)) return room;
   return {
     ...room,
     title: t(`staticRooms.${room.slug}.title`),
@@ -19,6 +30,7 @@ export function useRooms(filters) {
   const query = useQuery({
     queryKey: ['rooms', filters],
     queryFn: () => getRooms(filters),
+    initialData: () => findRooms(filters),
   });
 
   const data = useMemo(
@@ -35,6 +47,7 @@ export function useRoom(slug) {
   const query = useQuery({
     queryKey: ['room', slug],
     queryFn: () => getRoomBySlug(slug),
+    initialData: () => (slug ? findRoomBySlug(slug) : undefined),
     enabled: !!slug,
   });
 

@@ -3,7 +3,7 @@ import { IMaskInput } from 'react-imask';
 import PropTypes from 'prop-types';
 import { cn } from '@/lib/utils';
 
-export function PhoneInput({ label, error, className, name, control, ...rest }) {
+export function PhoneInput({ label, error, className, name, control, required, ...rest }) {
   const inputId = name;
 
   const {
@@ -13,8 +13,9 @@ export function PhoneInput({ label, error, className, name, control, ...rest }) 
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={inputId} className="text-sm font-medium text-text">
+        <label htmlFor={inputId} className="flex items-center gap-1 text-sm font-medium text-text">
           {label}
+          {required && <span className="text-accent" aria-hidden="true">*</span>}
         </label>
       )}
       <IMaskInput
@@ -34,8 +35,14 @@ export function PhoneInput({ label, error, className, name, control, ...rest }) 
           className,
         )}
         aria-invalid={error ? 'true' : undefined}
+        aria-describedby={error ? `${inputId}-error` : undefined}
         {...rest}
       />
+      {error && (
+        <p id={`${inputId}-error`} className="text-xs text-error" role="alert">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
@@ -46,4 +53,5 @@ PhoneInput.propTypes = {
   className: PropTypes.string,
   name: PropTypes.string.isRequired,
   control: PropTypes.object.isRequired,
+  required: PropTypes.bool,
 };

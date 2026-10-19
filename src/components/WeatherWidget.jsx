@@ -16,8 +16,10 @@ import {
   WiStormShowers,
   WiThermometer,
 } from 'react-icons/wi';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { useWeather, getWeatherDesc } from '@/hooks/useWeather';
+import { SEASON_OPEN } from '@/lib/constants';
 
 function getWeatherIcon(code) {
   if (code === 0) return WiDaySunny;
@@ -35,8 +37,13 @@ function getWeatherIcon(code) {
   return WiThermometer;
 }
 
+// Бейдж висит слева под логотипом, а не справа у бургера, с которым он слипался.
+// Баннер закрытого сезона делает шапку выше, поэтому значений два.
+const BADGE_POSITION = SEASON_OPEN ? 'left-4 top-[92px]' : 'left-4 top-[130px]';
+
 // Mobile variant: fixed badge visible only while hero is in view (scrollY < 55vh)
 function MobileWeatherBadge({ weather, loading, className }) {
+  const { t } = useTranslation();
   const [inHero, setInHero] = useState(true);
 
   useEffect(() => {
@@ -53,7 +60,7 @@ function MobileWeatherBadge({ weather, loading, className }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={cn('fixed right-4 top-[85px] z-40', className)}
+            className={cn('fixed z-40', BADGE_POSITION, className)}
           >
             <div className="h-8 w-20 animate-pulse rounded-full bg-primary/60 backdrop-blur-sm" />
           </motion.div>
@@ -76,13 +83,13 @@ function MobileWeatherBadge({ weather, loading, className }) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.2 }}
-          className={cn('fixed right-4 top-[85px] z-40', className)}
+          className={cn('fixed z-40', BADGE_POSITION, className)}
           title={`${weather.name}: ${desc}`}
         >
           <div className="flex items-center gap-1 rounded-full border border-white/25 bg-primary/75 px-3 py-1 shadow-lg backdrop-blur-md">
             <Icon className="h-5 w-5 shrink-0 text-accent-warm" />
             <span className="text-sm font-semibold text-white">{temp}°</span>
-            <span className="text-xs text-white/60">Судак</span>
+            <span className="text-xs text-white/60">{t('weather.city')}</span>
           </div>
         </motion.div>
       )}
@@ -101,13 +108,14 @@ MobileWeatherBadge.propTypes = {
 };
 
 export function WeatherWidget({ className, mobile }) {
+  const { t } = useTranslation();
   const { weather, loading } = useWeather();
 
   if (mobile) {
     return <MobileWeatherBadge weather={weather} loading={loading} className={className} />;
   }
 
-  // Desktop variant — inline in header
+  // Desktop variant - inline in header
   if (loading) {
     return (
       <div className={cn('items-center gap-1.5', className)}>
@@ -129,7 +137,7 @@ export function WeatherWidget({ className, mobile }) {
     >
       <Icon className="h-6 w-6 shrink-0 text-accent-warm" />
       <span className="text-sm font-medium">{temp}°</span>
-      <span className="ml-0.5 text-xs text-white/50">Судак</span>
+      <span className="ml-0.5 text-xs text-white/50">{t('weather.city')}</span>
     </div>
   );
 }

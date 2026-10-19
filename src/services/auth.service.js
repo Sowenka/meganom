@@ -1,3 +1,5 @@
+﻿import { LEGAL_VERSION } from '@/data/legal';
+
 const API_BASE = '/api';
 const TOKEN_KEY = 'meganom_token';
 const USER_KEY  = 'meganom_user';
@@ -20,14 +22,33 @@ function saveSession(token, user) {
   localStorage.setItem(USER_KEY, JSON.stringify(user));
 }
 
-export async function signUp({ fullName, email, password }) {
+export async function signUp({ fullName, email, password, phone, consentPd }) {
   const res = await fetch(`${API_BASE}/auth/register.php`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fullName, email, password }),
+    body: JSON.stringify({
+      fullName,
+      email,
+      password,
+      phone,
+      consent_given: consentPd === true,
+      consent_version: LEGAL_VERSION,
+    }),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || 'Ошибка регистрации');
+  // Registration now returns { pending: true, email } - no token yet
+  return data;
+}
+
+export async function verifyEmail({ email, code }) {
+  const res = await fetch(`${API_BASE}/auth/verify.php`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, code }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Неверный или просроченный код');
   saveSession(data.token, data.user);
   return data;
 }
@@ -53,7 +74,7 @@ export async function uploadAvatar(file) {
   const token = getToken();
   const formData = new FormData();
   formData.append('avatar', file);
-  // Note: do NOT set Content-Type manually — browser sets multipart boundary automatically
+  // Note: do NOT set Content-Type manually - browser sets multipart boundary automatically
   const res = await fetch(`${API_BASE}/auth/upload-avatar.php`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },

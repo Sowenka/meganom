@@ -2,7 +2,8 @@ import { create } from 'zustand';
 
 export const useAuthStore = create((set) => ({
   user: null,
+  token: null,
   isLoading: true,
-  setUser: (user) => set({ user, isLoading: false }),
-  clearUser: () => set({ user: null, isLoading: false }),
+  setUser: (user, token) => set({ user, token, isLoading: false }),
+  clearUser: () => set({ user: null, token: null, isLoading: false }),
 }));

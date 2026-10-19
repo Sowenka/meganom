@@ -1,4 +1,4 @@
-import { z } from 'zod';
+﻿import { z } from 'zod';
 
 export const bookingSchema = z
   .object({
@@ -17,8 +17,13 @@ export const bookingSchema = z
     guestEmail: z
       .string({ required_error: 'Введите email' })
       .email('Введите корректный email'),
-    guestPhone: z.string().optional(),
+    guestPhone: z
+      .string({ required_error: 'Введите телефон' })
+      .min(18, 'Введите корректный номер телефона'),
     specialRequests: z.string().max(500, 'Максимум 500 символов').optional(),
+    consentPd: z.boolean().refine((v) => v === true, {
+      message: 'Необходимо согласие на обработку персональных данных',
+    }),
   })
   .refine(
     (data) => !data.checkIn || !data.checkOut || data.checkOut > data.checkIn,
@@ -29,8 +34,8 @@ export const reviewSchema = z.object({
   rating: z
     .number({ required_error: 'Поставьте оценку' })
     .int()
-    .min(1, 'Минимальная оценка — 1')
-    .max(5, 'Максимальная оценка — 5'),
+    .min(1, 'Минимальная оценка - 1')
+    .max(5, 'Максимальная оценка - 5'),
   comment: z
     .string({ required_error: 'Напишите отзыв' })
     .min(10, 'Отзыв должен содержать минимум 10 символов')
@@ -59,7 +64,9 @@ export const contactSchema = z.object({
       (val) => !DISPOSABLE_DOMAINS.includes(val.split('@')[1]?.toLowerCase()),
       'Одноразовые почтовые сервисы не допускаются',
     ),
-  phone: z.string().optional(),
+  phone: z
+    .string({ required_error: 'Введите номер телефона' })
+    .min(18, 'Введите корректный номер телефона'),
   subject: z
     .string({ required_error: 'Введите тему сообщения' })
     .min(2, 'Тема должна содержать минимум 2 символа')
@@ -70,6 +77,9 @@ export const contactSchema = z.object({
     .min(10, 'Сообщение должно содержать минимум 10 символов')
     .max(2000, 'Сообщение слишком длинное')
     .refine((val) => !URL_RE.test(val), 'Ссылки в сообщении не допускаются'),
+  consentPd: z.boolean().refine((v) => v === true, {
+    message: 'Необходимо согласие на обработку персональных данных',
+  }),
   website: z.string().max(0).optional(),
 });
 
@@ -93,12 +103,18 @@ export const registerSchema = z.object({
     .string({ required_error: 'Введите email' })
     .min(1, 'Введите email')
     .email('Введите корректный email'),
+  phone: z
+    .string({ required_error: 'Введите номер телефона' })
+    .min(1, 'Введите номер телефона'),
   password: z
     .string({ required_error: 'Введите пароль' })
     .min(6, 'Пароль должен содержать минимум 6 символов'),
   confirmPassword: z
     .string({ required_error: 'Подтвердите пароль' })
     .min(1, 'Подтвердите пароль'),
+  consentPd: z.boolean().refine((v) => v === true, {
+    message: 'Необходимо согласие на обработку персональных данных',
+  }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: 'Пароли не совпадают',
   path: ['confirmPassword'],

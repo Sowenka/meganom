@@ -1,13 +1,14 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { MetaTags } from '@/components/seo/MetaTags';
+import { FiX, FiChevronLeft, FiChevronRight, FiSearch } from 'react-icons/fi';
 import { photos, categories } from '@/data/gallery';
 
 // Visual rhythm: every Nth photo gets a different aspect ratio
 function getAspectClass(index) {
-  if (index % 11 === 0) return 'aspect-[4/3]';   // wide — landscape
-  if (index % 7 === 3)  return 'aspect-[2/3]';   // tall — portrait
+  if (index % 11 === 0) return 'aspect-[4/3]';   // wide - landscape
+  if (index % 7 === 3)  return 'aspect-[2/3]';   // tall - portrait
   if (index % 13 === 6) return 'aspect-[1/1]';   // square
   return 'aspect-[3/4]';                          // default portrait
 }
@@ -15,7 +16,17 @@ function getAspectClass(index) {
 // ── Lightbox ──────────────────────────────────────────────────────────────────
 function Lightbox({ photo, onClose, onPrev, onNext, currentIndex, totalCount }) {
   const { t } = useTranslation();
+  const prefersReduced = useReducedMotion();
   const progress = ((currentIndex + 1) / totalCount) * 100;
+
+  const touchStartX = useRef(null);
+  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(delta) > 50) { delta < 0 ? onNext() : onPrev(); }
+    touchStartX.current = null;
+  };
 
   useEffect(() => {
     const handleKey = (e) => {
@@ -31,21 +42,31 @@ function Lightbox({ photo, onClose, onPrev, onNext, currentIndex, totalCount }) 
     };
   }, [onClose, onPrev, onNext]);
 
+  const overlayMotion = prefersReduced
+    ? {}
+    : { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { duration: 0.2 } };
+
+  const imgMotion = prefersReduced
+    ? {}
+    : { initial: { opacity: 0, scale: 0.97 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 0.97 }, transition: { duration: 0.22 } };
+
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
+      {...overlayMotion}
+      role="dialog"
+      aria-modal="true"
+      aria-label={t('gallery.lightboxLabel', { n: currentIndex + 1, total: totalCount })}
       className="fixed inset-0 z-50 flex items-center justify-center bg-[#080f14]/97 backdrop-blur-sm"
       onClick={onClose}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
     >
       {/* Progress bar */}
       <div className="absolute inset-x-0 top-0 h-px bg-white/5">
         <motion.div
           className="h-full bg-accent"
           animate={{ width: `${progress}%` }}
-          transition={{ duration: 0.3 }}
+          transition={prefersReduced ? { duration: 0 } : { duration: 0.3 }}
         />
       </div>
 
@@ -58,7 +79,7 @@ function Lightbox({ photo, onClose, onPrev, onNext, currentIndex, totalCount }) 
         </span>
         <button
           onClick={onClose}
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/50 transition-all hover:border-accent/50 hover:text-accent"
+          className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-white/10 text-white/50 transition-all duration-200 hover:border-accent/50 hover:text-accent"
           aria-label={t('gallery.close')}
         >
           <FiX className="h-4 w-4" />
@@ -68,7 +89,7 @@ function Lightbox({ photo, onClose, onPrev, onNext, currentIndex, totalCount }) 
       {/* Prev */}
       <button
         onClick={(e) => { e.stopPropagation(); onPrev(); }}
-        className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 text-white/50 transition-all hover:border-white/30 hover:text-white md:left-6"
+        className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-white/10 text-white/50 transition-all duration-200 hover:border-white/30 hover:text-white md:left-6"
         aria-label={t('gallery.prev')}
       >
         <FiChevronLeft className="h-5 w-5" />
@@ -77,7 +98,7 @@ function Lightbox({ photo, onClose, onPrev, onNext, currentIndex, totalCount }) 
       {/* Next */}
       <button
         onClick={(e) => { e.stopPropagation(); onNext(); }}
-        className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 text-white/50 transition-all hover:border-white/30 hover:text-white md:right-6"
+        className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-white/10 text-white/50 transition-all duration-200 hover:border-white/30 hover:text-white md:right-6"
         aria-label={t('gallery.next')}
       >
         <FiChevronRight className="h-5 w-5" />
@@ -87,12 +108,9 @@ function Lightbox({ photo, onClose, onPrev, onNext, currentIndex, totalCount }) 
       <AnimatePresence mode="wait">
         <motion.img
           key={photo.id}
+          {...imgMotion}
           src={photo.src}
-          alt=""
-          initial={{ opacity: 0, scale: 0.97 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.97 }}
-          transition={{ duration: 0.22 }}
+          alt={t('gallery.photoAlt', { n: currentIndex + 1, total: totalCount })}
           className="max-h-[88vh] max-w-[92vw] rounded-xl object-contain shadow-2xl"
           onClick={(e) => e.stopPropagation()}
           draggable={false}
@@ -101,7 +119,7 @@ function Lightbox({ photo, onClose, onPrev, onNext, currentIndex, totalCount }) 
 
       {/* Keyboard hint */}
       <p className="absolute bottom-5 left-1/2 hidden -translate-x-1/2 text-[10px] uppercase tracking-[0.25em] text-white/15 md:block">
-        ← → навигация · Esc закрыть
+        &#8592; &#8594; навигация &middot; Esc закрыть
       </p>
     </motion.div>
   );
@@ -110,6 +128,7 @@ function Lightbox({ photo, onClose, onPrev, onNext, currentIndex, totalCount }) 
 // ── Gallery ───────────────────────────────────────────────────────────────────
 export default function Gallery() {
   const { t } = useTranslation();
+  const prefersReduced = useReducedMotion();
   const [activeCategory, setActiveCategory] = useState('all');
   const [lightboxIndex, setLightboxIndex] = useState(null);
 
@@ -130,6 +149,12 @@ export default function Gallery() {
 
   return (
     <>
+      <MetaTags
+        title="Фотогалерея - гостиница у мыса Меганом, домики у моря, Судак"
+        description="Фотографии домиков у моря, номеров, территории, бассейна и природы мыса Меганом рядом с Судаком. Посмотрите, как выглядит отдых в гостинице «Меганом»."
+        path="/gallery"
+        image="https://meganom-eco.ru/gallery/062.webp"
+      />
       {/* ── HERO ────────────────────────────────────────────────────────── */}
       <section className="relative flex h-[55vh] items-center justify-center overflow-hidden">
         <img
@@ -137,12 +162,13 @@ export default function Gallery() {
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
           loading="eager"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-primary/65" />
 
         <div className="relative z-10 w-full px-6 text-center">
           <motion.span
-            initial={{ opacity: 0, y: 16 }}
+            initial={prefersReduced ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="mb-4 inline-block text-xs font-medium uppercase tracking-[0.2em] text-accent-warm"
@@ -150,7 +176,7 @@ export default function Gallery() {
             {t('gallery.subtitle')}
           </motion.span>
           <motion.h1
-            initial={{ opacity: 0, y: 24 }}
+            initial={prefersReduced ? false : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="font-serif text-3xl font-bold italic text-white sm:text-5xl md:text-6xl"
@@ -158,10 +184,10 @@ export default function Gallery() {
             {t('gallery.title')}
           </motion.h1>
           <motion.p
-            initial={{ opacity: 0 }}
+            initial={prefersReduced ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="mt-2 text-sm text-white/40"
+            className="mt-2 text-base text-white/80"
           >
             {t('gallery.photoCount')}
           </motion.p>
@@ -182,21 +208,13 @@ export default function Gallery() {
                 <button
                   key={cat}
                   onClick={() => { setActiveCategory(cat); setLightboxIndex(null); }}
-                  className="relative shrink-0 flex items-center gap-2 px-4 py-4 transition-colors duration-200 md:px-6"
+                  aria-pressed={isActive}
+                  className="relative shrink-0 flex items-center gap-2 px-4 py-4 cursor-pointer transition-colors duration-200 md:px-6"
                 >
-                  <span
-                    className="text-sm font-medium uppercase tracking-wider transition-colors duration-200"
-                    style={{ color: isActive ? '#1B3A4B' : '#9CA3AF' }}
-                  >
+                  <span className={`text-sm font-medium uppercase tracking-wider transition-colors duration-200 ${isActive ? 'text-primary' : 'text-text-muted'}`}>
                     {t(`gallery.${cat}`)}
                   </span>
-                  <span
-                    className="rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums transition-all duration-200"
-                    style={{
-                      backgroundColor: isActive ? '#C9A96E20' : 'transparent',
-                      color: isActive ? '#C9A96E' : '#9CA3AF',
-                    }}
-                  >
+                  <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums transition-all duration-200 ${isActive ? 'bg-accent/10 text-accent' : 'text-text-muted'}`}>
                     {count}
                   </span>
                   {isActive && (
@@ -222,14 +240,15 @@ export default function Gallery() {
           {filteredPhotos.map((photo, index) => (
             <motion.div
               key={photo.id}
-              initial={{ opacity: 0, y: 16 }}
+              initial={prefersReduced ? false : { opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: Math.min(index * 0.025, 0.55) }}
+              transition={{ duration: 0.35, delay: prefersReduced ? 0 : Math.min(index * 0.025, 0.55) }}
               className="mb-2 break-inside-avoid sm:mb-3"
             >
               <button
                 onClick={() => openLightbox(index)}
-                className="group relative block w-full overflow-hidden rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:rounded-xl"
+                aria-label={t('gallery.openPhoto', { n: index + 1 })}
+                className="group relative block w-full cursor-pointer overflow-hidden rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:rounded-xl"
               >
                 <img
                   src={photo.src}
@@ -239,7 +258,7 @@ export default function Gallery() {
                 />
 
                 {/* Hover overlay */}
-                <div className="absolute inset-0 bg-primary/0 transition-all duration-400 group-hover:bg-primary/25" />
+                <div className="absolute inset-0 bg-primary/0 transition-all duration-300 group-hover:bg-primary/25" />
 
                 {/* Gold border glow on hover */}
                 <div className="absolute inset-0 rounded-lg opacity-0 ring-1 ring-accent/60 transition-opacity duration-300 group-hover:opacity-100 sm:rounded-xl" />
@@ -247,10 +266,7 @@ export default function Gallery() {
                 {/* View icon */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/60 bg-white/10 backdrop-blur-sm">
-                    <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                    </svg>
+                    <FiSearch className="h-4 w-4 text-white" />
                   </div>
                 </div>
               </button>

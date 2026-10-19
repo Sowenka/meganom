@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { cn } from '@/lib/utils';
 
 export const Input = forwardRef(function Input(
-  { label, error, className, id, ...rest },
+  { label, error, className, id, required, ...rest },
   ref,
 ) {
   const inputId = id || rest.name;
@@ -13,9 +13,10 @@ export const Input = forwardRef(function Input(
       {label && (
         <label
           htmlFor={inputId}
-          className="text-sm font-medium text-text"
+          className="flex items-center gap-1 text-sm font-medium text-text"
         >
           {label}
+          {required && <span className="text-accent" aria-hidden="true">*</span>}
         </label>
       )}
       <input
@@ -30,8 +31,14 @@ export const Input = forwardRef(function Input(
           className,
         )}
         aria-invalid={error ? 'true' : undefined}
+        aria-describedby={error ? `${inputId}-error` : undefined}
         {...rest}
       />
+      {error && (
+        <p id={`${inputId}-error`} className="text-xs text-error" role="alert">
+          {error}
+        </p>
+      )}
     </div>
   );
 });
@@ -41,4 +48,5 @@ Input.propTypes = {
   error: PropTypes.string,
   className: PropTypes.string,
   id: PropTypes.string,
+  required: PropTypes.bool,
 };

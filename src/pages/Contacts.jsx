@@ -1,18 +1,23 @@
-import { useCallback, useRef } from 'react';
+﻿import { useCallback, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
+import { MetaTags } from '@/components/seo/MetaTags';
 import { toast } from 'sonner';
-import { motion, useInView } from 'framer-motion';
-import { FiMapPin, FiPhone, FiMail, FiClock } from 'react-icons/fi';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
+import { FiMapPin, FiMail, FiClock } from 'react-icons/fi';
 import PropTypes from 'prop-types';
 import { Input, PhoneInput, Textarea, Button } from '@/components/ui';
+import { ConsentCheckbox } from '@/components/ConsentCheckbox';
+import { Messengers } from '@/components/Messengers';
 import { contactSchema } from '@/lib/validators';
 import { sendContactMessage } from '@/services/contact.service';
 
 function SectionReveal({ children, className, delay = 0 }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const prefersReduced = useReducedMotion();
+  if (prefersReduced) return <div ref={ref} className={className}>{children}</div>;
   return (
     <motion.div
       ref={ref}
@@ -52,6 +57,7 @@ ContactItem.propTypes = {
 
 export default function Contacts() {
   const { t } = useTranslation();
+  const prefersReduced = useReducedMotion();
 
   const {
     register,
@@ -61,7 +67,7 @@ export default function Contacts() {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(contactSchema),
-    defaultValues: { name: '', email: '', phone: '', subject: '', message: '', website: '' },
+    defaultValues: { name: '', email: '', phone: '', subject: '', message: '', consentPd: false, website: '' },
   });
 
   const onInvalid = useCallback((fieldErrors) => {
@@ -69,10 +75,10 @@ export default function Contacts() {
     if (firstError) toast.error(firstError.message);
   }, []);
 
-  async function onSubmit({ website, ...data }) {
+  async function onSubmit({ website, consentPd, ...data }) {
     if (website) return;
     try {
-      await sendContactMessage(data);
+      await sendContactMessage({ ...data, consent: consentPd });
       toast.success(t('contacts.form.success'));
       reset();
     } catch {
@@ -82,6 +88,11 @@ export default function Contacts() {
 
   return (
     <>
+      <MetaTags
+        title="Контакты - гостиница у мыса Меганом рядом с Судаком, Крым"
+        description="Контакты гостиницы у мыса Меганом рядом с Судаком, Крым. Телефон, WhatsApp, Telegram. Адрес: с. Миндальное, 8 км от Судака. Онлайн-бронирование."
+        path="/contacts"
+      />
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
       <section className="relative flex h-[55vh] items-center justify-center overflow-hidden">
         <img
@@ -89,11 +100,12 @@ export default function Contacts() {
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
           loading="eager"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-primary/65" />
         <div className="relative z-10 w-full px-6 text-center">
           <motion.span
-            initial={{ opacity: 0, y: 16 }}
+            initial={prefersReduced ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="mb-4 inline-block text-xs font-medium uppercase tracking-[0.2em] text-accent-warm"
@@ -101,7 +113,7 @@ export default function Contacts() {
             {t('contacts.subtitle')}
           </motion.span>
           <motion.h1
-            initial={{ opacity: 0, y: 24 }}
+            initial={prefersReduced ? false : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="font-serif text-3xl font-bold italic text-white sm:text-5xl md:text-6xl"
@@ -131,20 +143,9 @@ export default function Contacts() {
                 <p className="leading-relaxed">{t('contacts.info.address')}</p>
               </ContactItem>
 
-              <ContactItem icon={FiPhone} label={t('contacts.info.phoneLabel')}>
-                <a href={`tel:${t('contacts.info.phone1').replace(/[^\d+]/g, '')}`}
-                  className="block transition-colors hover:text-primary">
-                  {t('contacts.info.phone1')}
-                </a>
-                <a href={`tel:${t('contacts.info.phone2').replace(/[^\d+]/g, '')}`}
-                  className="block transition-colors hover:text-primary">
-                  {t('contacts.info.phone2')}
-                </a>
-              </ContactItem>
-
               <ContactItem icon={FiMail} label={t('contacts.info.emailLabel')}>
                 <a href={`mailto:${t('contacts.info.email')}`}
-                  className="transition-colors hover:text-primary">
+                  className="transition-colors duration-200 hover:text-primary">
                   {t('contacts.info.email')}
                 </a>
               </ContactItem>
@@ -152,6 +153,13 @@ export default function Contacts() {
               <ContactItem icon={FiClock} label={t('contacts.info.workHoursLabel')}>
                 <p>{t('contacts.info.workHours')}</p>
               </ContactItem>
+            </div>
+
+            <div>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-accent">
+                {t('contacts.info.socialsLabel')}
+              </p>
+              <Messengers variant="light" />
             </div>
           </SectionReveal>
 
@@ -215,6 +223,8 @@ export default function Contacts() {
                   error={errors.message?.message}
                   {...register('message')}
                 />
+
+                <ConsentCheckbox field={register('consentPd')} error={errors.consentPd?.message} />
 
                 <Button type="submit" loading={isSubmitting} className="self-center">
                   {isSubmitting ? t('contacts.form.sending') : t('contacts.form.submit')}

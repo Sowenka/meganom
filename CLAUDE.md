@@ -2,241 +2,112 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Язык общения:** Русский. Код, комментарии к коммитам и технические термины — на английском.
+**Язык:** Русский. Код и коммиты — английский.
 
----
+## Проект
 
-## О проекте
-
-**Crimea (Меганом Эко-дом)** — fullstack-сайт для гостиничного комплекса в Крыму. Платформа бронирования номеров с админ-панелью, системой оплаты и CMS.
-
-Бизнес-требования: витрина номеров с галереями, онлайн-бронирование с календарём доступности, личный кабинет гостя, админ-панель, SEO под Яндекс/Google, Mobile-First.
-
----
-
-## Технологический стек
-
-**Frontend:** React 19 + Vite 8 + Tailwind CSS 4 + React Router 7
-**Состояние:** Zustand (UI) + TanStack Query (серверное состояние)
-**Формы:** React Hook Form + Zod (валидация в `src/lib/validators.js`)
-**Анимации:** Framer Motion
-**i18n:** react-i18next (RU/EN), default language: RU
-**Даты:** date-fns
-**Тосты:** sonner
-**Маски ввода:** react-imask (телефонный ввод)
-**CSS-утилиты:** clsx + tailwind-merge (обёртка `cn()` в `src/lib/utils.js`)
-
-**Backend:** Supabase (PostgreSQL, Auth, Storage, Edge Functions, RLS)
-
----
+Meganom Eco-dom — fullstack сайт бронирования гостиничного комплекса в Крыму.
+Домен: `meganom-eco.ru` | БД: PostgreSQL `mmosowmail` на `pg4.sweb.ru:5433`
+Без Supabase — PHP API + PostgreSQL.
 
 ## Команды
 
 ```bash
-npm run dev          # Dev-сервер на localhost:3000 (auto-open)
-npm run build        # Production-сборка
-npm run preview      # Предпросмотр сборки
-npm run lint         # Линтинг (ESLint)
-npm run format       # Форматирование (Prettier)
-npm run test         # Юнит-тесты (Vitest)
-npm run test:e2e     # E2E тесты (Playwright)
+npm run dev / build / preview / lint / format / test / test:e2e
+npx vitest run tests/unit/someFile.test.js  # один тест
 ```
 
-Запуск одного теста: `npx vitest run tests/unit/someFile.test.js`
-Тесты лежат в `tests/unit/` (юнит, `*.test.{js,jsx}`) и `tests/e2e/` (Playwright).
-Vitest setup: `tests/setup.js`, environment: jsdom, globals: true.
+## Стек
 
----
+React 19 + Vite 8 + Tailwind 4 + React Router 7 + Zustand + TanStack Query + React Hook Form + Zod
+PHP REST API (_api/) | JWT (localStorage: meganom_token, meganom_user) | i18n: react-i18next RU/EN (default RU)
+Тосты: sonner | Даты: date-fns | Маски: react-imask | Анимации: framer-motion | Кроп аватара: react-easy-crop
 
 ## Архитектура
 
-### Потоки данных: Service → Hook → Component
+**Поток данных:** `src/services/*.service.js` → `src/hooks/use*.js` → `src/pages/*.jsx`
 
-```
-src/services/*.service.js   — Supabase-запросы (прямые вызовы supabase client)
-src/hooks/use*.js           — TanStack Query обёртки над сервисами (queryKey, queryFn, enabled)
-src/pages/*.jsx             — Страницы, используют хуки для получения данных
-src/components/*.jsx        — Переиспользуемые компоненты
-```
+Источники данных:
+- rooms.service.js → STATIC_ROOMS из `src/data/rooms.js` (не через API)
+- booking.service.js → PHP API `/api/bookings/*` (принимает camelCase → маппит в snake_case)
+- useWeather.js → api.open-meteo.com напрямую, кэш localStorage 30 мин
+- auth.service.js, admin.service.js → PHP API
 
-Пример: `rooms.service.js` → `useRooms.js` hook → `Rooms.jsx` page.
+Layouts: MainLayout (публичный) | AuthLayout (/auth/*) | AdminLayout (/admin/*)
+Все страницы lazy через `React.lazy()` + `<Suspense>` в App.jsx
 
-### Маршрутизация и лейауты
+**Компоненты:** `src/components/ui/` (Button, Input, PhoneInput, Textarea, ScrollToTopButton, barrel-export index.js) | `src/components/features/` (auth, booking, gallery, reviews, rooms) | `src/components/seo/` (MetaTags, SchemaOrg)
 
-Три layout-обёртки через `<Outlet />`:
-- **MainLayout** (`/`) — Header + Footer + CookieBanner. Публичные страницы.
-- **AuthLayout** (`/auth/*`) — Страницы входа/регистрации.
-- **AdminLayout** (`/admin/*`) — Sidebar с навигацией. Управление номерами, бронированиями, контентом.
+**Пути к изображениям:** всегда через `import.meta.env.BASE_URL` (не хардкодить `/`).
 
-Все страницы lazy-loaded через `React.lazy()` + `<Suspense>` в `App.jsx`.
+**Dev proxy:** `/api/*` → `https://meganom-eco.ru` (настроен в vite.config.js — локальная разработка обращается к prod API)
 
-### Провайдеры (main.jsx)
+**Статика:** `src/data/gallery.js` импортируется напрямую в Gallery.jsx (нет хука). Тексты номеров — только через i18n ключи `staticRooms.<slug>.*`, не через data-файл.
 
-`StrictMode` → `QueryClientProvider` (staleTime: 5 мин, retry: 1) → `BrowserRouter` → `App`
-
-### Состояние
-
-- **Zustand stores** (`src/store/`): `useAuthStore` (user, isLoading), `useBookingStore`, `useUIStore` — для UI-состояния, не требующего серверной синхронизации.
-- **TanStack Query**: всё серверное состояние (rooms, bookings и т.д.).
-
-### Build — chunk splitting (vite.config.js)
-
-Ручное разделение: `vendor` (react-dom, react-router), `query` (tanstack), `ui` (framer-motion).
-
-**Base URL:** `base: '/meganom/'` в `vite.config.js` — сайт деплоится в подпапку. Все пути к статическим ресурсам (изображения в `src/data/`) используют `import.meta.env.BASE_URL` префикс. Не менять без обновления деплоя.
-
-### Static Fallback Data
-
-`src/data/rooms.js` (`STATIC_ROOMS`) и `src/data/gallery.js` (`STATIC_GALLERY`) — статические данные-заглушки, используемые когда Supabase не подключён. Хуки (`useRooms.js`, `useGallery.js`) возвращают их как fallback. Пути к изображениям в этих файлах строятся через `import.meta.env.BASE_URL`.
-
-### Supabase
-
-- Client: `src/lib/supabase.js` — graceful null если env-переменные не заданы (сервисы проверяют `if (!supabase)`).
-- Миграции: `supabase/migrations/`
-- Edge Functions: `supabase/functions/` (TypeScript)
-- Seed: `supabase/seed.sql`
-
----
-
-## Схема базы данных (Supabase PostgreSQL)
-
-```sql
--- Номера
-rooms (id UUID PK, title, slug UNIQUE, description, short_description,
-  room_type ENUM('standard','comfort','suite','deluxe','presidential'),
-  capacity INT, area_sqm DECIMAL, price_per_night DECIMAL, currency DEFAULT 'RUB',
-  amenities JSONB, is_active BOOLEAN, sort_order INT, created_at, updated_at)
-
--- Фотографии номеров
-room_images (id UUID PK, room_id FK->rooms CASCADE, url, alt,
-  is_cover BOOLEAN, sort_order INT)
-
--- Бронирования
-bookings (id UUID PK, room_id FK->rooms, user_id FK->auth.users,
-  check_in DATE, check_out DATE, guests_count INT, total_price DECIMAL,
-  status ENUM('pending','confirmed','cancelled','completed'),
-  payment_status ENUM('unpaid','paid','refunded'),
-  guest_name, guest_email, guest_phone, special_requests, created_at, updated_at)
-
--- Отзывы
-reviews (id UUID PK, booking_id FK->bookings, user_id FK->auth.users,
-  rating INT CHECK(1-5), comment, is_approved BOOLEAN, created_at)
-
--- CMS-страницы
-pages (id UUID PK, slug UNIQUE, title, content JSONB,
-  meta_title, meta_description, is_published BOOLEAN, created_at, updated_at)
-
--- Настройки
-settings (id UUID PK, key UNIQUE, value JSONB, group_name)
-```
-
-**RLS-политики:**
-- `rooms` — чтение: все, запись: admin
-- `bookings` — пользователь видит свои, admin видит все
-- `reviews` — approved видны всем, модерация: admin
-- `pages` — published: все, черновики: admin
-- `settings` — чтение: все, запись: admin
-
----
-
-## Дизайн-система
-
-**Стиль:** Organic Luxury — мягкие формы, натуральная палитра, Bento Grid + Glassmorphism акценты.
-**Типографика:** Serif (Georgia) для заголовков, system-ui sans-serif для текста. Определено в `src/index.css`.
-
-### Цветовая палитра (Tailwind 4 `@theme` в `src/index.css`)
-```
---color-primary: #1B3A4B        /* Глубокий морской */
---color-primary-light: #3D6B7E  /* Морская волна */
---color-accent: #C9A96E         /* Золотой песок */
---color-accent-warm: #E8C48A    /* Тёплый песок */
---color-bg: #FAFAF7             /* Слоновая кость */
---color-bg-dark: #F0EDE6        /* Тёплый серый */
---color-text: #2C2C2C           /* Основной текст */
---color-text-muted: #6B7280     /* Приглушённый текст */
---color-success: #4CAF50
---color-error: #E53935
---color-warning: #FF9800
-```
-
-Цвета используются напрямую как Tailwind-классы: `bg-primary`, `text-accent`, `border-bg-dark` и т.д.
-
-### Брейкпоинты (Mobile-First)
-`sm: 640px` | `md: 768px` | `lg: 1024px` | `xl: 1280px` | `2xl: 1536px`
-
----
-
-## Конвенции кода
-
-### Компоненты
-- Только функциональные компоненты с **именованным экспортом**
-- PropTypes обязательны для каждого компонента
-- Только Tailwind (никакого CSS-in-JS), используй `cn()` из `@/lib/utils` для условных классов
-- Barrel exports через `index.js` в папках компонентов (см. `src/components/ui/index.js`)
-- Импорт-алиасы: `@/*` → `src/*`
-
-### Иконки
-- **react-icons** — единственный источник иконок
-- **НИКОГДА не использовать эмодзи, смайлы, Unicode-символы** вместо иконок
-- **НИКОГДА не использовать inline SVG** — всегда импортировать из react-icons
-
-### Именование файлов
-- PascalCase для компонентов (`Button.jsx`, `RoomCard.jsx`)
-- camelCase для утилит и хуков (`useAuth.js`, `utils.js`)
-- Сервисы: `*.service.js` (camelCase)
-
-### Валидация форм
-Все Zod-схемы сосредоточены в `src/lib/validators.js`. Формы контактов используют honeypot-поле `website` для защиты от спама.
-
-### Константы
-Бизнес-константы (типы номеров, статусы бронирований) в `src/lib/constants.js`. Сайт: "Меганом Эко-дом".
-
-### Git
-- Коммиты: `type(scope): description` (conventional commits)
-- Ветки: `feature/booking-calendar`, `fix/room-gallery-swipe`
-
-### Стабильность при переключении языка (RU/EN)
-
-Используй `<StableText tKey="..." />` (из `@/components/ui`) вместо `{t('...')}` для любого переводимого текста в **layout-sensitive** контексте:
-- текст в горизонтальных flex-строках, где ширина влияет на соседей (nav links, horizontal tabs, badge labels)
-- текст в grid-ячейках, где высота строки влияет на соседние ячейки (activity cards, feature grids)
-
-`StableText` рендерит оба текста (RU + текущий) в одной `inline-grid` ячейке — ширина контейнера всегда равна `max(RU ширина, EN ширина)`, что исключает layout shift при переключении.
-
-**НЕ нужен** для: `<p>`, `<h1-h6>`, `<label>` над input в `flex-col`, текста в `flex-1`-колонках.
-
-### Форматирование (prettier.config.js)
-singleQuote, trailingComma: 'all', tabWidth: 2, semi: true, printWidth: 100, prettier-plugin-tailwindcss.
-
----
-
-## SEO и доступность
-
-**SEO:** уникальные title/meta description на каждой странице (компонент `MetaTags` в `src/components/seo/`), Open Graph, Schema.org (Hotel, LodgingBusiness, Review), robots.txt, sitemap.xml, семантический HTML, canonical URL, Яндекс.Метрика + GA4.
-
-**a11y:** ARIA-атрибуты, навигация клавиатурой, контрастность WCAG 2.1 AA, focus-visible, `lang="ru"`.
-
----
+**StableText:** Использовать `<StableText tKey="..." />` вместо `{t('...')}` в горизонтальных flex-строках (nav, tabs, badges) и grid-ячейках где высота влияет на соседей.
 
 ## Критические правила
 
-1. **НИКОГДА не коммить `.env`** — только `.env.example`
-2. **Mobile-First** — вёрстка начинается с мобильной версии
-3. **RLS в Supabase** — каждая таблица должна иметь политики
-4. **Никаких хардкодов** — тексты в i18n (`src/i18n/ru.json`, `src/i18n/en.json`), конфиги в `constants.js`
-5. **Семантический HTML** — div только когда нет подходящего тега
-6. **Lazy loading** страниц через React.lazy + Suspense, code splitting по маршрутам
-7. **Изображения:** WebP/AVIF, srcset, lazy loading с blur placeholder
-8. **Lighthouse:** 90+ по всем метрикам, LCP < 2.5s, CLS < 0.1
+1. **НИКОГДА не коммить .env**
+2. Mobile-First вёрстка
+3. Тексты в i18n (`src/i18n/ru.json`, `en.json`), конфиги в `constants.js`
+4. Только react-icons, никаких эмодзи
+5. Именованные экспорты, PropTypes обязательны
+6. `cn()` из `@/lib/utils` для условных классов
+7. Деплой только по явной команде пользователя
+8. **КРИТИЧНО — Apache вырезает Authorization header:** `.htaccess` ОБЯЗАН иметь `RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]`
+9. **КРИТИЧНО — race condition:** после `signIn()`/`verifyEmail()` ВСЕГДА `setUser()` ДО `navigate()`
+10. **КРИТИЧНО — DirectorySlash:** `.htaccess` ОБЯЗАН иметь `DirectorySlash Off`. Без него Apache делает `/about` → 301 → `http://about/` (HTTP downgrade), т.к. nginx на Spaceweb терминирует SSL до Apache. Не добавлять `RewriteCond %{HTTPS} off` — это вызовет бесконечный редирект.
+11. **HTTP→HTTPS redirect:** Использовать `RewriteCond %{HTTP:X-Forwarded-Proto} =http` — nginx Spaceweb передаёт этот заголовок. НЕ использовать `%{HTTPS} off` — он всегда "off" на стороне Apache и вызывает бесконечный цикл.
 
----
+## Утилиты (src/lib/utils.js)
 
-## Переменные окружения
+`cn()` — условные классы | `formatPrice(amount, currency?)` — рубли через Intl | `formatDate(date, options?)` — русская локаль
 
+## Деплой
+
+SSH: `mmosowmail@77.222.40.4` | Path: `/home/m/mmosowmail/meganom-eco_ru/public_html/`
+Pass: `~/.claude/projects/.../memory/ssh_access.md`
+
+```bash
+npm run build
+
+# ВСЕГДА деплоить вместе (assets + все pre-rendered HTML):
+set P=mmosowmail@77.222.40.4:/home/m/mmosowmail/meganom-eco_ru/public_html
+pscp -pw "PASS" "dist\assets\*"   %P%/assets/
+pscp -pw "PASS" "dist\index.html" %P%/index.html
+pscp -pw "PASS" "dist\sitemap.xml" %P%/sitemap.xml
+pscp -pw "PASS" "dist\404.html"   %P%/404.html
+pscp -pw "PASS" "dist\spa.html"   %P%/spa.html
+pscp -pw "PASS" "dist\.htaccess"  %P%/.htaccess
+pscp -pw "PASS" -r "dist\about"    %P%/
+pscp -pw "PASS" -r "dist\rooms"    %P%/
+pscp -pw "PASS" -r "dist\contacts" %P%/
+pscp -pw "PASS" -r "dist\faq"      %P%/
+pscp -pw "PASS" -r "dist\booking"  %P%/
+pscp -pw "PASS" -r "dist\gallery"  %P%/
+pscp -pw "PASS" -r "dist\privacy"  %P%/
+pscp -pw "PASS" -r "dist\terms"    %P%/
+pscp -pw "PASS" -r "dist\consent"  %P%/
+
+# PHP — только если изменились _api/*.php
 ```
-VITE_SUPABASE_URL=
-VITE_SUPABASE_ANON_KEY=
-VITE_GA_ID=                     # Google Analytics 4
-VITE_YM_ID=                     # Яндекс.Метрика
-VITE_SITE_URL=                  # Каноничный URL сайта
+
+**ВАЖНО:** Pre-rendered HTML (`dist\rooms\*`, `dist\about`, ...) содержат хэши от текущего билда. Если деплоить только `assets\*` без них — на сервере остаются СТАРЫЕ pre-rendered файлы со старыми хэшами JS → 404 на скриптах → Яндекс видит "Ошибка".
+
+**Пререндер = снимки страниц.** `npm run build` открывает собранный сайт в headless Chromium (Playwright из devDependencies; если его Chromium не скачан - установленный Google Chrome) и кладёт видимую разметку каждой страницы в её HTML, плюс `dist/404.html`. Без браузера билд падает; `SKIP_PRERENDER=1` собирает со старым скрытым текстом - такой билд не деплоить (скрытый текст = "малоценные страницы" в Яндексе). Новую публичную страницу добавлять в `routeMetadata`/`roomMetadata` плагина, в sitemap (`vite.config.js`) и в список деплоя; клиентские маршруты без пререндера - в правило "Priority 2" `.htaccess`, иначе они будут отдавать 404.
+
+**Переобход после деплоя (IndexNow).** Ключ лежит в `public/ab740078dd94e7c33d1f1ac73f06d7a2.txt` (он же в корне сервера). Отправить все URL из sitemap в Яндекс (работает, даже когда "Переобход страниц" в Вебмастере недоступен; ответ 200/202 = принято):
+```bash
+KEY=ab740078dd94e7c33d1f1ac73f06d7a2
+URLS=$(grep -o '<loc>[^<]*' dist/sitemap.xml | sed 's/<loc>//' | node -e "console.log(JSON.stringify(require('fs').readFileSync(0,'utf8').trim().split('\n')))")
+curl -X POST https://yandex.com/indexnow -H 'Content-Type: application/json; charset=utf-8' \
+  -d "{\"host\":\"meganom-eco.ru\",\"key\":\"$KEY\",\"keyLocation\":\"https://meganom-eco.ru/$KEY.txt\",\"urlList\":$URLS}"
 ```
+
+**migrate.php** — локальный CLI (`php migrate.php`) с захардкоженными dev-credentials. **НЕ деплоить на сервер.**
+
+## Документация (читать по необходимости)
+
+- `.claude/docs/api.md` — PHP API endpoints, DB schema, auth flow
+- `.claude/docs/architecture.md` — компоненты, i18n slugs, StableText, дизайн-система

@@ -1,8 +1,10 @@
-import { useEffect, useRef } from 'react';
+﻿import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, useInView } from 'framer-motion';
 import PropTypes from 'prop-types';
+import { MetaTags } from '@/components/seo/MetaTags';
+import { LEGAL_VERSION } from '@/data/legal';
 
 function PolicySection({ num, title, content, items, index }) {
   const ref = useRef(null);
@@ -50,14 +52,11 @@ PolicySection.propTypes = {
 export default function Terms() {
   const { t } = useTranslation();
 
-  useEffect(() => {
-    document.title = `${t('terms.title')} — Меганом Эко-дом`;
-  }, [t]);
-
   const sections = t('terms.sections', { returnObjects: true });
 
   return (
     <>
+      <MetaTags title={t('terms.title')} path="/terms" noindex />
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
       <section className="relative flex h-[40vh] items-center justify-center overflow-hidden">
         <img
@@ -94,11 +93,11 @@ export default function Terms() {
           {/* Meta */}
           <div className="mb-12 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-text-muted">
-              {t('legal.lastUpdated')} <span className="text-text">{t('legal.lastUpdatedDate')}</span>
+              {t('legal.lastUpdated')} <span className="text-text">{LEGAL_VERSION}</span>
             </p>
             <Link
               to="/privacy"
-              className="text-sm text-accent underline-offset-4 hover:underline"
+              className="text-sm text-accent transition-colors duration-200 hover:text-primary"
             >
               {t('terms.linkToPrivacy')}
             </Link>

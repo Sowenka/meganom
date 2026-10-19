@@ -1,0 +1,18 @@
+# Restrict admin API to whitelisted IPs only
+# Note: on Spaceweb nginx proxy, real IP comes via X-Forwarded-For.
+# PHP-level check in config.php (require_admin_ip) is the primary guard.
+# This .htaccess is a secondary layer using REMOTE_ADDR as backup.
+
+Order Deny,Allow
+Deny from all
+
+# Owner IPs
+Allow from 155.212.6.85
+Allow from 92.241.231.106
+Allow from 82.38.67.212
+Allow from 82.40.37.155
+
+# Spaceweb server (internal requests)
+Allow from 77.222.40.4
+# Localhost
+Allow from 127.0.0.1

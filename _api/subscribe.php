@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/config.php';
 cors();
 
@@ -10,12 +10,16 @@ if (!$body) json_error('Invalid JSON');
 $email = trim($body['email'] ?? '');
 if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) json_error('Некорректный email');
 
+// Рассылка - реклама (ст. 18 ФЗ-38): без предварительного согласия не принимаем.
+$consent = consent_record($body);
+if (!$consent['given']) json_error('Требуется согласие на обработку персональных данных');
+
 $html = '<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Новый подписчик — Меганом Эко-дом</title>
+<title>Новый подписчик - Меганом Эко-дом</title>
 </head>
 <body style="margin:0;padding:0;background:#F0EDE6;font-family:Georgia,serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#F0EDE6;padding:40px 16px;">
@@ -47,6 +51,10 @@ $html = '<!DOCTYPE html>
           </td>
         </tr>
 
+        <tr>
+          <td style="background:#ffffff;padding:0 40px 32px;">' . consent_email_block($consent) . '</td>
+        </tr>
+
         <!-- Footer -->
         <tr>
           <td style="background:#1B3A4B;border-radius:0 0 16px 16px;padding:24px 40px;text-align:center;">
@@ -63,10 +71,12 @@ $html = '<!DOCTYPE html>
 
 try {
     $mail = make_mailer(MAIL_TO_INFO, 'Меганом Инфо');
-    $mail->Subject = 'Новый подписчик — ' . $email;
+    $mail->Subject = 'Новый подписчик - ' . $email;
     $mail->addReplyTo($email);
     $mail->Body    = $html;
-    $mail->AltBody = "Новый подписчик: $email";
+    $mail->AltBody = "Новый подписчик: $email"
+        . "\n\nСогласие на обработку персональных данных: дано, {$consent['at']}"
+        . ", IP {$consent['ip']}, редакция {$consent['version']}";
     $mail->send();
     json_response(['ok' => true]);
 } catch (\Exception $e) {

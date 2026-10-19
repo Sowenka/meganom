@@ -1,8 +1,9 @@
-import { useRef } from 'react';
+﻿import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { MetaTags } from '@/components/seo/MetaTags';
 import { StableText } from '@/components/ui';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { FiMapPin, FiStar, FiGrid, FiHome, FiUsers, FiMaximize } from 'react-icons/fi';
 import { useRooms } from '@/hooks/useRooms';
 import { formatPrice } from '@/lib/utils';
@@ -10,6 +11,8 @@ import { formatPrice } from '@/lib/utils';
 function SectionReveal({ children, className, delay = 0 }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const prefersReduced = useReducedMotion();
+  if (prefersReduced) return <div ref={ref} className={className}>{children}</div>;
   return (
     <motion.div
       ref={ref}
@@ -37,6 +40,7 @@ const sectionIcons = {
 
 export default function About() {
   const { t } = useTranslation();
+  const prefersReduced = useReducedMotion();
 
   const territory = t('about.territory.items', { returnObjects: true });
   const services  = t('about.services.items',  { returnObjects: true });
@@ -52,6 +56,11 @@ export default function About() {
 
   return (
     <>
+      <MetaTags
+        title="Гостиница у мыса Меганом - отдых у моря рядом с Судаком, Крым"
+        description="Гостиница у мыса Меганом в 8 км от Судака. Домики и номера из натурального дерева, бассейн, сад, виноградник. Бесплатный трансфер до пляжа. Отдых для всей семьи в Крыму."
+        path="/about"
+      />
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
       <section className="relative flex h-[55vh] items-center justify-center overflow-hidden">
         <img
@@ -59,11 +68,12 @@ export default function About() {
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
           loading="eager"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-primary/65" />
         <div className="relative z-10 w-full px-6 text-center">
           <motion.span
-            initial={{ opacity: 0, y: 16 }}
+            initial={prefersReduced ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="mb-4 inline-block text-xs font-medium uppercase tracking-[0.2em] text-accent-warm"
@@ -71,19 +81,33 @@ export default function About() {
             {t('about.subtitle')}
           </motion.span>
           <motion.h1
-            initial={{ opacity: 0, y: 24 }}
+            initial={prefersReduced ? false : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="font-serif text-3xl font-bold italic text-white sm:text-5xl md:text-6xl"
           >
             {t('about.title')}
           </motion.h1>
+          <motion.p
+            initial={prefersReduced ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="mt-2 text-base text-white/80"
+          >
+            {t('about.heroSubtitle')}
+          </motion.p>
         </div>
       </section>
 
       {/* ── DESCRIPTION ───────────────────────────────────────────────────── */}
-      <section className="bg-white py-24">
-        <SectionReveal className="mx-auto max-w-3xl px-6 text-center">
+      <section className="relative overflow-hidden bg-white py-24">
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none text-[8rem] font-bold uppercase leading-none text-primary opacity-[0.04] md:text-[14rem]"
+        >
+          {t('watermarks.sea')}
+</span>
+        <SectionReveal className="relative mx-auto max-w-3xl px-6 text-center">
           <span className="mb-3 block text-xs font-medium uppercase tracking-[0.2em] text-accent">
             {t('home.welcome.tagline')}
           </span>
@@ -114,15 +138,23 @@ export default function About() {
         const isReversed = index % 2 !== 0;
 
         return (
-          <section key={key} className={`py-20 ${isReversed ? 'bg-bg-dark' : 'bg-bg'}`}>
-            <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-2 lg:items-center">
+          <section key={key} className={`relative overflow-hidden py-20 ${isReversed ? 'bg-bg-dark' : 'bg-bg'}`}>
+            {key === 'nearby' && (
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none text-[8rem] font-bold uppercase leading-none text-primary opacity-[0.04] md:text-[14rem]"
+              >
+                {t('watermarks.meganom')}
+              </span>
+            )}
+            <div className="relative mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-2 lg:items-center">
               <SectionReveal
                 delay={0}
                 className={`overflow-hidden rounded-2xl ${isReversed ? 'lg:order-2' : ''}`}
               >
                 <img
                   src={`${import.meta.env.BASE_URL}gallery/${photo}`}
-                  alt=""
+                  alt={t(`about.${key}.imageAlt`)}
                   loading="lazy"
                   className="h-[420px] w-full object-cover"
                 />
@@ -134,7 +166,7 @@ export default function About() {
                     <Icon className="h-5 w-5" />
                   </div>
                   <span className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-                    {t(`about.${key}.title`)}
+                    {t(`about.${key}.tagline`)}
                   </span>
                 </div>
 
@@ -146,10 +178,10 @@ export default function About() {
                   {Array.isArray(items) && items.map((item, i) => (
                     <motion.li
                       key={i}
-                      initial={{ opacity: 0, x: -12 }}
-                      whileInView={{ opacity: 1, x: 0 }}
+                      initial={prefersReduced ? false : { opacity: 0, x: -12 }}
+                      whileInView={prefersReduced ? {} : { opacity: 1, x: 0 }}
                       viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: 0.04 * i }}
+                      transition={{ duration: prefersReduced ? 0 : 0.4, delay: prefersReduced ? 0 : 0.04 * i }}
                       className="flex items-start gap-3 text-text-muted"
                     >
                       <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
@@ -184,14 +216,14 @@ export default function About() {
                   <SectionReveal key={room.id} delay={i * 0.07}>
                     <Link
                       to={`/rooms/${room.slug}`}
-                      className="block rounded-xl border border-white/10 bg-white/5 p-6 transition-colors hover:bg-white/10"
+                      className="block cursor-pointer rounded-xl border border-white/10 bg-white/5 p-6 transition-colors hover:bg-white/10"
                     >
                       <FiHome className="mb-4 h-5 w-5 text-accent" />
                       <p className="mb-1 font-semibold text-white">{room.title}</p>
                       <p className="mb-3 text-sm font-medium text-accent">
-                        {t('rooms.from')} {formatPrice(room.price_per_night)} / {t('common.perNight')}
+                        {t('roomDetail.bookingCard.priceFrom')} {formatPrice(room.price_per_night)} / {t('common.perNight')}
                       </p>
-                      <div className="flex gap-5 text-sm text-white/60">
+                      <div className="flex gap-5 text-sm text-white/75">
                         <span className="flex items-center gap-1.5">
                           <FiMaximize className="h-3.5 w-3.5" /> {room.area_sqm} м²
                         </span>
@@ -206,7 +238,7 @@ export default function About() {
             }
           </div>
 
-          <p className="mt-10 text-center text-sm text-white/40">
+          <p className="mt-10 text-center text-sm text-white/60">
             {t('about.allRoomsInclude')}
           </p>
         </div>
@@ -222,11 +254,11 @@ export default function About() {
             {t('home.booking.title')}
           </h2>
           <p className="mb-8 text-lg text-text-muted">
-            {t('about.description').split('.')[0]}.
+            {t('about.ctaText')}
           </p>
           <Link
             to="/booking"
-            className="inline-flex items-center gap-2 rounded-full bg-accent px-8 py-3 font-medium text-white transition-colors hover:bg-accent-warm"
+            className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-accent px-8 py-3 font-medium text-white transition-colors hover:bg-primary"
           >
             <StableText tKey="nav.booking" />
           </Link>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -6,7 +6,9 @@ import { FiUser } from 'react-icons/fi';
 import { useUIStore } from '@/store/useUIStore';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
+import { SEASON_OPEN } from '@/lib/constants';
 import { Logo } from '@/components/Logo';
+import { SeasonBanner } from '@/components/SeasonBanner';
 import { StableText } from '@/components/ui';
 import { WeatherWidget } from '@/components/WeatherWidget';
 
@@ -108,6 +110,7 @@ export function Header() {
         isTransparent ? 'bg-transparent' : 'bg-primary shadow-lg',
       )}
     >
+      {!SEASON_OPEN && <SeasonBanner />}
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
         <div className="flex items-center gap-3">
           <WeatherWidget className="hidden md:flex" />
@@ -129,7 +132,10 @@ export function Header() {
           <li>
             <Link
               to={isAuthenticated ? '/profile' : '/auth/login'}
-              className="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/15 hover:text-white"
+              className={cn(
+                'flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/15 hover:text-white',
+                isAuthenticated && 'ring-1 ring-accent ring-offset-1 ring-offset-transparent',
+              )}
               aria-label={isAuthenticated ? t('header.profile') : t('header.login')}
             >
               <FiUser className="h-5 w-5" />
@@ -154,7 +160,10 @@ export function Header() {
         <div className="flex h-9 items-center gap-3 md:hidden">
           <Link
             to={isAuthenticated ? '/profile' : '/auth/login'}
-            className="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/15 hover:text-white"
+            className={cn(
+              'flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/15 hover:text-white',
+              isAuthenticated && 'ring-1 ring-accent ring-offset-1 ring-offset-transparent',
+            )}
             aria-label={isAuthenticated ? t('header.profile') : t('header.login')}
           >
             <FiUser className="h-5 w-5" />
@@ -172,7 +181,7 @@ export function Header() {
         </div>
       </nav>
 
-      {/* Mobile menu — always bg-primary */}
+      {/* Mobile menu - always bg-primary */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div

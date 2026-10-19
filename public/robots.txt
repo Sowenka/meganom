@@ -1,6 +1,17 @@
-# Сайт в разработке — индексация временно закрыта
 User-agent: *
-Disallow: /
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /api/
+Disallow: /social-soon
 
-# Sitemap будет открыт после завершения разработки
-# Sitemap: https://meganom-eco.ru/sitemap.xml
+User-agent: Yandex
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /api/
+Disallow: /social-soon
+Clean-param: room /booking
+Clean-param: checkIn&checkOut&guests /rooms
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&yclid&gclid&fbclid
+Crawl-delay: 1
+
+Sitemap: https://meganom-eco.ru/sitemap.xml

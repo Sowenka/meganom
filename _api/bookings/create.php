@@ -1,8 +1,11 @@
-<?php
+﻿<?php
 require_once dirname(__DIR__) . '/config.php';
 cors();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_error('Method not allowed', 405);
+
+// ── Сезон закрыт — бронирование недоступно ─────────────────────────────────────
+require_season_open();
 
 // ── Auth required ─────────────────────────────────────────────────────────────
 $authPayload = require_auth();
@@ -20,7 +23,9 @@ $guestName  = trim($body['guest_name']       ?? '');
 $guestEmail = trim($body['guest_email']      ?? '');
 $guestPhone = trim($body['guest_phone']      ?? '');
 $requests   = trim($body['special_requests'] ?? '');
-// total_price and nights are intentionally NOT read from client — calculated server-side
+// 152-ФЗ ч.1 ст.9: наличие согласия доказывает оператор.
+$consent    = consent_record($body);
+// total_price and nights are intentionally NOT read from client - calculated server-side
 
 if (!$roomId)     json_error('Не выбран номер');
 if (!$checkIn)    json_error('Укажите дату заезда');
@@ -33,8 +38,8 @@ if (!$ciDate || !$coDate) json_error('Некорректный формат да
 if ($coDate <= $ciDate)   json_error('Дата выезда должна быть позже даты заезда');
 
 $nights = (int)$ciDate->diff($coDate)->days;
-if ($nights < 1)  json_error('Минимальный срок бронирования — 1 ночь');
-if ($nights > 90) json_error('Максимальный срок бронирования — 90 ночей');
+if ($nights < 1)  json_error('Минимальный срок бронирования - 1 ночь');
+if ($nights > 90) json_error('Максимальный срок бронирования - 90 ночей');
 
 if (!$guestName)  json_error('Укажите имя');
 if (!$guestEmail || !filter_var($guestEmail, FILTER_VALIDATE_EMAIL)) json_error('Некорректный email');
@@ -42,6 +47,10 @@ if ($guests < 1)  json_error('Укажите количество гостей')
 
 try {
     $pdo = db();
+
+    $pdo->exec('ALTER TABLE bookings ADD COLUMN IF NOT EXISTS consent_pd_at TIMESTAMP NULL');
+    $pdo->exec('ALTER TABLE bookings ADD COLUMN IF NOT EXISTS consent_pd_ip VARCHAR(45) NULL');
+    $pdo->exec('ALTER TABLE bookings ADD COLUMN IF NOT EXISTS consent_pd_version VARCHAR(40) NULL');
 
     // ── Проверяем номер и считаем цену на сервере ─────────────────────────────
     $roomStmt = $pdo->prepare("
@@ -57,7 +66,7 @@ try {
         json_error('Количество гостей превышает вместимость номера (' . $room['capacity'] . ' чел.)', 400);
     }
 
-    // Server-side price — client value is ignored
+    // Server-side price - client value is ignored
     $totalPrice = round((float)$room['price_per_night'] * $nights, 2);
     $roomTitle  = $room['title'];
 
@@ -82,11 +91,13 @@ try {
     $stmt = $pdo->prepare("
         INSERT INTO bookings
             (room_id, user_id, check_in, check_out, guests_count, total_price, nights,
-             status, payment_status, guest_name, guest_email, guest_phone, special_requests)
+             status, payment_status, guest_name, guest_email, guest_phone, special_requests,
+             consent_pd_at, consent_pd_ip, consent_pd_version)
         VALUES
             (:room_id, :user_id, :check_in, :check_out, :guests, :total_price, :nights,
-             'pending', 'unpaid', :guest_name, :guest_email, :guest_phone, :requests)
-        RETURNING id, created_at
+             'pending', 'unpaid', :guest_name, :guest_email, :guest_phone, :requests,
+             :consent_at, :consent_ip, :consent_version)
+        RETURNING id, booking_number, created_at
     ");
     $stmt->execute([
         ':room_id'     => $roomId,
@@ -100,6 +111,9 @@ try {
         ':guest_email' => $guestEmail,
         ':guest_phone' => $guestPhone ?: null,
         ':requests'    => $requests   ?: null,
+        ':consent_at'      => $consent['given'] ? $consent['at'] : null,
+        ':consent_ip'      => $consent['given'] ? ($consent['ip'] ?: null) : null,
+        ':consent_version' => $consent['given'] ? ($consent['version'] ?: null) : null,
     ]);
     $booking = $stmt->fetch();
 
@@ -114,8 +128,8 @@ function booking_table(string $bookingId, string $roomTitle, string $checkIn,
     string $checkOut, int $nights, int $guests, float $totalPrice,
     string $guestName, string $guestEmail, string $guestPhone, string $requests): string
 {
-    $phone = $guestPhone ?: '—';
-    $req   = $requests   ?: '—';
+    $phone = $guestPhone ?: '-';
+    $req   = $requests   ?: '-';
     $price = number_format($totalPrice, 0, '.', ' ') . ' ₽';
     $checkInF  = date('d.m.Y', strtotime($checkIn));
     $checkOutF = date('d.m.Y', strtotime($checkOut));
@@ -229,11 +243,10 @@ $guestIntro = '<p style="margin:0 0 24px;font-size:15px;color:#2C2C2C;font-famil
   Здравствуйте, <strong>' . e($guestName) . '</strong>!<br>
   Ваша заявка принята. Наш менеджер свяжется с вами в ближайшее время для подтверждения.
 </p>';
-$guestCta = '<div style="margin-top:28px;padding:16px 20px;background:#FAFAF7;border-radius:10px;border:1px solid #F0EDE6;text-align:center;">
-  <p style="margin:0;font-size:14px;color:#6B7280;font-family:Arial,sans-serif;">Вопросы? Звоните: <a href="tel:+79781234567" style="color:#C9A96E;text-decoration:none;font-weight:bold;">+7 (978) 123-45-67</a></p>
-</div>';
+$guestCta = '';
 
-$staffHtml = wrap_email('Новое бронирование!', 'Поступила заявка · meganom-eco.ru', $table, $staffCta);
+$staffHtml = wrap_email('Новое бронирование!', 'Поступила заявка · meganom-eco.ru',
+    $table . consent_email_block($consent), $staffCta);
 $guestHtml = wrap_email('Ваша заявка принята!', 'Подтверждение бронирования · meganom-eco.ru', $guestIntro . $table, $guestCta);
 
 $mailErrors = [];
@@ -250,7 +263,7 @@ try {
 try {
     $mail = make_mailer($guestEmail, $guestName);
     $mail->addReplyTo(MAIL_TO_BOOKING, 'Меганом Эко-дом');
-    $mail->Subject = 'Ваша заявка принята — Меганом Эко-дом';
+    $mail->Subject = 'Ваша заявка принята - Меганом Эко-дом';
     $mail->Body    = $guestHtml;
     $mail->AltBody = "Здравствуйте, $guestName! Ваша заявка принята.\nЗаезд: $checkIn, выезд: $checkOut\nДомик: $roomTitle";
     $mail->send();

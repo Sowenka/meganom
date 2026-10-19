@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+﻿import { useEffect, useState, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -263,7 +263,7 @@ export default function Profile() {
     try {
       blob = await getCroppedBlob(src, croppedAreaPixels);
     } catch {
-      toast.error('Не удалось обработать фото');
+      toast.error(t('profile.avatarProcessError'));
       return;
     }
 
@@ -276,9 +276,9 @@ export default function Profile() {
       const result = await uploadAvatar(file);
       setProfile((prev) => ({ ...prev, avatar_url: result.avatar_url }));
       setAvatarVersion((v) => v + 1);
-      toast.success('Фото профиля обновлено');
+      toast.success(t('profile.avatarSuccess'));
     } catch (err) {
-      toast.error(err.message || 'Не удалось загрузить фото');
+      toast.error(err.message || t('profile.avatarError'));
     } finally {
       setAvatarPreview(null);
       setAvatarUploading(false);
@@ -392,12 +392,12 @@ export default function Profile() {
                   <InfoRow
                     icon={<FiPhone className="h-4 w-4" />}
                     label={t('profile.phone')}
-                    value={profile?.phone || '—'}
+                    value={profile?.phone || '-'}
                   />
                   <InfoRow
                     icon={<FiCalendar className="h-4 w-4" />}
                     label={t('profile.registrationDate')}
-                    value={profile?.created_at ? formatDate(profile.created_at) : '—'}
+                    value={profile?.created_at ? formatDate(profile.created_at) : '-'}
                   />
                   <Button
                     variant="ghost"

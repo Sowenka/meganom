@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { sendSubscribeEmail } from '@/services/email.service';
+import { openCookieSettings } from '@/hooks/useCookieConsent';
 import { Messengers } from '@/components/Messengers';
 import { Logo } from '@/components/Logo';
 import { StableText } from '@/components/ui';
@@ -19,16 +20,22 @@ const navLinks = [
 export function Footer() {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
+  const [consent, setConsent] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
     if (!email.trim()) return;
+    if (!consent) {
+      toast.error(t('common.consent.error'));
+      return;
+    }
     setLoading(true);
     try {
-      await sendSubscribeEmail(email.trim());
+      await sendSubscribeEmail(email.trim(), consent);
       toast.success(t('footer.subscribeSuccess'));
       setEmail('');
+      setConsent(false);
     } catch {
       toast.error(t('footer.subscribeError'));
     } finally {
@@ -50,25 +57,50 @@ export function Footer() {
                 {t('footer.newsletter')}
               </p>
             </div>
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <form onSubmit={handleSubscribe} className="flex w-full gap-2 sm:w-auto">
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <form onSubmit={handleSubscribe} className="flex w-full gap-2 sm:w-auto">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={t('footer.emailPlaceholder')}
+                    required
+                    className="min-w-0 flex-1 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-white placeholder-white/40 outline-none focus:border-accent focus:ring-1 focus:ring-accent sm:w-52 sm:flex-none"
+                  />
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="shrink-0 rounded-lg bg-accent px-5 py-2.5 font-medium text-white transition-colors hover:bg-accent-warm disabled:opacity-60"
+                  >
+                    {loading ? '...' : <StableText tKey="footer.subscribe" />}
+                  </button>
+                </form>
+                <Messengers />
+              </div>
+              <label
+                htmlFor="footerSubscribeConsent"
+                className="flex max-w-md cursor-pointer items-start gap-2.5 text-xs leading-relaxed text-white/50"
+              >
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t('footer.emailPlaceholder')}
-                  required
-                  className="min-w-0 flex-1 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-white placeholder-white/40 outline-none focus:border-accent focus:ring-1 focus:ring-accent sm:w-52 sm:flex-none"
+                  id="footerSubscribeConsent"
+                  type="checkbox"
+                  checked={consent}
+                  onChange={(e) => setConsent(e.target.checked)}
+                  className="mt-0.5 h-3.5 w-3.5 shrink-0 cursor-pointer accent-accent"
                 />
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="shrink-0 rounded-lg bg-accent px-5 py-2.5 font-medium text-white transition-colors hover:bg-accent-warm disabled:opacity-60"
-                >
-                  {loading ? '...' : <StableText tKey="footer.subscribe" />}
-                </button>
-              </form>
-              <Messengers />
+                <span>
+                  {t('common.consent.prefix')}{' '}
+                  <Link to="/consent" className="text-accent-warm transition-colors hover:text-white">
+                    {t('common.consent.consentLink')}
+                  </Link>{' '}
+                  {t('common.consent.middle')}{' '}
+                  <Link to="/privacy" className="text-accent-warm transition-colors hover:text-white">
+                    {t('common.consent.policyLink')}
+                  </Link>
+                  .
+                </span>
+              </label>
             </div>
           </div>
         </div>
@@ -108,16 +140,6 @@ export function Footer() {
             </p>
             <ul className="flex flex-col gap-2 text-base text-text-muted">
               <li>
-                <a href="tel:+79781234567" className="transition-colors hover:text-primary">
-                  +7 (978) 123-45-67
-                </a>
-              </li>
-              <li>
-                <a href="tel:+73652123456" className="transition-colors hover:text-primary">
-                  +7 (365-2) 12-34-56
-                </a>
-              </li>
-              <li>
                 <a href="mailto:info@meganom-eco.ru" className="transition-colors hover:text-primary">
                   info@meganom-eco.ru
                 </a>
@@ -135,9 +157,21 @@ export function Footer() {
               {t('footer.privacy')}
             </Link>
             <span className="hidden sm:inline text-primary/30">&middot;</span>
+            <Link to="/consent" className="transition-colors hover:text-primary">
+              {t('footer.consent')}
+            </Link>
+            <span className="hidden sm:inline text-primary/30">&middot;</span>
             <Link to="/terms" className="transition-colors hover:text-primary">
               {t('footer.terms')}
             </Link>
+            <span className="hidden sm:inline text-primary/30">&middot;</span>
+            <button
+              type="button"
+              onClick={openCookieSettings}
+              className="transition-colors hover:text-primary"
+            >
+              {t('footer.cookieSettings')}
+            </button>
           </div>
           &copy; {new Date().getFullYear()} {t('footer.copyright')}
         </div>

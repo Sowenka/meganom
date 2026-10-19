@@ -8,3 +8,6 @@ Thumbs.db
 .idea
 .claude
 memory.md
+
+# Local CLI with hardcoded dev DB credentials - never commit
+migrate.php

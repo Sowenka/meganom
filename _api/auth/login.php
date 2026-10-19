@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once dirname(__DIR__) . '/config.php';
 cors();
 
@@ -24,7 +24,7 @@ try {
         attempted_at TIMESTAMP NOT NULL DEFAULT NOW()
     )");
 
-    // Cleanup old records (older than 1 hour) — runs occasionally
+    // Cleanup old records (older than 1 hour) - runs occasionally
     if (rand(1, 20) === 1) {
         $pdo->exec("DELETE FROM login_attempts WHERE attempted_at < NOW() - INTERVAL '1 hour'");
     }
@@ -39,7 +39,7 @@ try {
     }
 
     // ── Auth ──────────────────────────────────────────────────────────────────
-    $stmt = $pdo->prepare('SELECT id, email, name, role, password_hash FROM users WHERE email = :email');
+    $stmt = $pdo->prepare('SELECT id, email, name, role, password_hash, is_verified FROM users WHERE email = :email');
     $stmt->execute([':email' => $email]);
     $user = $stmt->fetch();
 
@@ -49,8 +49,13 @@ try {
         json_error('Неверный email или пароль', 401);
     }
 
-    // Successful login — clear attempts for this IP
+    // Successful login - clear attempts for this IP
     $pdo->prepare("DELETE FROM login_attempts WHERE ip = :ip")->execute([':ip' => $ip]);
+
+    // Check email verification
+    if (isset($user['is_verified']) && !$user['is_verified']) {
+        json_error('Подтвердите email перед входом. Проверьте вашу почту.', 403);
+    }
 
     $token = jwt_encode([
         'sub'   => $user['id'],

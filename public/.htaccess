@@ -1,12 +1,90 @@
-Options -MultiViews
+Options -MultiViews -Indexes
+DirectorySlash Off
 RewriteEngine On
 RewriteBase /
 
-# HTTPS redirect is handled by nginx (Spaceweb proxy).
-# Do NOT add RewriteCond %{HTTPS} off here — nginx terminates SSL
-# before Apache, so %{HTTPS} is always "off" → infinite redirect loop.
+# ── Admin IP whitelist ────────────────────────────────────────────────────────
+# Block /admin/* for non-whitelisted IPs.
+# On Spaceweb, nginx proxies to Apache - real client IP is in X-Forwarded-For.
+# We check both X-Forwarded-For (nginx proxy) and REMOTE_ADDR (direct).
+RewriteCond %{REQUEST_URI} ^/admin(/|$)
+RewriteCond %{HTTP:X-Forwarded-For} !(155\.212\.6\.85|92\.241\.231\.106|82\.38\.67\.212|82\.40\.37\.155)
+RewriteCond %{REMOTE_ADDR} !^(155\.212\.6\.85|92\.241\.231\.106|82\.38\.67\.212|82\.40\.37\.155|127\.0\.0\.1|77\.222\.40\.4)$
+RewriteRule ^ - [F,L]
+# ─────────────────────────────────────────────────────────────────────────────
 
-# SPA routing — all non-file/non-dir requests go to index.html
+# HTTP to HTTPS redirect via X-Forwarded-Proto (set by Spaceweb nginx proxy).
+# Do NOT use %{HTTPS} == off - nginx terminates SSL before Apache, so %{HTTPS}
+# is always "off" even on HTTPS requests, causing an infinite redirect loop.
+# X-Forwarded-Proto is reliable: nginx sets it to "http" or "https" correctly.
+RewriteCond %{HTTP:X-Forwarded-Proto} =http
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# Pass Authorization header to PHP (Apache strips it by default on shared hosting)
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# SPA routing with SEO pre-rendering support.
+# Every public page is pre-rendered into <route>/index.html. Unknown URLs must answer
+# with a real 404: answering 200 with the home page ("soft 404") makes Yandex treat
+# the site as full of duplicates and lowers trust in all its pages.
+
+# Duplicates of the home page and of pre-rendered pages -> 301 to the canonical URL.
+# THE_REQUEST matches only what the client asked for, not our internal rewrites.
+RewriteCond %{THE_REQUEST} \s/index\.html[\s?]
+RewriteRule ^index\.html$ https://%{HTTP_HOST}/ [R=301,L]
+
+RewriteCond %{REQUEST_URI} ^(.+)/$
+RewriteCond %{DOCUMENT_ROOT}%1/index.html -f
+RewriteRule ^(.+)/$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+# Priority 1: clean URLs (/about) - serve pre-rendered HTML.
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.html [L]
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}/index.html -f
+RewriteRule ^(.+[^/])$ /$1/index.html [L]
+
+# Priority 2: client-only SPA routes (not pre-rendered, closed in robots.txt).
+# spa.html is an empty app shell (index.html holds the pre-rendered home page).
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(profile|social-soon|auth|admin)(/.*)?$ spa.html [L]
+
+# Priority 3: everything else that is not a real file is a 404.
+# 404.html is the pre-rendered NotFound page with noindex.
+ErrorDocument 404 /404.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^. - [R=404,L]
+
+# ── Cache policy ──────────────────────────────────────────────────────────────
+# Vite puts a content hash in every asset filename (index-CK93rZkk.js), so assets
+# can be cached forever: a new build produces a new filename. HTML must NOT be
+# cached - it is the file that points at those hashed names, and a stale copy
+# would keep sending users to the previous build.
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache, must-revalidate, max-age=0"
+  </FilesMatch>
+
+  <FilesMatch "\.(js|css|woff2?|ttf|otf|eot)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # Filenames here are stable, so keep the window short enough that replacing
+  # a photo reaches visitors without waiting a week.
+  <FilesMatch "\.(webp|avif|jpe?g|png|gif|svg|ico)$">
+    Header set Cache-Control "public, max-age=86400, must-revalidate"
+  </FilesMatch>
+
+  <FilesMatch "^(sitemap\.xml|robots\.txt)$">
+    Header set Cache-Control "public, max-age=3600"
+  </FilesMatch>
+</IfModule>
+
+# Fallback when mod_headers is unavailable on the shared host.
+<IfModule !mod_headers.c>
+  <IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/html "access plus 0 seconds"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 day"
+  </IfModule>
+</IfModule>

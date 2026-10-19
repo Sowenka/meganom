@@ -4,15 +4,19 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { FiLock } from 'react-icons/fi';
 import { Input, PhoneInput, Button } from '@/components/ui';
+import { ConsentCheckbox } from '@/components/ConsentCheckbox';
 import { registerSchema } from '@/lib/validators';
 import { signUp } from '@/services/auth.service';
+import { SEASON_OPEN } from '@/lib/constants';
 
 export default function Register() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const redirect = searchParams.get('redirect') || '';
+  const raw = searchParams.get('redirect') || '';
+  const redirect = raw.startsWith('/') && !raw.startsWith('//') ? raw : '';
 
   const {
     register,
@@ -21,11 +25,15 @@ export default function Register() {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(registerSchema),
-    defaultValues: { fullName: '', email: '', phone: '', password: '', confirmPassword: '' },
+    defaultValues: { fullName: '', email: '', phone: '', password: '', confirmPassword: '', consentPd: false },
   });
 
   const onInvalid = useCallback((fieldErrors) => {
-    const firstError = Object.values(fieldErrors).find((e) => e?.message);
+    // Show consentPd error last so other field errors take priority
+    const order = ['fullName', 'email', 'phone', 'password', 'confirmPassword', 'consentPd'];
+    const firstError =
+      order.map((k) => fieldErrors[k]).find((e) => e?.message) ??
+      Object.values(fieldErrors).find((e) => e?.message);
     if (firstError) toast.error(firstError.message);
   }, []);
 
@@ -40,6 +48,36 @@ export default function Register() {
     } catch (err) {
       toast.error(err.message || t('auth.register.errorGeneral'));
     }
+  }
+
+  if (!SEASON_OPEN) {
+    return (
+      <div className="text-center">
+        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <FiLock className="h-6 w-6" />
+        </div>
+        <h1 className="mb-3 font-serif text-2xl font-bold text-primary">
+          {t('season.register.title')}
+        </h1>
+        <p className="mb-7 text-sm leading-relaxed text-text-muted">
+          {t('season.register.text')}
+        </p>
+        <Link
+          to="/contacts"
+          className="inline-flex w-full items-center justify-center rounded-lg bg-accent px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-warm"
+        >
+          {t('season.register.cta')}
+        </Link>
+        <div className="mt-4 border-t border-bg-dark pt-4">
+          <Link
+            to="/auth/login"
+            className="text-sm text-text-muted transition-colors hover:text-primary"
+          >
+            {t('season.register.backToLogin')}
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -92,6 +130,8 @@ export default function Register() {
           {...register('confirmPassword')}
         />
 
+        <ConsentCheckbox field={register('consentPd')} error={errors.consentPd?.message} />
+
         <Button type="submit" loading={isSubmitting} className="mt-2 w-full">
           {isSubmitting ? t('auth.register.submitting') : t('auth.register.submit')}
         </Button>
@@ -106,7 +146,7 @@ export default function Register() {
 
       <div className="mt-4 border-t border-bg-dark pt-4 text-center">
         <Link to="/" className="text-sm text-text-muted transition-colors hover:text-primary">
-          На главную
+          {t('auth.login.backToHome')}
         </Link>
       </div>
     </>

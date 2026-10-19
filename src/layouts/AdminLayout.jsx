@@ -1,13 +1,32 @@
-import { Outlet, NavLink } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { useAuth } from '@/hooks/useAuth';
 
 const navItems = [
-  { to: '/admin', label: 'Дашборд', end: true },
-  { to: '/admin/rooms', label: 'Номера' },
+  { to: '/admin',          label: 'Дашборд',      end: true },
   { to: '/admin/bookings', label: 'Бронирования' },
-  { to: '/admin/content', label: 'Контент' },
+  { to: '/admin/clients',  label: 'Клиенты' },
+  { to: '/admin/sales',    label: 'Продажи' },
+  { to: '/admin/rooms',    label: 'Номера' },
 ];
 
 export function AdminLayout() {
+  const { user, isLoading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (!user) {
+      navigate('/auth/login', { replace: true });
+    } else if (user.role !== 'admin') {
+      toast.error('Доступ запрещён');
+      navigate('/', { replace: true });
+    }
+  }, [user, isLoading, navigate]);
+
+  if (isLoading || !user || user.role !== 'admin') return null;
+
   return (
     <div className="flex min-h-screen">
       <aside className="w-64 border-r border-bg-dark bg-white p-6">

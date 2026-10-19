@@ -1,4 +1,5 @@
 import { getToken } from './auth.service';
+import { LEGAL_VERSION } from '@/data/legal';
 
 const API_BASE = '/api';
 
@@ -18,6 +19,7 @@ export async function createBooking({
   nights,
   total,
   roomTitle = '',
+  consentPd,
 }) {
   const res = await fetch(`${API_BASE}/bookings/create.php`, {
     method: 'POST',
@@ -34,6 +36,8 @@ export async function createBooking({
       total_price:      total,
       nights,
       room_title:       roomTitle,
+      consent_given:    consentPd === true,
+      consent_version:  LEGAL_VERSION,
     }),
   });
 

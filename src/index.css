@@ -1,6 +1,7 @@
-@import 'tailwindcss';
+﻿@import 'tailwindcss';
 
 @theme {
+  --font-serif: 'Cormorant Garamond', 'Georgia', 'Times New Roman', serif;
   --color-primary: #1B3A4B;
   --color-primary-light: #3D6B7E;
   --color-accent: #C9A96E;
@@ -28,5 +29,12 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Georgia', 'Times New Roman', serif;
+  font-family: 'Cormorant Garamond', 'Georgia', 'Times New Roman', serif;
+}
+
+/* Sonner toast - push below fixed header on desktop */
+@media (min-width: 768px) {
+  [data-sonner-toaster][data-position="top-right"] {
+    top: 88px !important;
+  }
 }

@@ -10,7 +10,7 @@ try {
     $pdo  = db();
     $stmt = $pdo->prepare("
         SELECT
-            b.id, b.check_in, b.check_out, b.guests_count, b.total_price,
+            b.id, b.booking_number, b.check_in, b.check_out, b.guests_count, b.total_price,
             b.nights, b.status, b.payment_status, b.special_requests, b.created_at,
             r.title AS room_title,
             r.slug  AS room_slug

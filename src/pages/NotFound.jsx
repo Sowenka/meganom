@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiHome, FiArrowLeft, FiPhone, FiMail } from 'react-icons/fi';
@@ -18,7 +18,7 @@ export default function NotFound() {
 
   // Auto-redirect countdown
   useEffect(() => {
-    document.title = '404 — Меганом Эко-дом';
+    document.title = '404 - Меганом Эко-дом';
     if (countdown <= 0) { navigate('/'); return; }
     const id = setTimeout(() => setCountdown((c) => c - 1), 1000);
     return () => clearTimeout(id);
@@ -146,13 +146,6 @@ export default function NotFound() {
           <p className="text-xs font-medium uppercase tracking-[0.15em] text-accent">
             Нужна помощь?
           </p>
-          <a
-            href="tel:+79781234567"
-            className="flex items-center gap-2 text-sm text-text-muted transition-colors hover:text-primary"
-          >
-            <FiPhone className="h-3.5 w-3.5 text-accent" />
-            +7 (978) 123-45-67
-          </a>
           <a
             href="mailto:info@meganom-eco.ru"
             className="flex items-center gap-2 text-sm text-text-muted transition-colors hover:text-primary"

@@ -2,9 +2,23 @@ import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { SITE_NAME, SITE_URL } from '@/lib/constants';
 
-export function MetaTags({ title, description, path = '' }) {
+export function MetaTags({ title, description, path = '', image, noindex = false }) {
   const fullTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
   const canonical = `${SITE_URL}${path}`;
+  const ogImage = image || `${SITE_URL}/gallery/088.webp`;
+
+  useEffect(() => {
+    if (!noindex) return undefined;
+    let robots = document.querySelector('meta[name="robots"]');
+    if (!robots) {
+      robots = document.createElement('meta');
+      robots.setAttribute('name', 'robots');
+      document.head.appendChild(robots);
+    }
+    robots.setAttribute('content', 'noindex, nofollow');
+    // На остальных страницах индексация должна вернуться
+    return () => robots.setAttribute('content', 'index, follow');
+  }, [noindex]);
 
   useEffect(() => {
     document.title = fullTitle;
@@ -24,6 +38,7 @@ export function MetaTags({ title, description, path = '' }) {
     setMeta('og:title', fullTitle);
     setMeta('og:description', description);
     setMeta('og:url', canonical);
+    setMeta('og:image', ogImage);
 
     let link = document.querySelector('link[rel="canonical"]');
     if (!link) {
@@ -32,7 +47,7 @@ export function MetaTags({ title, description, path = '' }) {
       document.head.appendChild(link);
     }
     link.setAttribute('href', canonical);
-  }, [fullTitle, description, canonical]);
+  }, [fullTitle, description, canonical, ogImage]);
 
   return null;
 }
@@ -41,4 +56,6 @@ MetaTags.propTypes = {
   title: PropTypes.string,
   description: PropTypes.string,
   path: PropTypes.string,
+  image: PropTypes.string,
+  noindex: PropTypes.bool,
 };

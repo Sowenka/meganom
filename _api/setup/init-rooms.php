@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * One-time setup: creates rooms + login_attempts tables and seeds room data.
  * Run once: GET /api/setup/init-rooms.php?key=INIT_SECRET
@@ -34,10 +34,14 @@ $results[] = 'rooms table: OK';
 
 // ── 2. Seed rooms (from static JS data) ───────────────────────────────────────
 $rooms = [
-    ['static-1', 'eco-standart', 'Эко-домик «Стандарт»',    4500.00, 2],
-    ['static-2', 'eco-comfort',  'Эко-домик «Комфорт»',     6500.00, 3],
-    ['static-3', 'eco-suite',    'Люкс «Панорама»',         9500.00, 4],
-    ['static-4', 'eco-family',   'Семейный домик «Делюкс»', 12000.00, 6],
+    ['room-1', 'veter-peremen-myata', '«Ветер Перемен» - 3-комн. эко-дом (Мятная территория)', 10000.00, 6],
+    ['room-2', 'veter-peremen-med',   '«Ветер Перемен» - 3-комн. эко-дом (Медовая территория)', 10000.00, 6],
+    ['room-3', 'shale',               '«Шале» - 2-комн. эко-дом с террасой',                    7500.00,  4],
+    ['room-4', 'kvartet-grand',       '«Квартет Гранд» - стандартный эко-номер с балконом',      5500.00,  2],
+    ['room-5', 'standart-kuhnya',     'Стандартный номер с общей кухней',                        5000.00,  3],
+    ['room-6', 'standart-balkon',     'Стандартный номер с балконом',                            6000.00,  4],
+    ['room-7', 'semeynyy-balkon',     'Семейный двухкомнатный номер с балконом',                 7000.00,  4],
+    ['room-8', 'semeynyy-topcan',     'Семейный двухкомнатный номер с топчаном',                 7000.00,  5],
 ];
 
 $insert = $pdo->prepare("

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/config.php';
 cors();
 
@@ -9,7 +9,7 @@ if (!$body) json_error('Invalid JSON');
 
 $name    = trim($body['name']    ?? '');
 $email   = trim($body['email']   ?? '');
-$phone   = trim($body['phone']   ?? '—');
+$phone   = trim($body['phone']   ?? '-');
 $subject = trim($body['subject'] ?? 'Обращение с сайта');
 $message = trim($body['message'] ?? '');
 
@@ -17,6 +17,9 @@ $message = trim($body['message'] ?? '');
 if (!empty($body['website'])) { json_response(['ok' => true]); }
 
 if (!$name || !$email || !$message) json_error('Заполните обязательные поля: имя, email, сообщение');
+
+// ── Фиксация факта согласия (152-ФЗ ч.1 ст.9) ────────────────────────────────
+$consent = consent_record($body);
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) json_error('Некорректный email');
 
 $html = '<!DOCTYPE html>
@@ -24,7 +27,7 @@ $html = '<!DOCTYPE html>
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Новое сообщение — Меганом Эко-дом</title>
+<title>Новое сообщение - Меганом Эко-дом</title>
 </head>
 <body style="margin:0;padding:0;background:#F0EDE6;font-family:Georgia,serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#F0EDE6;padding:40px 16px;">
@@ -83,6 +86,7 @@ $html = '<!DOCTYPE html>
               <p style="margin:0;font-size:15px;line-height:1.7;color:#2C2C2C;font-family:Arial,sans-serif;white-space:pre-wrap;">' . nl2br(e($message)) . '</p>
             </div>
 
+            ' . consent_email_block($consent) . '
             <div style="margin-top:32px;text-align:center;">
               <a href="mailto:' . e($email) . '" style="display:inline-block;background:#C9A96E;color:#ffffff;font-family:Arial,sans-serif;font-size:14px;font-weight:bold;padding:14px 32px;border-radius:50px;text-decoration:none;letter-spacing:1px;">Ответить гостю</a>
             </div>
@@ -108,7 +112,10 @@ try {
     $mail->Subject = 'Обращение с сайта: ' . $subject;
     $mail->addReplyTo($email, $name);
     $mail->Body    = $html;
-    $mail->AltBody = "Имя: $name\nEmail: $email\nТелефон: $phone\nТема: $subject\n\n$message";
+    $consentLine = ($consent['given'] ? 'дано' : 'НЕ ЗАФИКСИРОВАНО')
+        . ", {$consent['at']}, IP {$consent['ip']}, редакция {$consent['version']}";
+    $mail->AltBody = "Имя: $name\nEmail: $email\nТелефон: $phone\nТема: $subject\n\n$message"
+        . "\n\nСогласие на обработку персональных данных: $consentLine";
     $mail->send();
     json_response(['ok' => true]);
 } catch (\Exception $e) {

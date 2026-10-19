@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
+﻿import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
 /**
- * StableText — keeps button width equal to RU text length regardless of active language.
+ * StableText - keeps button width equal to RU text length regardless of active language.
  * Uses CSS grid stacking: invisible RU spacer + visible current-language text in same cell.
  */
 export function StableText({ tKey }) {
@@ -23,7 +23,7 @@ const variants = {
   primary:
     'bg-primary text-white hover:bg-primary-light active:bg-primary',
   secondary:
-    'bg-accent text-white hover:bg-accent-warm active:bg-accent',
+    'bg-accent text-white hover:bg-primary active:bg-accent',
   ghost:
     'bg-transparent text-primary hover:bg-primary/5 active:bg-primary/10',
 };
@@ -46,7 +46,7 @@ export function Button({
   return (
     <button
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors',
+        'inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg font-medium transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
         'disabled:cursor-not-allowed disabled:opacity-50',
         variants[variant],
@@ -54,6 +54,7 @@ export function Button({
         className,
       )}
       disabled={disabled || loading}
+      aria-busy={loading || undefined}
       {...props}
     >
       {loading && (

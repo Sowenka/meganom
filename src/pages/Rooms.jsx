@@ -1,8 +1,9 @@
-import { useRef, useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+﻿import { useRef, useEffect, useState } from 'react';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { MetaTags } from '@/components/seo/MetaTags';
 import { StableText } from '@/components/ui';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { FiUsers, FiMaximize, FiCheck, FiCalendar, FiX } from 'react-icons/fi';
 import { useRooms } from '@/hooks/useRooms';
 import { formatPrice, formatDate } from '@/lib/utils';
@@ -10,6 +11,8 @@ import { formatPrice, formatDate } from '@/lib/utils';
 function SectionReveal({ children, className, delay = 0 }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-60px' });
+  const prefersReduced = useReducedMotion();
+  if (prefersReduced) return <div ref={ref} className={className}>{children}</div>;
   return (
     <motion.div
       ref={ref}
@@ -44,9 +47,11 @@ function RoomCardSkeleton() {
 
 export default function Rooms() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { data: rooms, isLoading } = useRooms({ isActive: true });
 
+  const prefersReducedMotion = useReducedMotion();
   const checkIn  = searchParams.get('checkIn')  || '';
   const checkOut = searchParams.get('checkOut') || '';
   const guests   = parseInt(searchParams.get('guests') || '1', 10);
@@ -71,6 +76,11 @@ export default function Rooms() {
 
   return (
     <>
+      <MetaTags
+        title="Снять номер или домик у моря рядом с Судаком - мыс Меганом, Крым"
+        description="Снять домик у моря рядом с Судаком в Крыму. Номера и домики у мыса Меганом: от стандартных до трёхкомнатных с террасой и кухней. Вместимость 2-6 человек. Онлайн-бронирование."
+        path="/rooms"
+      />
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
       <section className="relative flex h-[55vh] items-center justify-center overflow-hidden">
         <img
@@ -78,30 +88,31 @@ export default function Rooms() {
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
           loading="eager"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-primary/65" />
         <div className="relative z-10 w-full px-6 text-center">
           <motion.span
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
+            animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="mb-4 inline-block text-xs font-medium uppercase tracking-[0.2em] text-accent-warm"
           >
             {t('home.rooms.tagline')}
           </motion.span>
           <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 24 }}
+            animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="font-serif text-3xl font-bold italic text-white sm:text-5xl md:text-6xl"
           >
             {t('home.rooms.title')}
           </motion.h1>
           <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={prefersReducedMotion ? false : { opacity: 0 }}
+            animate={prefersReducedMotion ? {} : { opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="mt-3 text-sm text-white/60"
+            className="mt-3 text-base text-white/80"
           >
             {t('rooms.heroSubtitle', { count: rooms?.length ?? 4 })}
           </motion.p>
@@ -113,29 +124,29 @@ export default function Rooms() {
         <section className="border-b border-bg-dark bg-white px-6 py-4">
           <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-3 text-sm">
-              <span className="font-medium text-primary">Поиск:</span>
+              <span className="font-medium text-primary">{t('rooms.filter.label')}</span>
               <span className="flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-primary">
                 <FiCalendar className="h-3.5 w-3.5" />
-                {formatDate(checkIn)} — {formatDate(checkOut)}
+                {formatDate(checkIn)} - {formatDate(checkOut)}
               </span>
               <span className="flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-primary">
                 <FiUsers className="h-3.5 w-3.5" />
-                {guests} {guests === 1 ? 'гость' : guests < 5 ? 'гостя' : 'гостей'}
+                {t('rooms.guests', { count: guests })}
               </span>
               {availLoading && (
                 <span className="flex items-center gap-1.5 text-text-muted">
                   <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-accent border-t-transparent inline-block" />
-                  Проверяем доступность...
+                  {t('rooms.filter.checking')}
                 </span>
               )}
             </div>
             <button
               type="button"
               onClick={clearFilter}
-              className="flex items-center gap-1.5 rounded-full border border-bg-dark px-3 py-1 text-xs text-text-muted transition-colors hover:border-error/40 hover:text-error"
+              className="flex cursor-pointer items-center gap-1.5 rounded-full border border-bg-dark px-4 py-2 text-xs text-text-muted transition-colors hover:border-error/40 hover:text-error"
             >
               <FiX className="h-3.5 w-3.5" />
-              Сбросить фильтр
+              {t('rooms.filter.clear')}
             </button>
           </div>
         </section>
@@ -186,7 +197,9 @@ export default function Rooms() {
 
                 return (
                   <SectionReveal key={room.id} delay={idx * 0.08} className="h-full">
-                    <div className={`group flex h-full flex-col overflow-hidden rounded-2xl border bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg ${isBooked || notEnoughGuests ? 'border-bg-dark opacity-70' : 'border-bg-dark'}`}>
+                    <div className={`group flex h-full flex-col overflow-hidden rounded-2xl border bg-white shadow-sm transition-shadow duration-300 ${isBooked || notEnoughGuests ? 'border-bg-dark' : 'cursor-pointer border-bg-dark hover:shadow-lg'}`}
+                      onClick={isBooked || notEnoughGuests ? undefined : () => navigate(`/rooms/${room.slug}`)}
+                    >
 
                       {/* Image */}
                       <div className="relative h-64 shrink-0 overflow-hidden">
@@ -195,7 +208,7 @@ export default function Rooms() {
                             src={coverImg}
                             alt={room.title}
                             loading="lazy"
-                            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                            className={`h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] ${isBooked || notEnoughGuests ? 'opacity-50' : ''}`}
                           />
                         ) : (
                           <div className="h-full bg-bg-dark" />
@@ -208,15 +221,15 @@ export default function Rooms() {
                           {hasFilter && !availLoading && (
                             isBooked ? (
                               <span className="rounded-full bg-error/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white backdrop-blur-sm">
-                                Занято
+                                {t('rooms.availability.booked')}
                               </span>
                             ) : notEnoughGuests ? (
                               <span className="rounded-full bg-warning/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white backdrop-blur-sm">
-                                Мало мест
+                                {t('rooms.availability.notEnough')}
                               </span>
                             ) : avail ? (
                               <span className="rounded-full bg-success/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white backdrop-blur-sm">
-                                Свободно
+                                {t('rooms.availability.available')}
                               </span>
                             ) : null
                           )}
@@ -232,15 +245,27 @@ export default function Rooms() {
 
                       {/* Content */}
                       <div className="flex flex-1 flex-col p-6">
-                        <h2 className="mb-2 min-h-[4rem] font-serif text-2xl font-bold text-primary">
-                          {room.title}
-                        </h2>
+                        {(() => {
+                          const dashIdx = room.title.indexOf(' - ');
+                          const name = dashIdx !== -1 ? room.title.slice(0, dashIdx) : room.title;
+                          const sub  = dashIdx !== -1 ? room.title.slice(dashIdx + 3) : null;
+                          return (
+                            <div className="mb-2">
+                              <h2 className="font-serif text-2xl font-bold leading-tight text-primary">
+                                {name}
+                              </h2>
+                              {sub && (
+                                <p className="font-serif text-base leading-snug text-primary/70">{sub}</p>
+                              )}
+                            </div>
+                          );
+                        })()}
                         <p className="mb-5 text-base leading-relaxed text-text-muted">
                           {room.short_description}
                         </p>
 
                         {/* Stats */}
-                        <div className="mb-5 flex items-center gap-6 border-b border-bg-dark pb-5 text-base text-text-muted">
+                        <div className="mb-5 flex items-center justify-between border-b border-bg-dark pb-5 text-base text-text-muted">
                           <span className="flex items-center gap-2">
                             <FiUsers className="h-4 w-4 text-accent" />
                             {t('rooms.guests', { count: room.capacity })}
@@ -271,16 +296,17 @@ export default function Rooms() {
                           </ul>
                         )}
 
-                        {/* Actions — прижаты к низу */}
+                        {/* Actions - прижаты к низу */}
                         <div className="mt-auto flex flex-col gap-3 sm:flex-row">
                           {isBooked || notEnoughGuests ? (
                             <span className="flex flex-1 items-center justify-center gap-2 rounded-full bg-bg-dark py-3 text-sm font-medium text-text-muted cursor-not-allowed">
-                              {isBooked ? 'Занято на эти даты' : 'Недостаточно мест'}
+                              {isBooked ? t('rooms.availability.bookedDates') : t('rooms.availability.notEnoughSeats')}
                             </span>
                           ) : (
                             <Link
                               to={`/booking?${bookingParams.toString()}`}
-                              className="flex items-center justify-center gap-2 rounded-full bg-accent py-3 text-sm font-medium text-white transition-colors hover:bg-accent-warm sm:flex-1"
+                              onClick={(e) => e.stopPropagation()}
+                              className="flex cursor-pointer items-center justify-center gap-2 rounded-full bg-accent py-3 text-sm font-medium text-white transition-colors hover:bg-primary sm:flex-1"
                             >
                               <FiCalendar className="h-4 w-4 shrink-0" />
                               <StableText tKey="nav.booking" />
@@ -288,7 +314,8 @@ export default function Rooms() {
                           )}
                           <Link
                             to={`/rooms/${room.slug}`}
-                            className="rounded-full border border-primary py-3 text-center text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white sm:flex-1"
+                            onClick={(e) => e.stopPropagation()}
+                            className="cursor-pointer rounded-full border border-primary py-3 text-center text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white sm:flex-1"
                           >
                             <StableText tKey="home.rooms.details" />
                           </Link>
@@ -312,12 +339,12 @@ export default function Rooms() {
           <h2 className="mb-4 font-serif text-4xl font-bold text-white">
             {t('rooms.ctaTitle')}
           </h2>
-          <p className="mb-8 text-lg text-white/60">
+          <p className="mb-8 text-lg text-white/75">
             {t('rooms.ctaText')}
           </p>
           <Link
-            to="/contacts"
-            className="inline-flex items-center gap-2 rounded-full border border-white/60 px-8 py-3 font-medium text-white transition-colors hover:bg-white hover:text-primary"
+            to="/booking"
+            className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/60 px-8 py-3 font-medium text-white transition-colors hover:bg-white hover:text-primary"
           >
             <StableText tKey="rooms.ctaButton" />
           </Link>

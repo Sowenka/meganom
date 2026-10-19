@@ -1,9 +1,9 @@
-# Restrict access to setup scripts — allowed IPs only
+﻿# Restrict access to setup scripts - allowed IPs only
 Order Deny,Allow
 Deny from all
 
 # Spaceweb server (internal)
-Allow from 77.222.62.71
+Allow from 77.222.40.4
 # Localhost
 Allow from 127.0.0.1
 # Developer IPs

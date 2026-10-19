@@ -1,6 +1,7 @@
-import { forwardRef, useState, useEffect } from 'react';
+﻿import { forwardRef, useState, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { MetaTags } from '@/components/seo/MetaTags';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
@@ -17,7 +18,10 @@ import { useAuth } from '@/hooks/useAuth';
 import { createBooking } from '@/services/booking.service';
 import { bookingSchema } from '@/lib/validators';
 import { formatPrice, cn } from '@/lib/utils';
+import { SEASON_OPEN, SEASON_YEAR } from '@/lib/constants';
 import { Input, PhoneInput, Textarea } from '@/components/ui';
+import { ConsentCheckbox } from '@/components/ConsentCheckbox';
+import { SeasonClosed } from '@/components/SeasonClosed';
 
 // ─── DateField ────────────────────────────────────────────────────────────────
 const DateField = forwardRef(function DateField({ label, error, ...rest }, ref) {
@@ -102,8 +106,9 @@ export default function Booking() {
 
   const { user, isLoading: authLoading } = useAuth();
 
-  // Redirect to login if not authenticated
+  // Redirect to login if not authenticated (skip while season is closed)
   useEffect(() => {
+    if (!SEASON_OPEN) return;
     if (!authLoading && !user) {
       const redirect = '/booking' + (searchParams.toString() ? '?' + searchParams.toString() : '');
       navigate(`/auth/login?redirect=${encodeURIComponent(redirect)}`);
@@ -130,6 +135,7 @@ export default function Booking() {
       guestEmail: '',
       guestPhone: '',
       specialRequests: '',
+      consentPd: false,
     },
   });
 
@@ -139,7 +145,7 @@ export default function Booking() {
   const watchGuests = watch('guestsCount');
 
   useEffect(() => {
-    document.title = `${t('bookingPage.heroTitle')} — Меганом Эко-дом`;
+    document.title = `${t('bookingPage.heroTitle')} - Меганом Эко-дом`;
   }, [t]);
 
   // Pre-select room from URL ?room=slug
@@ -199,15 +205,61 @@ export default function Booking() {
       setSubmitted(true);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
-      toast.error(err.message || 'Ошибка при отправке заявки');
+      toast.error(err.message || t('bookingPage.submitError'));
     }
   };
 
   const onError = (errs) => {
-    const order = ['roomId', 'checkIn', 'checkOut', 'guestsCount', 'guestName', 'guestEmail', 'guestPhone', 'specialRequests'];
+    const order = ['roomId', 'checkIn', 'checkOut', 'guestsCount', 'guestName', 'guestEmail', 'guestPhone', 'specialRequests', 'consentPd'];
     const first = order.find((f) => errs[f]);
     if (first) toast.error(errs[first].message);
   };
+
+  // ── Season closed ─────────────────────────────────────────────────────────────
+  if (!SEASON_OPEN) {
+    return (
+      <>
+        <MetaTags
+          title="Бронирование - гостиница «Меганом», Судак, Крым"
+          description="Гостиница «Меганом» у мыса Меганом в Крыму. Информация о бронировании домиков у моря рядом с Судаком."
+          path="/booking"
+        />
+        {/* HERO */}
+        <section className="relative flex h-[55vh] items-center justify-center overflow-hidden">
+          <img
+            src={`${import.meta.env.BASE_URL}gallery/103.webp`}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-primary/70" />
+          <div className="relative z-10 w-full px-6 text-center">
+            <motion.h1
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="font-serif text-3xl font-bold italic text-white sm:text-5xl md:text-6xl"
+            >
+              {t('bookingPage.heroTitle')}
+            </motion.h1>
+          </div>
+        </section>
+
+        {/* Closed overlay */}
+        <section className="overflow-x-hidden bg-bg py-16">
+          <div className="mx-auto max-w-7xl px-6">
+            <SeasonClosed
+              badge={t('season.badge', { year: SEASON_YEAR })}
+              title={t('season.booking.title')}
+              text={t('season.booking.text')}
+              ctaLabel={t('season.booking.cta')}
+              ctaTo="/contacts"
+            />
+          </div>
+        </section>
+      </>
+    );
+  }
 
   // ── Success screen ──────────────────────────────────────────────────────────
   if (submitted && bookingResult) {
@@ -251,14 +303,6 @@ export default function Booking() {
             )}
           </div>
 
-          <p className="mb-1 text-sm text-text-muted">{t('bookingPage.successPhone')}</p>
-          <a
-            href={`tel:${t('contacts.info.phone1').replace(/\D/g, '+').replace('++', '+')}`}
-            className="mb-8 block font-medium text-accent hover:underline"
-          >
-            {t('contacts.info.phone1')}
-          </a>
-
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Link
               to="/profile"
@@ -281,6 +325,11 @@ export default function Booking() {
   // ── Form ────────────────────────────────────────────────────────────────────
   return (
     <>
+      <MetaTags
+        title="Забронировать домик у моря - гостиница у мыса Меганом, Судак"
+        description="Забронировать домик у моря рядом с Судаком онлайн. Гостиница «Меганом», Крым. Выберите даты, номер и оформите бронь за 2 минуты. Подтверждение на email."
+        path="/booking"
+      />
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
       <section className="relative flex h-[55vh] items-center justify-center overflow-hidden">
         <img
@@ -342,7 +391,7 @@ export default function Booking() {
                     ) : (
                       rooms?.map((room) => (
                         <option key={room.id} value={room.id}>
-                          {room.title} — {formatPrice(room.price_per_night)} / {t('common.perNight')}
+                          {room.title} - {formatPrice(room.price_per_night)} / {t('common.perNight')}
                         </option>
                       ))
                     )}
@@ -452,6 +501,11 @@ export default function Booking() {
                   {...register('specialRequests')}
                 />
 
+                {/* Consent */}
+                <div className="mt-6">
+                  <ConsentCheckbox field={register('consentPd')} error={errors.consentPd?.message} />
+                </div>
+
                 {/* Mobile submit */}
                 <button
                   type="submit"
@@ -544,14 +598,12 @@ export default function Booking() {
 
                   {/* Help */}
                   <div className="mt-5 border-t border-bg-dark pt-4 text-center">
-                    <p className="text-xs text-text-muted">{t('bookingPage.helpText')}</p>
-                    <a
-                      href={`tel:${t('contacts.info.phone1')}`}
-                      className="mt-1 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline"
+                    <Link
+                      to="/contacts"
+                      className="text-xs text-text-muted transition-colors hover:text-primary"
                     >
-                      <FiPhone className="h-3.5 w-3.5" />
-                      {t('contacts.info.phone1')}
-                    </a>
+                      {t('bookingPage.helpText')}
+                    </Link>
                   </div>
                 </div>
               </div>

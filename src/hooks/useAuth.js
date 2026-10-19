@@ -1,26 +1,30 @@
 import { useEffect } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
-import { supabase } from '@/lib/supabase';
+import { getToken, getStoredUser, getSession } from '@/services/auth.service';
 
 export function useAuth() {
-  const { user, isLoading, setUser, clearUser } = useAuthStore();
+  const { user, token, isLoading, setUser, clearUser } = useAuthStore();
 
   useEffect(() => {
-    if (!supabase) {
+    const storedToken = getToken();
+    if (!storedToken) {
       clearUser();
       return;
     }
+    // Мгновенно показываем кэшированного пользователя
+    const cached = getStoredUser();
+    if (cached) setUser(cached, storedToken);
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+    // Фоновая проверка токена на сервере
+    getSession().then((serverUser) => {
+      if (serverUser) {
+        setUser(serverUser, storedToken);
+      } else {
+        clearUser();
+      }
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, [setUser, clearUser]);
-
-  return { user, isLoading, isAuthenticated: !!user };
+  return { user, token, isLoading, isAuthenticated: !!user };
 }

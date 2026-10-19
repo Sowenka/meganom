@@ -1,4 +1,4 @@
-{
+﻿{
   "nav": {
     "home": "Home",
     "rooms": "Rooms",
@@ -7,6 +7,85 @@
     "contacts": "Contacts",
     "booking": "Book Now",
     "faq": "FAQ"
+  },
+  "season": {
+    "banner": "The hotel is closed for the {{year}} season. Booking and registration are temporarily unavailable.",
+    "bannerShort": "Season {{year}} closed",
+    "bannerCta": "Contact us",
+    "badge": "Season {{year}}",
+    "booking": {
+      "title": "Booking is closed",
+      "text": "Meganom is not accepting guests this season, so online booking is temporarily unavailable. Leave a request or contact us and we'll let you know when the new season opens.",
+      "cta": "Contact us"
+    },
+    "register": {
+      "title": "Registration is closed",
+      "text": "New guest registration is currently unavailable because the hotel is closed for the season. If you have any questions, please get in touch — we're happy to help.",
+      "cta": "Contact us",
+      "backToLogin": "Back to sign in"
+    }
+  },
+  "cookie": {
+    "text": "We use cookies and Yandex.Metrica for anonymous visit statistics. Analytics is enabled only after your consent.",
+    "policyLink": "Privacy Policy",
+    "accept": "Accept",
+    "decline": "Decline",
+    "settings": "Settings",
+    "modalTitle": "Cookie settings",
+    "modalIntro": "Choose which cookies to allow. Necessary cookies are required for the site to work and cannot be turned off.",
+    "necessaryTitle": "Necessary",
+    "necessaryDesc": "Ensure the site works, navigation and security. Always on.",
+    "always": "Always on",
+    "analyticsTitle": "Analytics (Yandex.Metrica)",
+    "analyticsDesc": "Anonymous visit statistics: pages viewed, traffic sources, device type, region.",
+    "save": "Save",
+    "close": "Close"
+  },
+  "consent": {
+    "metaTitle": "Consent to Personal Data Processing",
+    "metaDescription": "Consent to the processing of personal data (152-FZ): what data is collected, processing purposes, retention, third parties and how to withdraw.",
+    "title": "Consent to Personal Data Processing",
+    "intro": "By checking the consent box when submitting a form on {{site}}, the user confirms consent to the processing of personal data under the terms set out below.",
+    "version": "Revision of {{date}}",
+    "preamble": "As a personal data subject, acting freely, by my own will and in my own interest, I consent to the operator processing my personal data on the following terms.",
+    "dataTitle": "Categories of personal data",
+    "data": [
+      "name as entered in the form;",
+      "phone number;",
+      "email address;",
+      "booking details (check-in and check-out dates, number of guests);",
+      "the content of a free-form enquiry;",
+      "account data: email address and profile image, if uploaded;",
+      "technical data: IP address, browser type and version (User-Agent), date and time of the request;",
+      "website usage data collected by cookies and Yandex.Metrica (referral source, pages viewed, device type, region, on-site actions)."
+    ],
+    "purposesTitle": "Purposes of processing",
+    "purposes": [
+      "handling booking requests and enquiries submitted through the website forms;",
+      "contacting the user to confirm a booking and respond to an enquiry;",
+      "providing hotel services;",
+      "creating and maintaining the user account on the website;",
+      "sending informational messages where separate consent has been given;",
+      "collecting anonymised traffic statistics and improving the website;",
+      "ensuring the website operates correctly and securely."
+    ],
+    "actionsTitle": "Processing operations covered",
+    "actions": "Consent is given for the following operations: collection, recording, systematisation, accumulation, storage, updating (refreshing, modification), retrieval, use, transfer (provision, access) to third parties for the stated purposes, blocking, deletion and destruction. Processing is carried out both with and without the use of automation. No cross-border transfer of personal data takes place.",
+    "thirdPartiesTitle": "Third parties",
+    "thirdPartiesIntro": "The operator may engage the following parties to process the data, or transfer it to them, for the stated purposes:",
+    "thirdParties": [
+      "Yandex LLC - web analytics and visit statistics (Yandex.Metrica), servers located in the Russian Federation;",
+      "the website hosting provider - hosting the website and storing data on servers located in the Russian Federation;",
+      "the email (SMTP) provider - delivering request notifications to the operator;",
+      "state authorities - in the cases, to the extent and in the manner established by the legislation of the Russian Federation."
+    ],
+    "termTitle": "Validity and withdrawal of consent",
+    "term": "Consent is valid from the moment it is given until the purposes of processing are achieved or until it is withdrawn. Consent may be withdrawn at any time by sending a written request to {{email}}. Upon receiving a withdrawal, the operator ceases processing and destroys the data within 30 days, unless otherwise required by the legislation of the Russian Federation.",
+    "policyNote": "The conditions of personal data processing are set out in detail in the",
+    "policyLink": "Privacy Policy",
+    "relatedTitle": "Related documents",
+    "relatedPolicy": "Privacy Policy",
+    "relatedTerms": "Terms of Use"
   },
   "home": {
     "title": "Meganom Eco-house",
@@ -21,13 +100,13 @@
     "hero": {
       "tag": "Eco-resort in Crimea",
       "title": "Rest at Cape\nMeganom",
-      "subtitle": "Cozy eco-houses on the southern coast of Crimea — tranquility, sea and nature",
+      "subtitle": "Cozy eco-houses on the southern coast of Crimea - tranquility, sea and nature",
       "cta": "View rooms"
     },
     "welcome": {
       "tagline": "Welcome",
       "title": "Meganom Eco-house",
-      "text": "At Meganom, cozy eco-houses made of natural wood with a pine aroma await you. The complex is located near Cape Meganom — one of the most scenic spots on the southern coast of Crimea.",
+      "text": "At Meganom, cozy eco-houses made of natural wood await you. Located near Cape Meganom, 8 km from Sudak - amid gardens and vineyards. Private eco-houses with terraces and kitchens, standard and family rooms with balconies, pool, banya and BBQ area. A perfect retreat for a family holiday in Crimea.",
       "cta": "About us"
     },
     "activities": {
@@ -65,15 +144,28 @@
       "checkin": "Check-in",
       "checkout": "Check-out",
       "guests": "Guests",
-      "cta": "Check"
+      "cta": "Check",
+      "maxGuests": "Maximum number of guests - 15",
+      "errors": {
+        "noCheckin": "Please select a check-in date",
+        "noCheckout": "Please select a check-out date",
+        "pastCheckin": "Check-in date cannot be in the past",
+        "checkoutOrder": "Check-out must be later than check-in",
+        "tooLong": "Maximum booking duration is 90 nights",
+        "guestsRange": "Number of guests: 1 to 15"
+      }
     }
   },
   "about": {
     "title": "About us",
     "subtitle": "Meganom Eco-house hotel complex",
-    "description": "At Meganom, cozy eco-houses made of natural wood with a pine aroma await you. The complex is located near Cape Meganom in the village of Mindalnoye, Sudak — one of the most scenic spots on the southern coast of Crimea.",
+    "heroSubtitle": "Eco-houses and rooms 700 m from TAVRIDA.ART",
+    "ctaText": "Book online and get the best direct price - no middlemen.",
+    "description": "Meganom Eco-house hotel complex is located in the village of Mindalnoye, Sudak district, 700 m from the TAVRIDA.ART art cluster and 8 km from Sudak. Eight cosy rooms and individual eco-houses made of natural wood, set on well-kept grounds with a pool, vineyard, garden and BBQ area - the perfect base for a holiday near Cape Meganom on the southern coast of Crimea.",
     "territory": {
       "title": "Territory",
+      "tagline": "Our property",
+      "imageAlt": "Meganom Eco-house territory - pool, eco-houses, garden",
       "items": [
         "Well-maintained grounds with greenery and fish ponds",
         "Named eco-houses made of natural wood",
@@ -85,11 +177,13 @@
         "Vineyard, terrace, garden and veranda",
         "Fully equipped kitchens",
         "Cape Meganom views from second-floor rooms",
-        "Quiet hours: 23:00 — 07:00"
+        "Quiet hours: 23:00 - 07:00"
       ]
     },
     "services": {
       "title": "Services",
+      "tagline": "For your comfort",
+      "imageAlt": "Meganom Eco-house amenities and services",
       "items": [
         "Free shuttle to Meganom and Oyster beaches at 8:00, 12:00, and 17:00",
         "Wi-Fi throughout the property",
@@ -103,24 +197,28 @@
     },
     "nearby": {
       "title": "Nearby",
+      "tagline": "Local area",
+      "imageAlt": "Cape Meganom surroundings in Crimea",
       "items": [
-        "Meganom and Raketa beaches — 5–15 minutes",
+        "Meganom and Raketa beaches - 5–15 minutes",
         "Mussel and oyster farm on the beach",
-        "Wood-fired pizzeria — 5 min walk",
+        "Wood-fired pizzeria - 5 min walk",
         "Tavrida art cluster",
-        "Solnechnaya Dolina winery — wine museum, tasting room, shop",
+        "Solnechnaya Dolina winery - wine museum, tasting room, shop",
         "Cafes and restaurants: Perchem, Pizza Coffee Sea, Vysota 1234, Slon v Udave"
       ]
     },
     "rooms": {
       "title": "Accommodation options",
       "types": [
-        { "name": "Family double room", "area": "17 m²", "capacity": "2 guests" },
-        { "name": "Standard triple room", "area": "17 m²", "capacity": "3 guests" },
-        { "name": "Triple room with balcony", "area": "21 m²", "capacity": "3 guests" },
-        { "name": "Chalet with 2 bedrooms", "area": "24 m²", "capacity": "4 guests" },
-        { "name": "2-bedroom apartment", "area": "37–44 m²", "capacity": "4–6 guests" },
-        { "name": "2-bedroom house", "area": "45 m²", "capacity": "4–6 guests" }
+        { "name": "«Wind of Change» - 3-room eco-house (Mint territory)", "area": "55 m²", "capacity": "up to 6 guests" },
+        { "name": "«Wind of Change» - 3-room eco-house (Honey territory)", "area": "55 m²", "capacity": "up to 6 guests" },
+        { "name": "«Chalet» - 2-room eco-house with terrace", "area": "40 m²", "capacity": "up to 4 guests" },
+        { "name": "«Quartet Grand» - eco-room with balcony", "area": "22 m²", "capacity": "up to 2 guests" },
+        { "name": "Standard room with shared kitchen", "area": "18 m²", "capacity": "up to 3 guests" },
+        { "name": "Standard room with balcony", "area": "22 m²", "capacity": "up to 4 guests" },
+        { "name": "Family two-room suite with balcony", "area": "32 m²", "capacity": "up to 4 guests" },
+        { "name": "Family two-room suite with bed", "area": "32 m²", "capacity": "up to 5 guests" }
       ]
     },
     "allRoomsInclude": "All rooms include: Wi-Fi, air conditioning, fridge"
@@ -137,7 +235,14 @@
     "checkinTime": "14:00",
     "checkoutTime": "12:00",
     "checkinLabel": "Check-in from",
-    "checkoutLabel": "check-out by"
+    "checkoutLabel": "check-out by",
+    "consent": {
+      "prefix": "I give my",
+      "consentLink": "consent to personal data processing",
+      "middle": "and accept the",
+      "policyLink": "Privacy Policy",
+      "error": "Consent to personal data processing is required"
+    }
   },
   "contacts": {
     "title": "Contacts",
@@ -146,7 +251,7 @@
       "title": "Write to us",
       "name": "Your name",
       "email": "Email",
-      "phone": "Phone (optional)",
+      "phone": "Phone",
       "subject": "Subject",
       "message": "Message",
       "submit": "Send",
@@ -163,7 +268,8 @@
       "emailLabel": "Email",
       "email": "info@meganom-eco.ru",
       "workHoursLabel": "Working hours",
-      "workHours": "Daily, 08:00 — 22:00"
+      "workHours": "Daily, 08:00 - 22:00",
+      "socialsLabel": "Follow us"
     }
   },
   "auth": {
@@ -179,7 +285,8 @@
       "register": "Register",
       "success": "Successfully signed in",
       "errorInvalidCredentials": "Invalid email or password",
-      "errorGeneral": "Sign in error. Please try again later"
+      "errorGeneral": "Sign in error. Please try again later",
+      "backToHome": "Back to home"
     },
     "register": {
       "title": "Registration",
@@ -198,7 +305,11 @@
       "successConfirm": "Registration successful! Check your email for confirmation",
       "success": "Registration successful!",
       "errorAlreadyRegistered": "User with this email is already registered",
-      "errorGeneral": "Registration error. Please try again later"
+      "errorGeneral": "Registration error. Please try again later",
+      "consent": {
+        "prefix": "I agree to the",
+        "link": "collection and processing of personal data"
+      }
     }
   },
   "profile": {
@@ -212,6 +323,9 @@
     "phonePlaceholder": "Phone",
     "updateSuccess": "Profile updated",
     "updateError": "Failed to update profile",
+    "avatarProcessError": "Failed to process photo",
+    "avatarSuccess": "Profile photo updated",
+    "avatarError": "Failed to upload photo",
     "signOut": "Sign out",
     "signOutSuccess": "You have signed out",
     "signOutError": "Sign out error",
@@ -237,7 +351,10 @@
     "photoCount": "129 photos",
     "close": "Close",
     "prev": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "openPhoto": "Open photo {{n}}",
+    "photoAlt": "Photo {{n}} of {{total}}",
+    "lightboxLabel": "Photo {{n}} of {{total}}"
   },
   "reviews": {
     "title": "Guest Reviews",
@@ -269,7 +386,7 @@
         "author": "Mikhail M.",
         "date": "September 2023",
         "rating": 5,
-        "text": "Peace, nature, crystal clear sea. They organized a fishing trip — we caught horse mackerel! Shuttle to the beach three times a day, very convenient."
+        "text": "Peace, nature, crystal clear sea. They organized a fishing trip - we caught horse mackerel! Shuttle to the beach three times a day, very convenient."
       },
       {
         "author": "Olga K.",
@@ -281,7 +398,7 @@
         "author": "Sergey V.",
         "date": "July 2023",
         "rating": 4,
-        "text": "Beautiful place, fresh air with pine scent. Great BBQ area — tandoor and grill. There's a dirt road to the beach, better to drive."
+        "text": "Beautiful place, fresh air with pine scent. Great BBQ area - tandoor and grill. There's a dirt road to the beach, better to drive."
       }
     ]
   },
@@ -294,28 +411,42 @@
   "legal": {
     "heroTagline": "Legal documents",
     "lastUpdated": "Last updated:",
-    "lastUpdatedDate": "March 21, 2026"
+    "operatorTitle": "Operator details",
+    "operatorName": "Name",
+    "operatorLegalForm": "Legal form",
+    "operatorFullName": "Full name",
+    "operatorInn": "TIN (INN)",
+    "operatorOgrn": "OGRN/OGRNIP",
+    "operatorAddress": "Address",
+    "operatorEmail": "Email",
+    "operatorPhone": "Phone",
+    "operatorPending": "The operator’s full registration details are being finalised and will be published in the next revision of this document. For any personal data enquiries, please use the email address above."
   },
   "privacy": {
     "title": "Privacy Policy",
     "linkToTerms": "Terms of Use →",
     "sections": [
-      { "num": "01", "title": "General Provisions", "content": "This Privacy Policy defines the procedure for processing and protecting the personal data of users of the Meganom Eco-house website. The Policy is developed in accordance with Federal Law No. 152-FZ of 27.07.2006 «On Personal Data».\n\nBy using the website and providing your personal data, the User agrees to the terms of this Policy." },
-      { "num": "02", "title": "Data Controller", "content": "The data controller is Meganom Eco-house, located at: 28 Baikalskaya St., Mindalnoye, Sudak, Crimea. Contact email: info@meganom-eco.ru." },
-      { "num": "03", "title": "Purposes of Data Processing", "items": ["Room booking and provision of hotel services", "Communication with the user to confirm bookings", "Processing payments and refunds", "Improving service quality and website performance", "Sending informational messages (with user consent)", "Compliance with applicable legislation"] },
-      { "num": "04", "title": "Categories of Data Processed", "items": ["Full name", "Contact phone number", "Email address", "Booking data (check-in/check-out dates, number of guests)", "Website usage data (cookies, IP address, browser data)"] },
-      { "num": "05", "title": "Rights of Data Subjects", "content": "To exercise your rights, please send a request to info@meganom-eco.ru.", "items": ["Obtain information about the processing of your personal data", "Request correction, blocking or deletion of data", "Withdraw consent to personal data processing", "Lodge a complaint with the relevant supervisory authority"] },
-      { "num": "06", "title": "Use of Cookies", "content": "The website uses cookies to ensure correct operation, analytics and content personalisation. The User may disable cookies in their browser settings, but this may affect website functionality.", "items": ["Necessary — ensure basic website functionality", "Analytical — help understand how users interact with the website", "Marketing — used to show relevant advertising"] },
-      { "num": "07", "title": "Data Protection", "content": "The data controller takes necessary organisational and technical measures to protect personal data from unauthorised access, destruction, modification, blocking, copying and dissemination." },
-      { "num": "08", "title": "Policy Changes", "content": "The data controller reserves the right to make changes to this Policy. The current version is always available on this page." },
-      { "num": "09", "title": "Contact Information", "content": "For questions regarding personal data processing, please contact:", "items": ["Email: info@meganom-eco.ru", "Phone: +7 (978) 123-45-67", "Address: 28 Baikalskaya St., Mindalnoye, Sudak, Crimea"] }
+      { "num": "01", "title": "General Provisions", "content": "This Personal Data Processing Policy (the \"Policy\") defines how personal data of users of the meganom-eco.ru website is processed and protected. It has been prepared in accordance with Federal Law No. 152-FZ of 27 July 2006 \"On Personal Data\".\n\nThe Policy is published pursuant to part 2 of article 18.1 of that law and provides unrestricted access to information about how personal data is processed and about the data protection requirements in place.\n\nThe Policy is informational and does not in itself constitute consent to the processing of personal data. Consent is given separately, freely and in the data subject’s own interest, by ticking the corresponding box in a form on the website." },
+      { "num": "02", "title": "Operator Details", "content": "The personal data operator is the entity whose details are set out below. All matters relating to the processing of personal data, including withdrawal of consent and exercise of data subject rights, should be addressed to the contacts listed.", "operator": true },
+      { "num": "03", "title": "Legal Grounds for Processing", "content": "Personal data is processed on the following legal grounds:", "items": ["Federal Law No. 152-FZ of 27 July 2006 \"On Personal Data\"", "consent of the data subject given through the website forms (clause 1, part 1, article 6 of 152-FZ)", "performance of the hotel services contract to which the data subject is a party (clause 5, part 1, article 6 of 152-FZ)", "regulations governing the provision of hotel services and the registration of guests at accommodation facilities", "Federal Law No. 38-FZ of 13 March 2006 \"On Advertising\", as regards sending informational and promotional messages subject to the recipient’s prior consent"] },
+      { "num": "04", "title": "Categories of Data Subjects", "items": ["website visitors who take no targeted action - only technical data and cookie data is processed", "users who submit an enquiry through the contact form", "users who register an account on the website", "guests who submit a booking request and the persons they name as occupants", "newsletter subscribers"] },
+      { "num": "05", "title": "Categories of Personal Data Processed", "content": "The Operator does not process special categories of personal data (racial or ethnic origin, political opinions, religious or philosophical beliefs, health, sex life) or biometric personal data.", "items": ["full name or the name provided by the user in a form", "email address", "contact phone number", "booking details: selected accommodation, check-in and check-out dates, number of guests, accommodation preferences", "the content of a free-form enquiry submitted by the user", "account data: email address, an irreversible password hash, and a profile image if uploaded by the user", "technical data: IP address, browser type and version (User-Agent), date and time of access to the website", "website usage data collected by cookies and Yandex.Metrica: referral source, pages viewed, device type, region, on-site actions"] },
+      { "num": "06", "title": "Purposes of Processing", "items": ["receiving and handling booking requests, concluding and performing the hotel services contract", "contacting the user to confirm a booking and to respond to an enquiry", "creating and maintaining the user account on the website", "processing payments and refunds", "sending informational and promotional messages where separate consent has been given", "collecting anonymised traffic statistics and improving service quality and website performance", "ensuring the website operates correctly and securely, and protecting it from automated requests", "complying with the obligations imposed on the Operator by the legislation of the Russian Federation"] },
+      { "num": "07", "title": "Procedure and Conditions of Processing", "content": "Personal data is processed both with and without the use of automation, and includes collection, recording, systematisation, accumulation, storage, updating, retrieval, use, transfer, blocking, deletion and destruction.\n\nRecording, systematisation, accumulation, storage, updating and retrieval of personal data of citizens of the Russian Federation is carried out using databases located in the territory of the Russian Federation (part 5, article 18 of 152-FZ).\n\nThe Operator does not take decisions producing legal effects concerning the data subject, or otherwise affecting their rights and legitimate interests, based solely on automated processing of personal data (article 16 of 152-FZ)." },
+      { "num": "08", "title": "Processing and Retention Periods", "content": "Processing ceases once the purposes of processing are achieved, upon withdrawal of consent by the data subject, or upon detection of unlawful processing, unless a different retention period is established by the legislation of the Russian Federation.", "items": ["data submitted when booking - for the term of the contract and the following three years (the general limitation period)", "account data - until the account is deleted or consent is withdrawn", "data from enquiries submitted through the contact form - one year from receipt of the enquiry", "a newsletter subscriber’s email address - until they unsubscribe", "cookie data and Yandex.Metrica statistics - for the periods set by the terms of use of the relevant service"] },
+      { "num": "09", "title": "Destruction of Personal Data", "content": "Once the purposes of processing are achieved, upon withdrawal of consent by the data subject, or upon detection of unlawful processing, the Operator ceases processing and destroys the personal data within a period not exceeding 30 days from the date of the relevant event, unless otherwise provided by the legislation of the Russian Federation.\n\nDestruction is carried out in a manner that precludes further processing and recovery of the data: by deleting the corresponding records from databases and backups, and by destroying physical media in a way that prevents their contents from being recovered. Destruction is recorded in a formal act." },
+      { "num": "10", "title": "Transfer to Third Parties and Cross-Border Transfer", "content": "The Operator does not sell personal data and does not disclose it to third parties, except in the cases provided for by the legislation of the Russian Federation and for transfers to the parties engaged to achieve the purposes set out above.\n\nThe Operator does not carry out cross-border transfers of personal data.", "items": ["Yandex LLC - website traffic analytics (Yandex.Metrica), servers located in the Russian Federation", "the website hosting provider - hosting the website and storing data on servers located in the Russian Federation", "the email service provider - delivering notifications of requests and enquiries", "state authorities - in the cases, to the extent and in the manner established by the legislation of the Russian Federation"] },
+      { "num": "11", "title": "Use of Cookies", "content": "The website uses cookies to ensure correct operation and analytics. Analytical cookies (Yandex.Metrica) are enabled only after you give consent; you can change or withdraw your choice at any time via \"Cookie settings\" at the bottom of the site. Necessary cookies are always active and required for the site to work.", "items": ["Necessary - ensure basic website functionality and security", "Analytical (Yandex.Metrica) - help understand how users interact with the website; enabled only with consent"] },
+      { "num": "12", "title": "Personal Data Security Measures", "content": "The Operator applies the legal, organisational and technical measures provided for by articles 18.1 and 19 of 152-FZ to protect personal data against unlawful or accidental access, destruction, alteration, blocking, copying, provision and dissemination.", "items": ["publishing this Policy and providing unrestricted access to it", "limiting the number of people authorised to process personal data and briefing them on statutory requirements", "transmitting data between the user’s browser and the website over the secure HTTPS protocol", "storing account passwords solely as irreversible cryptographic hashes", "restricting access to the website administration area", "internal monitoring of processing for compliance with statutory requirements"] },
+      { "num": "13", "title": "Rights of Data Subjects", "content": "To exercise the rights listed above, or to withdraw consent, send a request to the Operator’s email address given in the \"Operator Details\" section. A response is provided within a period not exceeding 30 days from receipt of the request.", "items": ["obtain information concerning the processing of their personal data", "require that personal data be corrected, blocked or destroyed if it is incomplete, outdated, inaccurate or unlawfully obtained", "withdraw consent to the processing of personal data at any time", "opt out of the informational newsletter", "appeal against the Operator’s acts or omissions to Roskomnadzor or in court"] },
+      { "num": "14", "title": "Changes to the Policy", "content": "The Operator may amend this Policy. The current version, together with the date it was adopted, is permanently available on this page. Material changes are communicated to users by publication on the website." }
     ]
   },
   "terms": {
     "title": "Terms of Use",
     "linkToPrivacy": "Privacy Policy →",
     "sections": [
-      { "num": "01", "title": "General Provisions", "content": "These Terms of Use govern the relationship between Meganom Eco-house (hereinafter — the Administration) and the website user (hereinafter — the User).\n\nUse of the website constitutes the User's unconditional acceptance of these Terms. If the User disagrees, they must stop using the website." },
+      { "num": "01", "title": "General Provisions", "content": "These Terms of Use govern the relationship between Meganom Eco-house (hereinafter - the Administration) and the website user (hereinafter - the User).\n\nUse of the website constitutes the User's unconditional acceptance of these Terms. If the User disagrees, they must stop using the website." },
       { "num": "02", "title": "Subject of the Agreement", "content": "The Administration provides the User with access to information about hotel services, the ability to book rooms online, and other services available on the website." },
       { "num": "03", "title": "User Rights and Obligations", "content": "The User agrees to provide accurate data when booking and not to use the website for unlawful purposes.", "items": ["Access information about rooms and services", "Book rooms through the website", "Leave reviews about services received", "Contact customer support", "Not use the website for unlawful purposes", "Not take actions that disrupt the normal operation of the website"] },
       { "num": "04", "title": "Administration Rights and Obligations", "items": ["Modify website content without prior notice", "Restrict access in case of violation of the Terms", "Ensure website operability", "Process personal data in accordance with the Privacy Policy", "Review User requests within a reasonable time"] },
@@ -323,8 +454,20 @@
       { "num": "06", "title": "Intellectual Property", "content": "All website materials (texts, photographs, design, logos) are intellectual property of the Administration and are protected by applicable law. Use of materials without the Administration's written consent is prohibited." },
       { "num": "07", "title": "Limitation of Liability", "content": "The Administration is not liable for temporary unavailability of the website due to technical reasons and does not guarantee uninterrupted operation of the website." },
       { "num": "08", "title": "Dispute Resolution", "content": "All disputes and disagreements shall be resolved through negotiations. If no agreement can be reached, the dispute shall be referred to a court at the Administration's location in accordance with applicable law." },
-      { "num": "09", "title": "Contact Information", "content": "For questions related to these Terms, please contact:", "items": ["Email: info@meganom-eco.ru", "Phone: +7 (978) 123-45-67", "Address: 28 Baikalskaya St., Mindalnoye, Sudak, Crimea"] }
+      { "num": "09", "title": "Contact Information", "content": "For questions related to these Terms, please contact:", "items": ["Email: info@meganom-eco.ru", "Address: 28 Baikalskaya St., Mindalnoye, Sudak, Crimea"] }
     ]
+  },
+  "socialSoon": {
+    "vk": {
+      "title": "VKontakte group is being created",
+      "text": "We're already working on it - once the group is ready, you'll be able to join and follow our news and special offers."
+    },
+    "tg": {
+      "title": "Telegram channel is being created",
+      "text": "We're already working on it - once the channel is ready, you'll be able to subscribe and be the first to receive news and special offers."
+    },
+    "back": "Go back",
+    "home": "Go to homepage"
   },
   "logo": {
     "letter": "M",
@@ -341,41 +484,69 @@
     "brand": "Eco-houses near Cape Meganom. Tranquility, nature and the clean sea of southern Crimea.",
     "navigation": "Navigation",
     "contacts": "Contacts",
-    "workHours": "Daily, 08:00 — 22:00",
+    "workHours": "Daily, 08:00 - 22:00",
     "privacy": "Privacy Policy",
     "terms": "Terms of Use",
+    "consent": "Data processing consent",
+    "cookieSettings": "Cookie settings",
     "copyright": "Meganom Eco-house. All rights reserved."
   },
   "staticRooms": {
-    "eco-standart": {
-      "title": "Eco-house «Standard»",
-      "description": "Cozy wooden house for two with garden view",
-      "fullDescription": "A cozy eco-house made of natural wood for two guests. The light interior with wooden accents creates a genuine country retreat atmosphere. A spacious terrace with garden furniture is the perfect spot for morning coffee overlooking a beautiful garden. The house has everything you need for a comfortable stay: air conditioning, fridge, and high-speed Wi-Fi.",
-      "amenities": ["Wi-Fi", "Air conditioning", "Terrace", "Fridge"]
+    "veter-peremen-myata": {
+      "title": "«Wind of Change» - 3-room eco-house (Mint territory)",
+      "description": "Individual 3-room eco-house with terrace and kitchen on the Mint territory",
+      "fullDescription": "A standalone three-room eco-house «Wind of Change» on the Mint eco-territory - your private retreat at the foot of Cape Meganom. A spacious open terrace with garden furniture, a fully equipped kitchen and a BBQ area create perfect conditions for a secluded family holiday. The complex is 700 metres from the TAVRIDA.ART cultural centre and 8 kilometres from central Sudak. Accommodates up to 6 guests.",
+      "amenities": ["Wi-Fi", "Air conditioning", "Terrace", "Private kitchen", "BBQ", "Parking", "Garden"]
     },
-    "eco-comfort": {
-      "title": "Eco-house «Comfort»",
-      "description": "Spacious house with separate bedroom and veranda",
-      "fullDescription": "A spacious house with a separate bedroom and large veranda — the ideal choice for couples and small groups. The mini-kitchen lets you cook your own meals on your own schedule. The open veranda with comfortable garden furniture is the best place for quiet evening gatherings surrounded by Crimean nature.",
-      "amenities": ["Wi-Fi", "Air conditioning", "Terrace", "Fridge", "Mini-kitchen"]
+    "veter-peremen-med": {
+      "title": "«Wind of Change» - 3-room eco-house (Honey territory)",
+      "description": "Individual 3-room eco-house with terrace and kitchen on the Honey territory",
+      "fullDescription": "A three-room eco-house «Wind of Change» on the Honey eco-territory - ideal for family or group holidays surrounded by Crimean nature. A private terrace, fully equipped kitchen, vineyard and BBQ area provide comfort and privacy. The complex is located at the foot of Cape Meganom, 700 metres from TAVRIDA.ART and 8 km from Sudak.",
+      "amenities": ["Wi-Fi", "Air conditioning", "Terrace", "Private kitchen", "BBQ", "Parking", "Vineyard"]
     },
-    "eco-suite": {
-      "title": "Suite «Panorama»",
-      "description": "Two-level house with panoramic sea view",
-      "fullDescription": "A two-level house with breathtaking panoramic views of the sea and Cape Meganom. A full spacious kitchen, wide terrace with sun loungers, and a BBQ area create everything you need for an unforgettable stay. Accommodates up to 4 guests, each of whom will appreciate the magnificent Black Sea horizon right outside the window.",
-      "amenities": ["Wi-Fi", "Air conditioning", "View terrace", "Kitchen", "BBQ"]
+    "shale": {
+      "title": "«Chalet» - 2-room eco-house with terrace",
+      "description": "Individual 2-room eco-house with terrace and shared kitchen",
+      "fullDescription": "The two-room eco-house «Chalet» is a cosy standalone cottage with its own terrace on the Honey eco-territory. Warm wooden interiors, a well-kept garden and quiet surroundings offer a truly relaxing retreat away from city noise. The shared kitchen, parking and pool are available to all guests. Accommodates up to 4 guests.",
+      "amenities": ["Wi-Fi", "Air conditioning", "Terrace", "Shared kitchen", "Parking", "Garden"]
     },
-    "eco-family": {
-      "title": "Family «Deluxe»",
-      "description": "Large family house with children's area and garden",
-      "fullDescription": "A large family house with two sleeping areas, a children's bed, and a spacious full kitchen. A huge terrace with a BBQ area opens onto a cozy private garden — children will find their favourite play space here. The perfect solution for families with children who want space, privacy, and everything they need close at hand.",
-      "amenities": ["Wi-Fi", "Air conditioning", "Large terrace", "Full kitchen", "BBQ", "Children's bed"]
+    "kvartet-grand": {
+      "title": "«Quartet Grand» - eco-room with balcony",
+      "description": "Standard eco-room with balcony and shared kitchen",
+      "fullDescription": "A cosy standard eco-room «Quartet Grand» with a balcony overlooking the grounds. Well-equipped with air conditioning and everything needed for a comfortable stay. The shared kitchen on-site lets you cook your own meals. A great choice for couples and solo travellers who value good quality at a reasonable price.",
+      "amenities": ["Wi-Fi", "Air conditioning", "Balcony", "Shared kitchen", "Parking"]
+    },
+    "standart-kuhnya": {
+      "title": "Standard room with shared kitchen",
+      "description": "Standard twin room with shared kitchen access, sleeps up to 3",
+      "fullDescription": "A comfortable twin room in the main building with shared kitchen access - a simple, functional option for guests who spend most of their time outdoors or at the sea. Air conditioning, Wi-Fi and fresh linen are provided. The pool, garden and vineyard are just steps away. Sleeps up to 3 guests.",
+      "amenities": ["Wi-Fi", "Air conditioning", "Shared kitchen", "Parking", "Bed linen"]
+    },
+    "standart-balkon": {
+      "title": "Standard room with balcony",
+      "description": "Standard twin room with balcony and shared kitchen, sleeps up to 4",
+      "fullDescription": "A standard twin room with a balcony and shared kitchen access in the main building. The spacious balcony overlooking the grounds is a perfect spot for morning coffee. Air conditioning, Wi-Fi and fresh linen included. Sleeps up to 4 guests.",
+      "amenities": ["Wi-Fi", "Air conditioning", "Balcony", "Shared kitchen", "Parking", "Bed linen"]
+    },
+    "semeynyy-balkon": {
+      "title": "Family 2-room suite with balcony",
+      "description": "Two-room family suite with balcony and kitchen, sleeps up to 4",
+      "fullDescription": "A spacious two-room family suite with a balcony in the main building - a great choice for families with children or small groups. Two separate rooms ensure privacy, while the balcony with a garden view is the perfect spot for evening relaxation. The pool, vineyard and garden are within easy reach. Sleeps up to 4 guests.",
+      "amenities": ["Wi-Fi", "Air conditioning", "Balcony", "Shared kitchen", "2 rooms", "Parking"]
+    },
+    "semeynyy-topcan": {
+      "title": "Family 2-room suite with bed",
+      "description": "Two-room family suite with bed and kitchen, sleeps up to 5",
+      "fullDescription": "A large two-room family suite featuring a spacious bed for relaxation. Designed to sleep up to 5 guests - an ideal solution for families with children. Two separate rooms provide the privacy you need, and the shared kitchen lets you cook for the whole family. The pool, garden and vineyard are at your disposal.",
+      "amenities": ["Wi-Fi", "Air conditioning", "Bed", "Shared kitchen", "2 rooms", "Parking"]
     }
   },
   "roomDetail": {
+    "otherRooms": "Other accommodation",
     "backToRooms": "All rooms",
     "area": "Area",
     "capacity": "Capacity",
+    "about": "About this room",
     "amenities": "Amenities",
     "gallery": "Photos",
     "bookingCard": {
@@ -391,7 +562,7 @@
     "introTagline": "Feel at home, enjoy Crimea",
     "introText": "Each house is built from natural wood and set into the landscape near Cape Meganom. Choose the accommodation that suits your space and budget.",
     "ctaTitle": "Didn't find the right option?",
-    "ctaText": "Contact us — we'll help you find accommodation that fits your preferences and budget.",
+    "ctaText": "Contact us - we'll help you find accommodation that fits your preferences and budget.",
     "ctaButton": "Contact us",
     "types": {
       "standard": "Standard",
@@ -401,7 +572,19 @@
       "presidential": "Presidential"
     },
     "guests_one": "{{count}} guest",
-    "guests_other": "{{count}} guests"
+    "guests_other": "{{count}} guests",
+    "filter": {
+      "label": "Search:",
+      "checking": "Checking availability...",
+      "clear": "Clear filter"
+    },
+    "availability": {
+      "booked": "Booked",
+      "notEnough": "Low capacity",
+      "available": "Available",
+      "bookedDates": "Booked for these dates",
+      "notEnoughSeats": "Not enough capacity"
+    }
   },
   "bookingPage": {
     "heroTagline": "Online Booking",
@@ -409,7 +592,7 @@
     "formTitle": "Booking Details",
     "guestDataTitle": "Your Details",
     "selectRoom": "Choose a room",
-    "selectRoomPlaceholder": "— Select a room —",
+    "selectRoomPlaceholder": "- Select a room -",
     "checkin": "Check-in date",
     "checkout": "Check-out date",
     "guests": "Number of guests",
@@ -417,7 +600,7 @@
     "guestNamePlaceholder": "John Smith",
     "guestEmail": "Email",
     "guestEmailPlaceholder": "john@mail.com",
-    "guestPhone": "Phone (optional)",
+    "guestPhone": "Phone",
     "specialRequests": "Special requests",
     "specialRequestsPlaceholder": "Early / late check-in, dietary requirements…",
     "summaryTitle": "Your order",
@@ -432,15 +615,16 @@
     "successPhone": "Phone:",
     "backToRooms": "Browse rooms",
     "newBooking": "Make another request",
-    "helpText": "Need help? Call us:",
+    "helpText": "Have questions? Write to us - we reply within an hour",
     "noRoomSelected": "Select a room from the list",
     "selectDateFirst": "Select check-in and check-out dates",
-    "capacity": "up to {{count}} guests"
+    "capacity": "up to {{count}} guests",
+    "submitError": "Failed to submit booking request. Please try again"
   },
   "faq": {
     "heroTagline": "Frequently Asked Questions",
     "heroTitle": "FAQ",
-    "intro": "We've gathered answers to the most common questions from our guests. Didn't find what you need? Call us — we're always happy to help.",
+    "intro": "We've gathered answers to the most common questions from our guests. Didn't find what you need? Write to us - we'll reply quickly.",
     "ctaTitle": "Still have questions?",
     "ctaText": "Contact us and we'll get back to you within a few hours.",
     "ctaButton": "Contact us",
@@ -450,8 +634,8 @@
         "items": [
           {
             "q": "How do I book a room?",
-            "a": "Choose a room and dates on the booking page, fill in your contact details and submit the request. Our manager will contact you within 2 hours to confirm. You can also call us directly: +7 (978) 123-45-67.",
-            "links": [{"word": "booking page", "to": "/booking"}, {"word": "+7 (978) 123-45-67", "to": "tel:+79781234567"}]
+            "a": "Choose a room and dates on the booking page, fill in your contact details and submit the request. Our manager will contact you within 2 hours to confirm. You can also reach us via the contact form.",
+            "links": [{"word": "booking page", "to": "/booking"}, {"word": "contact form", "to": "/contacts"}]
           },
           {
             "q": "Is a deposit required?",
@@ -463,7 +647,7 @@
           },
           {
             "q": "What payment methods do you accept?",
-            "a": "We accept cash and bank cards (Mir, Visa, Mastercard) upon arrival. The deposit can be paid by bank transfer — we'll send the details after booking confirmation."
+            "a": "We accept cash and bank cards (Mir, Visa, Mastercard) upon arrival. The deposit can be paid by bank transfer - we'll send the details after booking confirmation."
           }
         ]
       },
@@ -472,7 +656,7 @@
         "items": [
           {
             "q": "What are the check-in and check-out times?",
-            "a": "Standard check-in is from 14:00, check-out by 12:00. Early check-in or late check-out can be arranged in advance subject to availability — please let us know when booking."
+            "a": "Standard check-in is from 14:00, check-out by 12:00. Early check-in or late check-out can be arranged in advance subject to availability - please let us know when booking."
           },
           {
             "q": "Is there parking on site?",
@@ -480,7 +664,7 @@
           },
           {
             "q": "Is airport or station transfer available?",
-            "a": "We offer free shuttle transfers to the Meganom beaches on a daily schedule. Transfers from Simferopol Airport or Feodosia railway station can be arranged for an additional fee — enquire when booking.",
+            "a": "We offer free shuttle transfers to the Meganom beaches on a daily schedule. Transfers from Simferopol Airport or Feodosia railway station can be arranged for an additional fee - enquire when booking.",
             "links": [{"word": "when booking", "to": "/booking"}]
           },
           {
@@ -498,7 +682,7 @@
           },
           {
             "q": "Is Wi-Fi available?",
-            "a": "Yes, free high-speed Wi-Fi is available in all cabins and throughout the grounds — fast enough for remote work and video calls."
+            "a": "Yes, free high-speed Wi-Fi is available in all cabins and throughout the grounds - fast enough for remote work and video calls."
           },
           {
             "q": "Is there air conditioning?",
@@ -550,10 +734,17 @@
           },
           {
             "q": "Are you open in winter?",
-            "a": "The main season runs from April to October. From November to March some cabins operate in 'quiet season' mode — banya, nature and peaceful relaxation away from the summer crowds. Please check availability when booking off-season."
+            "a": "The main season runs from April to October. From November to March some cabins operate in 'quiet season' mode - banya, nature and peaceful relaxation away from the summer crowds. Please check availability when booking off-season."
           }
         ]
       }
     ]
+  },
+  "weather": {
+    "city": "Sudak"
+  },
+  "watermarks": {
+    "meganom": "MEGANOM",
+    "sea": "SEA"
   }
 }

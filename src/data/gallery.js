@@ -1,13 +1,13 @@
-/**
+﻿/**
  * Gallery photo data with category assignments.
  * Categories based on visual review of all 129 photos from Yandex Travel.
  *
  * Categories:
- *   territory  — gates, buildings exterior, night lights, courtyard, garden, paths, gazebos
- *   rooms      — bedrooms, living areas, kitchens inside houses/rooms
- *   beach      — Oyster beach, Meganom bay, sea views, sunsets
- *   amenities  — pool, banya, bbq zone, outdoor kitchen, sports area
- *   surroundings — beach bar, pizzeria, winery area, decor, scenic views
+ *   territory  - gates, buildings exterior, night lights, courtyard, garden, paths, gazebos
+ *   rooms      - bedrooms, living areas, kitchens inside houses/rooms
+ *   beach      - Oyster beach, Meganom bay, sea views, sunsets
+ *   amenities  - pool, banya, bbq zone, outdoor kitchen, sports area
+ *   surroundings - beach bar, pizzeria, winery area, decor, scenic views
  */
 
 // Photo index → category mapping (1-based index matching file names 001-129)

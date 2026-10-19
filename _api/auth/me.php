@@ -8,8 +8,9 @@ $payload = require_auth();
 
 try {
     $pdo  = db();
-    // Ensure phone column exists (idempotent)
+    // Ensure optional columns exist (idempotent)
     $pdo->exec('ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR(20) NULL');
+    $pdo->exec('ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url TEXT NULL');
 
     $stmt = $pdo->prepare('SELECT id, email, name, role, phone, avatar_url, created_at FROM users WHERE id = :id');
     $stmt->execute([':id' => $payload['sub']]);

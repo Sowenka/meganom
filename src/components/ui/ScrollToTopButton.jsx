@@ -24,7 +24,7 @@ export function ScrollToTopButton() {
           transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           aria-label="Наверх"
-          className="fixed bottom-6 left-6 z-40 flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-colors hover:bg-primary-light"
+          className="fixed bottom-20 left-4 z-40 flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-colors hover:bg-primary-light sm:bottom-6 sm:left-6"
         >
           <FiArrowUp className="h-5 w-5" />
         </motion.button>
