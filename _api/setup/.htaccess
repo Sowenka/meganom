@@ -1,12 +1,10 @@
-﻿# Restrict access to setup scripts - allowed IPs only
-Order Deny,Allow
-Deny from all
-
-# Spaceweb server (internal)
-Allow from 77.222.40.4
-# Localhost
-Allow from 127.0.0.1
-# Developer IPs
-Allow from 82.40.37.155
-Allow from 91.146.6.151
-Allow from 92.55.6.165
+# One-time setup scripts: never reachable over HTTP.
+# Run them from SSH instead, e.g. `php8.3 init-rooms.php`.
+# Both blocks are needed: Apache 2.4 uses Require, Apache 2.2 uses Order/Deny.
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order Deny,Allow
+  Deny from all
+</IfModule>

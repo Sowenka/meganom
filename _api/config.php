@@ -93,13 +93,11 @@ function e(string $s): string {
 // с заявкой фиксируем момент, источник и редакцию документа, с которой
 // согласился пользователь. Время и IP берутся на сервере, клиенту не доверяем.
 
-/** Реальный IP клиента: nginx на хостинге проксирует запрос к Apache. */
+/**
+ * Реальный IP клиента. Хостинг сам кладёт адрес посетителя в REMOTE_ADDR (nginx -> Apache),
+ * а X-Forwarded-For присылает клиент и подделывает как угодно - ему не доверяем.
+ */
 function client_ip(): string {
-    $xff = trim((string)($_SERVER['HTTP_X_FORWARDED_FOR'] ?? ''));
-    if ($xff !== '') {
-        $first = trim(explode(',', $xff)[0]);
-        if (filter_var($first, FILTER_VALIDATE_IP)) return $first;
-    }
     return (string)($_SERVER['REMOTE_ADDR'] ?? '');
 }
 
@@ -195,14 +193,6 @@ define('ADMIN_IPS', [
     '77.222.40.4',
 ]);
 
-function get_client_ip(): string {
-    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '';
-    if (str_contains($ip, ',')) {
-        $ip = trim(explode(',', $ip)[0]);
-    }
-    return $ip;
-}
-
 function ip_allowed(string $ip): bool {
     foreach (ALLOWED_IPS as $allowed) {
         if (str_contains($allowed, '/')) {
@@ -221,7 +211,7 @@ function ip_allowed(string $ip): bool {
 
 /** Разрешить только с доверенных IP, иначе 403 */
 function require_ip(): void {
-    if (!ip_allowed(get_client_ip())) {
+    if (!ip_allowed(client_ip())) {
         http_response_code(403);
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode(['error' => 'Forbidden']);
@@ -254,7 +244,7 @@ function ip_allowed_admin(string $ip): bool {
 
 /** Разрешить доступ к admin только с доверенных IP, иначе 403 */
 function require_admin_ip(): void {
-    if (!ip_allowed_admin(get_client_ip())) {
+    if (!ip_allowed_admin(client_ip())) {
         http_response_code(403);
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode(['error' => 'Forbidden']);
@@ -262,10 +252,22 @@ function require_admin_ip(): void {
     }
 }
 
-/** Проверяет JWT + роль admin + IP whitelist, завершает с 401/403 если нет прав */
+/**
+ * Проверяет JWT + роль admin + IP whitelist, завершает с 401/403 если нет прав.
+ * Роль берём из БД, а не из токена: токен живёт 30 дней, и снятие прав или удаление
+ * пользователя должно действовать сразу.
+ */
 function require_admin(): array {
     require_admin_ip();
     $payload = require_auth();
-    if (($payload['role'] ?? '') !== 'admin') json_error('Недостаточно прав', 403);
+    try {
+        $stmt = db()->prepare('SELECT role FROM users WHERE id = :id');
+        $stmt->execute([':id' => $payload['sub'] ?? '']);
+        $role = $stmt->fetchColumn();
+    } catch (\Exception $e) {
+        error_log('require_admin: ' . $e->getMessage());
+        json_error('Внутренняя ошибка сервера', 500);
+    }
+    if ($role !== 'admin') json_error('Недостаточно прав', 403);
     return $payload;
 }

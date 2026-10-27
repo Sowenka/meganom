@@ -61,6 +61,18 @@ RewriteRule ^. - [R=404,L]
 # cached - it is the file that points at those hashed names, and a stale copy
 # would keep sending users to the previous build.
 <IfModule mod_headers.c>
+  # ── Security headers ──────────────────────────────────────────────────────────
+  # nginx terminates TLS, so Apache sends HSTS on every response; browsers only
+  # honour it over HTTPS. No includeSubDomains: subdomains are not audited.
+  Header always set Strict-Transport-Security "max-age=31536000"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  # Clickjacking guard. Not X-Frame-Options: Yandex Metrika Webvisor replays the
+  # site inside an iframe on its own domains, so they are allowed explicitly.
+  Header always set Content-Security-Policy "frame-ancestors 'self' https://*.yandex.ru https://*.yandex.com https://*.yandex.by https://*.yandex.com.tr https://webvisor.com https://*.webvisor.com"
+  Header always unset X-Powered-By
+  Header unset X-Powered-By
+
   <FilesMatch "\.html$">
     Header set Cache-Control "no-cache, must-revalidate, max-age=0"
   </FilesMatch>

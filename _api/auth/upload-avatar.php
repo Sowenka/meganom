@@ -41,9 +41,13 @@ if (!function_exists('imagecreatefromjpeg')) {
 $uploadDir = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/uploads/avatars/';
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0755, true);
-    // Block PHP execution in uploads
+    // Block script execution in uploads (same rules as _api/uploads/.htaccess).
+    // No bare php_flag: it is a fatal error when PHP runs as CGI/FPM.
     file_put_contents($uploadDir . '../.htaccess',
-        "php_flag engine off\nAddType text/plain .php .phtml .php3 .php4 .php5\n"
+        "<FilesMatch \"\\.(php[0-9]?|phtml|phar|pl|py|cgi|sh)$\">\n"
+        . "  <IfModule mod_authz_core.c>\n    Require all denied\n  </IfModule>\n"
+        . "  <IfModule !mod_authz_core.c>\n    Order Allow,Deny\n    Deny from all\n  </IfModule>\n"
+        . "</FilesMatch>\nOptions -Indexes -ExecCGI\n"
     );
 }
 

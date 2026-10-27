@@ -1,4 +1,19 @@
-# Prevent PHP execution in uploads directory
-php_flag engine off
-AddType text/plain .php .phtml .php3 .php4 .php5 .phps
-Options -Indexes
+# No script execution in user uploads.
+# php_flag only exists under mod_php and is a fatal error under CGI/FPM, so it is
+# guarded; the FilesMatch deny works with any PHP handler and any Apache version.
+<IfModule mod_php.c>
+  php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+  php_flag engine off
+</IfModule>
+<FilesMatch "\.(php[0-9]?|phtml|phar|pl|py|cgi|sh)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order Allow,Deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+Options -Indexes -ExecCGI

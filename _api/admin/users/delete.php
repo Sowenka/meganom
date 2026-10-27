@@ -22,5 +22,5 @@ try {
     json_response(['ok' => true]);
 
 } catch (\Exception $e) {
-    json_error('Ошибка сервера: ' . $e->getMessage(), 500);
+    json_error('Внутренняя ошибка сервера', 500);
 }
