@@ -383,9 +383,13 @@ export default function RoomDetail() {
                   <h2 className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
                     {t('roomDetail.about')}
                   </h2>
-                  <p className="leading-relaxed text-text-muted">
-                    {room.full_description ?? room.short_description}
-                  </p>
+                  <div className="space-y-3 leading-relaxed text-text-muted">
+                    {(room.full_description ?? room.short_description)
+                      .split('\n\n')
+                      .map((paragraph) => (
+                        <p key={paragraph}>{paragraph}</p>
+                      ))}
+                  </div>
                 </div>
               )}
 
