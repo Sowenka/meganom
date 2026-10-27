@@ -23,7 +23,7 @@ define('JWT_SECRET',      $secrets['JWT_SECRET']);
 define('JWT_TTL',         30 * 24 * 3600); // 30 дней
 
 // ── Сезон ───────────────────────────────────────────────────────────────────
-// false — отель закрыт: бронирование и регистрация заблокированы на сервере.
+// false - отель закрыт: бронирование и регистрация заблокированы на сервере.
 // Дублирует фронтовый флаг SEASON_OPEN в src/lib/constants.js (значения должны совпадать).
 define('SEASON_OPEN', false);
 
@@ -219,11 +219,45 @@ function require_ip(): void {
     }
 }
 
-/** Сезон закрыт — блокируем операцию (бронирование/регистрация) с 403 */
+/** Сезон закрыт - блокируем операцию (бронирование/регистрация) с 403 */
 function require_season_open(): void {
     if (!SEASON_OPEN) {
         json_error('Отель закрыт на сезон. Операция временно недоступна.', 403);
     }
+}
+
+/**
+ * Не больше $max действий $action за $minutes минут от одного $actor (IP или id пользователя),
+ * иначе 429. Попытка засчитывается сразу, даже если дальше запрос упадёт.
+ */
+function rate_limit(string $action, string $actor, int $max, int $minutes): void {
+    try {
+        $pdo = db();
+        $pdo->exec("CREATE TABLE IF NOT EXISTS rate_limits (
+            id         SERIAL PRIMARY KEY,
+            action     VARCHAR(30) NOT NULL,
+            actor      VARCHAR(64) NOT NULL,
+            created_at TIMESTAMP   NOT NULL DEFAULT NOW()
+        )");
+        if (rand(1, 20) === 1) {
+            $pdo->exec("DELETE FROM rate_limits WHERE created_at < NOW() - INTERVAL '1 day'");
+        }
+        $check = $pdo->prepare("
+            SELECT COUNT(*) FROM rate_limits
+            WHERE action = :action AND actor = :actor
+              AND created_at > NOW() - make_interval(mins => CAST(:minutes AS INTEGER))
+        ");
+        $check->execute([':action' => $action, ':actor' => $actor, ':minutes' => $minutes]);
+        $count = (int)$check->fetchColumn();
+        if ($count < $max) {
+            $pdo->prepare('INSERT INTO rate_limits (action, actor) VALUES (:action, :actor)')
+                ->execute([':action' => $action, ':actor' => $actor]);
+        }
+    } catch (\Exception $e) {
+        error_log('rate_limit: ' . $e->getMessage());
+        json_error('Внутренняя ошибка сервера', 500);
+    }
+    if ($count >= $max) json_error('Слишком много запросов. Попробуйте позже.', 429);
 }
 
 /** Проверяет JWT, возвращает payload или завершает с 401 */

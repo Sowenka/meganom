@@ -4,7 +4,7 @@ cors();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_error('Method not allowed', 405);
 
-// ── Сезон закрыт — регистрация недоступна ──────────────────────────────────────
+// ── Сезон закрыт - регистрация недоступна ──────────────────────────────────────
 require_season_open();
 
 $body = json_decode(file_get_contents('php://input'), true);
@@ -19,7 +19,9 @@ if (!$fullName || mb_strlen($fullName) < 2) json_error('Введите имя (�
 if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) json_error('Некорректный email');
 if (!$password || strlen($password) < 6) json_error('Пароль должен содержать минимум 6 символов');
 if (mb_strlen($fullName) > 120) json_error('Имя слишком длинное');
-if (mb_strlen($phone) > 30) json_error('Телефон слишком длинный');
+if (mb_strlen($phone) > 20) json_error('Телефон слишком длинный');
+if (strlen($password) > 72) json_error('Пароль слишком длинный (максимум 72 символа)');
+if (mb_strlen($email) > 254) json_error('Некорректный email');
 
 $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
 // 152-ФЗ ч.1 ст.9: наличие согласия доказывает оператор.
@@ -53,6 +55,7 @@ try {
     $pdo->exec('ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_code VARCHAR(6) NULL');
     $pdo->exec('ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_expires_at TIMESTAMP NULL');
     $pdo->exec('ALTER TABLE users ADD COLUMN IF NOT EXISTS is_verified BOOLEAN NOT NULL DEFAULT FALSE');
+    $pdo->exec('ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_attempts INT NOT NULL DEFAULT 0');
     // 152-ФЗ ч.1 ст.9: наличие согласия доказывает оператор.
     $pdo->exec('ALTER TABLE users ADD COLUMN IF NOT EXISTS consent_pd_at TIMESTAMP NULL');
     $pdo->exec('ALTER TABLE users ADD COLUMN IF NOT EXISTS consent_pd_ip VARCHAR(45) NULL');
@@ -76,6 +79,7 @@ try {
             UPDATE users
             SET name = :name, password_hash = :hash, phone = :phone,
                 verification_code = :code, verification_expires_at = :expires, is_verified = FALSE,
+                verification_attempts = 0,
                 consent_pd_at = :consent_at, consent_pd_ip = :consent_ip,
                 consent_pd_version = :consent_version
             WHERE id = :id

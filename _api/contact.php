@@ -20,7 +20,14 @@ if (!$name || !$email || !$message) json_error('Заполните обязат�
 
 // ── Фиксация факта согласия (152-ФЗ ч.1 ст.9) ────────────────────────────────
 $consent = consent_record($body);
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) json_error('Некорректный email');
+if (!filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 254) json_error('Некорректный email');
+if (mb_strlen($name) > 120)     json_error('Имя слишком длинное');
+if (mb_strlen($phone) > 30)     json_error('Телефон слишком длинный');
+if (mb_strlen($subject) > 200)  json_error('Тема слишком длинная');
+if (mb_strlen($message) > 5000) json_error('Сообщение слишком длинное (максимум 5000 символов)');
+
+// Каждое обращение - письмо на ящик отеля: не даём завалить его спамом.
+rate_limit('contact', client_ip(), 5, 15);
 
 $html = '<!DOCTYPE html>
 <html lang="ru">

@@ -4,7 +4,7 @@ cors();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_error('Method not allowed', 405);
 
-// ── Сезон закрыт — бронирование недоступно ─────────────────────────────────────
+// ── Сезон закрыт - бронирование недоступно ─────────────────────────────────────
 require_season_open();
 
 // ── Auth required ─────────────────────────────────────────────────────────────
@@ -42,8 +42,14 @@ if ($nights < 1)  json_error('Минимальный срок бронирова
 if ($nights > 90) json_error('Максимальный срок бронирования - 90 ночей');
 
 if (!$guestName)  json_error('Укажите имя');
-if (!$guestEmail || !filter_var($guestEmail, FILTER_VALIDATE_EMAIL)) json_error('Некорректный email');
+if (!$guestEmail || !filter_var($guestEmail, FILTER_VALIDATE_EMAIL) || mb_strlen($guestEmail) > 254) json_error('Некорректный email');
 if ($guests < 1)  json_error('Укажите количество гостей');
+if (mb_strlen($guestName) > 120)  json_error('Имя слишком длинное');
+if (mb_strlen($guestPhone) > 30)  json_error('Телефон слишком длинный');
+if (mb_strlen($requests) > 2000)  json_error('Пожелания слишком длинные (максимум 2000 символов)');
+
+// Каждая заявка шлёт два письма (отелю и на guest_email) и занимает даты в календаре.
+rate_limit('booking', (string)$userId, 5, 60);
 
 try {
     $pdo = db();

@@ -13,6 +13,8 @@ $name  = trim($body['name']  ?? '');
 $phone = trim($body['phone'] ?? '');
 
 if (!$name || mb_strlen($name) < 2) json_error('Введите имя (минимум 2 символа)');
+if (mb_strlen($name) > 120)  json_error('Имя слишком длинное');
+if (mb_strlen($phone) > 20)  json_error('Телефон слишком длинный');
 
 try {
     $pdo = db();

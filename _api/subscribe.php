@@ -8,11 +8,14 @@ $body = json_decode(file_get_contents('php://input'), true);
 if (!$body) json_error('Invalid JSON');
 
 $email = trim($body['email'] ?? '');
-if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) json_error('Некорректный email');
+if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 254) json_error('Некорректный email');
 
 // Рассылка - реклама (ст. 18 ФЗ-38): без предварительного согласия не принимаем.
 $consent = consent_record($body);
 if (!$consent['given']) json_error('Требуется согласие на обработку персональных данных');
+
+// Каждая подписка - письмо на ящик отеля: не даём завалить его спамом.
+rate_limit('subscribe', client_ip(), 3, 15);
 
 $html = '<!DOCTYPE html>
 <html lang="ru">

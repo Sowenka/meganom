@@ -22,6 +22,16 @@ function saveSession(token, user) {
   localStorage.setItem(USER_KEY, JSON.stringify(user));
 }
 
+// verify.php принимает код только вместе с паролем регистрации, чтобы чужая повторная
+// регистрация того же email не могла подменить пароль. Чтобы не просить пароль второй раз,
+// он живёт здесь, в памяти вкладки, до подтверждения (после перезагрузки его спросит форма).
+let pendingSignUp = null;
+
+/** Пароль только что отправленной регистрации для этого email, или пустая строка. */
+export function getPendingPassword(email) {
+  return pendingSignUp?.email === email ? pendingSignUp.password : '';
+}
+
 export async function signUp({ fullName, email, password, phone, consentPd }) {
   const res = await fetch(`${API_BASE}/auth/register.php`, {
     method: 'POST',
@@ -38,17 +48,19 @@ export async function signUp({ fullName, email, password, phone, consentPd }) {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || 'Ошибка регистрации');
   // Registration now returns { pending: true, email } - no token yet
+  pendingSignUp = { email, password };
   return data;
 }
 
-export async function verifyEmail({ email, code }) {
+export async function verifyEmail({ email, code, password }) {
   const res = await fetch(`${API_BASE}/auth/verify.php`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, code }),
+    body: JSON.stringify({ email, code, password }),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || 'Неверный или просроченный код');
+  pendingSignUp = null;
   saveSession(data.token, data.user);
   return data;
 }

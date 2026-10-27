@@ -310,6 +310,18 @@
         "prefix": "I agree to the",
         "link": "collection and processing of personal data"
       }
+    },
+    "verify": {
+      "title": "Confirm your email",
+      "subtitle": "We sent a 6-digit code to {{email}}",
+      "code": "Confirmation code",
+      "codePlaceholder": "000000",
+      "password": "Password you registered with",
+      "passwordPlaceholder": "Enter password",
+      "submit": "Confirm",
+      "submitting": "Checking...",
+      "success": "Email confirmed! Welcome.",
+      "errorGeneral": "Invalid or expired code"
     }
   },
   "profile": {

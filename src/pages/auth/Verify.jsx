@@ -6,7 +6,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Input, Button } from '@/components/ui';
-import { verifyEmail } from '@/services/auth.service';
+import { getPendingPassword, verifyEmail } from '@/services/auth.service';
 import { useAuthStore } from '@/store/useAuthStore';
 import { safeRedirect } from '@/lib/utils';
 
@@ -15,6 +15,7 @@ const verifySchema = z.object({
     .string({ required_error: 'Введите код подтверждения' })
     .length(6, 'Код должен содержать 6 цифр')
     .regex(/^\d{6}$/, 'Код должен состоять из 6 цифр'),
+  password: z.string().min(1, 'Введите пароль, указанный при регистрации'),
 });
 
 export default function Verify() {
@@ -24,6 +25,8 @@ export default function Verify() {
   const email = searchParams.get('email') || '';
   const redirect = safeRedirect(searchParams.get('redirect'), '/profile');
   const setUser = useAuthStore((s) => s.setUser);
+  // Сразу после регистрации пароль уже известен; после перезагрузки страницы его спросим.
+  const pendingPassword = getPendingPassword(email);
 
   const {
     register,
@@ -31,7 +34,7 @@ export default function Verify() {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(verifySchema),
-    defaultValues: { code: '' },
+    defaultValues: { code: '', password: pendingPassword },
   });
 
   const onInvalid = useCallback((fieldErrors) => {
@@ -41,7 +44,7 @@ export default function Verify() {
 
   async function onSubmit(data) {
     try {
-      const result = await verifyEmail({ email, code: data.code });
+      const result = await verifyEmail({ email, code: data.code, password: data.password });
       setUser(result.user, result.token);
       toast.success(t('auth.verify.success'));
       navigate(redirect);
@@ -76,6 +79,17 @@ export default function Verify() {
           className="text-center text-2xl font-bold tracking-widest"
           {...register('code')}
         />
+
+        {!pendingPassword && (
+          <Input
+            type="password"
+            label={t('auth.verify.password')}
+            placeholder={t('auth.verify.passwordPlaceholder')}
+            autoComplete="current-password"
+            error={errors.password?.message}
+            {...register('password')}
+          />
+        )}
 
         <Button type="submit" loading={isSubmitting} className="mt-2 w-full">
           {isSubmitting ? t('auth.verify.submitting') : t('auth.verify.submit')}
