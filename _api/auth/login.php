@@ -39,7 +39,10 @@ try {
     }
 
     // ── Auth ──────────────────────────────────────────────────────────────────
-    $stmt = $pdo->prepare('SELECT id, email, name, role, password_hash, is_verified FROM users WHERE email = :email');
+    $stmt = $pdo->prepare('
+        SELECT id, email, name, role, phone, avatar_url, created_at, password_hash, is_verified
+        FROM users WHERE email = :email
+    ');
     $stmt->execute([':email' => $email]);
     $user = $stmt->fetch();
 
@@ -68,11 +71,16 @@ try {
     json_response([
         'ok'    => true,
         'token' => $token,
+        // Тот же набор полей, что у me.php и verify.php: профиль берёт его прямо из стора
         'user'  => [
-            'id'    => $user['id'],
-            'email' => $user['email'],
-            'name'  => $user['name'],
-            'role'  => $user['role'],
+            'id'         => $user['id'],
+            'email'      => $user['email'],
+            'name'       => $user['name'],
+            'full_name'  => $user['name'],
+            'role'       => $user['role'],
+            'phone'      => $user['phone'],
+            'avatar_url' => $user['avatar_url'],
+            'created_at' => $user['created_at'],
         ],
     ]);
 

@@ -97,21 +97,6 @@ export async function uploadAvatar(file) {
   return data;
 }
 
-export async function getProfile() {
-  const token = getToken();
-  if (!token) return null;
-  try {
-    const res = await fetch(`${API_BASE}/auth/me.php`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.user ?? null;
-  } catch {
-    return null;
-  }
-}
-
 export async function updateProfile({ name, phone }) {
   const token = getToken();
   const res = await fetch(`${API_BASE}/auth/update-profile.php`, {

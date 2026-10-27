@@ -15,7 +15,7 @@ import { Input, PhoneInput, Button } from '@/components/ui';
 import { profileSchema } from '@/lib/validators';
 import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/useAuthStore';
-import { getProfile, updateProfile, signOut, uploadAvatar } from '@/services/auth.service';
+import { updateProfile, signOut, uploadAvatar } from '@/services/auth.service';
 import { getUserBookings } from '@/services/booking.service';
 import { formatPrice, formatDate, cn } from '@/lib/utils';
 
@@ -181,8 +181,9 @@ CropModal.propTypes = {
 
 export default function Profile() {
   const { t } = useTranslation();
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading, isVerified } = useAuth();
   const clearUser = useAuthStore((s) => s.clearUser);
+  const userId = user?.id;
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState(null);
@@ -210,23 +211,22 @@ export default function Profile() {
     if (!authLoading && !user) navigate('/auth/login');
   }, [user, authLoading, navigate]);
 
+  // Профиль - это пользователь, которого уже вернула проверка токена (me.php), отдельный
+  // запрос не нужен. Пока на экране копия из localStorage, ждём ответа сервера.
   useEffect(() => {
-    if (!user) return;
+    if (!isVerified || !user) return;
+    setProfile(user);
+    reset({ fullName: user.full_name || user.name || '', phone: user.phone || '' });
+  }, [isVerified, user, reset]);
 
-    getProfile()
-      .then((p) => {
-        if (p) {
-          setProfile(p);
-          reset({ fullName: p.full_name || p.name || '', phone: p.phone || '' });
-        }
-      })
-      .catch(() => {});
-
+  // По id, а не по объекту user: он пересоздаётся при каждом ответе сервера.
+  useEffect(() => {
+    if (!userId) return;
     getUserBookings()
       .then(setBookings)
       .catch(() => {})
       .finally(() => setBookingsLoading(false));
-  }, [user, reset]);
+  }, [userId]);
 
   const onInvalid = useCallback((fieldErrors) => {
     const firstError = Object.values(fieldErrors).find((e) => e?.message);
