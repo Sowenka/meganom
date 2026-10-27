@@ -44,8 +44,10 @@ RewriteRule ^(.+[^/])$ /$1/index.html [L]
 
 # Priority 2: client-only SPA routes (not pre-rendered, closed in robots.txt).
 # spa.html is an empty app shell (index.html holds the pre-rendered home page).
+# List the exact routes from src/App.jsx: a prefix match would answer 200 for
+# /auth/anything, which Yandex counts as a soft 404. New client routes go here.
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(profile|social-soon|auth|admin)(/.*)?$ spa.html [L]
+RewriteRule ^(profile|social-soon|auth/(login|register|verify)|admin(/(rooms|bookings|clients|sales|content))?)/?$ spa.html [L]
 
 # Priority 3: everything else that is not a real file is a 404.
 # 404.html is the pre-rendered NotFound page with noindex.
