@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { Input, Button } from '@/components/ui';
 import { verifyEmail } from '@/services/auth.service';
 import { useAuthStore } from '@/store/useAuthStore';
+import { safeRedirect } from '@/lib/utils';
 
 const verifySchema = z.object({
   code: z
@@ -21,7 +22,7 @@ export default function Verify() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const email = searchParams.get('email') || '';
-  const redirect = searchParams.get('redirect') || '/profile';
+  const redirect = safeRedirect(searchParams.get('redirect'), '/profile');
   const setUser = useAuthStore((s) => s.setUser);
 
   const {

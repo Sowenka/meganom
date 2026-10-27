@@ -9,13 +9,13 @@ import { loginSchema } from '@/lib/validators';
 import { signIn } from '@/services/auth.service';
 import { useAuthStore } from '@/store/useAuthStore';
 import { SEASON_OPEN } from '@/lib/constants';
+import { safeRedirect } from '@/lib/utils';
 
 export default function Login() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const raw = searchParams.get('redirect') || '';
-  const redirect = raw.startsWith('/') && !raw.startsWith('//') ? raw : '/profile';
+  const redirect = safeRedirect(searchParams.get('redirect'), '/profile');
   const setUser = useAuthStore((s) => s.setUser);
 
   const {

@@ -10,13 +10,13 @@ import { ConsentCheckbox } from '@/components/ConsentCheckbox';
 import { registerSchema } from '@/lib/validators';
 import { signUp } from '@/services/auth.service';
 import { SEASON_OPEN } from '@/lib/constants';
+import { safeRedirect } from '@/lib/utils';
 
 export default function Register() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const raw = searchParams.get('redirect') || '';
-  const redirect = raw.startsWith('/') && !raw.startsWith('//') ? raw : '';
+  const redirect = safeRedirect(searchParams.get('redirect'), '');
 
   const {
     register,
